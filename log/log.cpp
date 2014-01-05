@@ -1,6 +1,6 @@
 #include "log.h"
 #include <chrono>
-#include <stdarg.h>
+#include <cstdarg>
 
 using namespace std;
 
@@ -81,10 +81,15 @@ void Log::print(const char *format, LogOutputLevel level, va_list args){
 
     for(LogOutput output : outputs){
         if(output.level & level){
+            va_list copy;
+            va_copy(copy, args);
+
             fprintf(output.output, "[%02i:%02i:%02i.%06i] %s: ", date->tm_hour, date->tm_min, date->tm_sec, microseconds, type);
-            vfprintf(output.output, format, args);
+            vfprintf(output.output, format, copy);
             fprintf(output.output, "\n");
             fflush(output.output);
+
+            va_end(copy);
         }
     }
 }
