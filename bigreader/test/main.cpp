@@ -1,6 +1,5 @@
 #include "bigreader.h"
 #include "log.h"
-#include <thread>
 
 using namespace OpenBFME;
 
