@@ -15,7 +15,10 @@ file(GLOB_RECURSE HEADERS "*.h")
 file(GLOB SOURCES "*.cpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} log)
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} log)
+endif()
 
 if(BIGREADER_TEST)
     add_executable(${PROJECT_NAME}_test test/main.cpp)
