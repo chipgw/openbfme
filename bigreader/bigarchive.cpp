@@ -148,7 +148,7 @@ bool BigArchive::extract(const std::string &filename, const std::string &directo
 
     Log::info("Extracting to \"%s\"...", outfilename.c_str());
 
-    FILE* out = fopen(outfilename.c_str(), "w");
+    FILE* out = fopen(outfilename.c_str(), "wb");
 
     if(out == nullptr){
         Log::error("Unable to create file \"%s\"!", outfilename.c_str());
