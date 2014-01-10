@@ -4,8 +4,6 @@
 
 namespace OpenBFME {
 
-BigEntry::BigEntry(BigArchive &archive, const char *filename){
-    Log::info("BigEntry created.");
-}
+BigEntry::BigEntry(BigArchive &arch, uint32_t start, uint32_t end) : archive(arch), start(start), end(end) {}
 
 }
