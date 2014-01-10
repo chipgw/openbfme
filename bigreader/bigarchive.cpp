@@ -30,7 +30,11 @@ bool mkPath(std::string dir){
     for(char &p : dir){
         if(p == '/' || p == '\\'){
             p = '\0';
+#ifdef _WIN32
+            mkdir(dir.c_str());
+#else
             mkdir(dir.c_str(), 0777);
+#endif
             p = '/';
         }
     }
