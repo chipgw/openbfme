@@ -4,7 +4,7 @@
 using namespace OpenBFME;
 
 int main(){
-    Log::init();
+    Log::init("bigreader_test.log");
     BigFilesystem big;
     big.mount("test.big", true);
 

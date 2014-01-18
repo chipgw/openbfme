@@ -19,9 +19,6 @@ void Log::init(const char *filename){
         outputs.push_back(LogOutput(LogOutputLevel::Info | LogOutputLevel::Warning, stdout));
         outputs.push_back(LogOutput(LogOutputLevel::Error, stderr));
 
-        if(filename == nullptr){
-            filename = "openbfme.log";
-        }
         FILE* file = fopen(filename, "w");
         if(file != nullptr){
             outputs.push_back(LogOutput(LogOutputLevel::All, file));

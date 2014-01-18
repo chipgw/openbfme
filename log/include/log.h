@@ -30,7 +30,7 @@ class Log{
     static void print(const char* format, LogOutputLevel level, va_list args);
 
 public:
-    static void init(const char* filename = nullptr);
+    static void init(const char* filename);
 
     static void info(const char* format,...);
     static void warning(const char* format,...);

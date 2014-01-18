@@ -6,7 +6,7 @@ using namespace OpenBFME;
 
 
 int main(int argc, const char* argv[]){
-    Log::init();
+    Log::init("big_extractor.log");
 
     std::vector<std::string> args(argv + 1, argv + argc);
 
