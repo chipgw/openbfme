@@ -10,4 +10,4 @@ file(GLOB_RECURSE HEADERS "*.h")
 
 file(GLOB SOURCES "*.cpp")
 
-add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
