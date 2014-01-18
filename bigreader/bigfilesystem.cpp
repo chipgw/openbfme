@@ -36,7 +36,7 @@ bool BigFilesystem::unmount(const std::string &filename){
     Log::info("Unmounting \"%s\"", filename.c_str());
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
-        if(i->archiveFilename == filename){
+        if(i->getArchiveFilename() == filename){
             archives.erase(i);
             return true;
         }
@@ -45,7 +45,7 @@ bool BigFilesystem::unmount(const std::string &filename){
 }
 
 bool BigFilesystem::unmount(BigArchive* archive){
-    Log::info("Unmounting \"%s\"", archive->archiveFilename.c_str());
+    Log::info("Unmounting \"%s\"", archive->getArchiveFilename().c_str());
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
         if(&*i == archive){

@@ -14,8 +14,6 @@ class BigArchive;
 class BigFilesystem;
 
 class BigArchive{
-    friend class BigFilesystem;
-protected:
     std::map<std::string, BigEntry> entries;
     FILE* file;
     std::string archiveFilename;
@@ -35,6 +33,8 @@ public:
 
     bool extract(const std::string &filename, const std::string &directory, bool fullPath);
     bool extractAll(const std::string &directory);
+
+    inline const std::string &getArchiveFilename() { return archiveFilename; }
 };
 
 
