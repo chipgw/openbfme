@@ -4,9 +4,6 @@ project(bigreader)
 option(BIG_EXTRACTOR "Builds extractor program for .big files" OFF)
 option(BIGREADER_TEST "Builds test binary for bigreader" OFF)
 
-# TODO - make this use the new detect cxx features thing when it's released.
-set(CMAKE_CXX_FLAGS                "${CMAKE_CXX_FLAGS} -std=c++11")
-
 #configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/version.cpp.in" "${CMAKE_CURRENT_SOURCE_DIR}/src/version.cpp" @ONLY)
 
 # files not needed in build, but included so they show up in IDE.

@@ -5,6 +5,7 @@
 #include <deque>
 #include <string>
 #include <cstdio>
+#include <cstdint>
 
 namespace OpenBFME {
 
