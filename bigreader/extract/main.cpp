@@ -21,8 +21,17 @@ int main(int argc, const char* argv[]){
         BigArchive* archive = big.mount(arg, true);
 
         if(archive != nullptr){
-            // TODO - choose a better path to extract to.
-            archive->extractAll("out/");
+            std::string path = arg;
+            auto lastSlash = path.find_last_of("/\\");
+
+            if(lastSlash != std::string::npos){
+                path.erase(0, lastSlash + 1);
+            }
+
+            path.erase(path.find_last_of("."));
+            path.push_back('/');
+
+            archive->extractAll(path);
 
             big.unmount(archive);
         }
