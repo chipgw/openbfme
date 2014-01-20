@@ -58,7 +58,7 @@ public:
     bool unmount(const std::string &filename);
     bool unmount(BigArchive* archive);
 
-    BigEntry* openFile(const std::string &filename);
+    BigEntry* openFile(const std::string &filename, const std::string &relativeTo = "");
 };
 
 }

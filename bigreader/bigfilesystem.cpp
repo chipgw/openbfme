@@ -1,6 +1,6 @@
 #include "bigreader.h"
 #include "log.h"
-#include <cstdio>
+#include <algorithm>
 
 namespace OpenBFME {
 
@@ -56,10 +56,32 @@ bool BigFilesystem::unmount(BigArchive* archive){
     return false;
 }
 
-BigEntry* BigFilesystem::openFile(const std::string &filename){
-    Log::info("attempting to open file \"%s\"", filename.c_str());
+BigEntry* BigFilesystem::openFile(const std::string &filename, const std::string &relativeTo){
+    std::string fullPath = filename;
+    std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+    if(!relativeTo.empty() && fullPath.find("../") != std::string::npos){
+        fullPath.insert(0, relativeTo.substr(0, relativeTo.find_last_of("\\/")) + '/');
+        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+        for(std::string::size_type p, folder; (p = fullPath.find("../")) != std::string::npos;){
+            if(p == 0){
+                folder = 0;
+            }else{
+                folder = fullPath.find_last_of('/', p - 2);
+            }
+
+            if(folder == std::string::npos){
+                folder = 0;
+            }
+
+            fullPath.erase(folder, p - folder + 3);
+        }
+    }
+
+    Log::info("attempting to open file \"%s\", expanded to \"%s\"", filename.c_str(), fullPath.c_str());
     for(BigArchive &archive : archives){
-        BigEntry* entry = archive.openFile(filename);
+        BigEntry* entry = archive.openFile(fullPath);
         if(entry != nullptr){
             return entry;
         }

@@ -74,6 +74,7 @@ bool BigArchive::readHeader(){
         uint32_t start = readUInt32(file);
         uint32_t end   = start + readUInt32(file);
         std::string path = readString(file, headerEnd);
+        std::replace(path.begin(), path.end(), '\\', '/');
 
         entries.emplace(path, BigEntry(*this, start, end));
 
@@ -142,10 +143,9 @@ bool BigArchive::extract(const std::string &filename, const std::string &directo
     std::string outfilename = filename;
 
     if(!fullPath){
-        outfilename.replace(0, outfilename.find_last_of('\\') + 1, "");
+        outfilename.erase(0, outfilename.find_last_of('/') + 1);
     }
     outfilename.insert(0, directory);
-    std::replace(outfilename.begin(), outfilename.end(), '\\', '/');
     mkPath(outfilename);
 
     Log::info("Extracting to \"%s\"...", outfilename.c_str());
