@@ -18,11 +18,11 @@ if(WIN32)
 endif()
 
 if(BIGREADER_TEST)
-    add_executable(${PROJECT_NAME}_test test/main.cpp)
+    add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} log)
 endif()
 
 if(BIG_EXTRACTOR)
-    add_executable(big_extractor extract/main.cpp)
+    add_executable(big_extractor extractor/big_extractor.cpp)
     target_link_libraries(big_extractor ${PROJECT_NAME} log)
 endif()
