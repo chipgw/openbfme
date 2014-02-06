@@ -76,7 +76,7 @@ bool BigArchive::readHeader(){
         std::string path = readString(file, headerEnd);
         std::replace(path.begin(), path.end(), '\\', '/');
 
-        entries.emplace(BigEntry(*this, start, end, path));
+        entries.emplace(*this, start, end, path);
 
         Log::info("File #%04d start: 0x%08x end: 0x%08x path: \"%s\"", f + 1, start, end, path.c_str());
     }

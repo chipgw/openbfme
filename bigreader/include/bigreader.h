@@ -41,16 +41,12 @@ public:
 
 
 class BigEntry{
-    friend class BigArchive;
-    friend bool operator <(const BigEntry& e1,const BigEntry& e2);
-
-protected:
+public:
     const std::string filename;
     const uint32_t start, end;
     BigArchive &archive;
     BigEntry(BigArchive &arch, uint32_t start, uint32_t end, std::string file);
 
-public:
     inline std::string getLine() const { return archive.getLine(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
