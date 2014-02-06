@@ -130,6 +130,26 @@ std::string BigArchive::getLine(const BigEntry &entry){
     return str;
 }
 
+bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
+    pos += entry.start;
+    if(pos < entry.end){
+        fseek(file, pos, SEEK_SET);
+        return true;
+    }
+    return false;
+}
+
+uint32_t BigArchive::tell(const BigEntry &entry){
+    uint32_t pos = ftell(file);
+    if(pos < entry.start){
+        return 0;
+    }
+    if(pos > entry.end){
+        return entry.end - entry.start;
+    }
+    return pos - entry.start;
+}
+
 bool BigArchive::eof(const BigEntry &entry){
     uint32_t cpos = ftell(file);
     return cpos < entry.start || cpos >= entry.end;

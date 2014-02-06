@@ -29,6 +29,8 @@ public:
     const BigEntry* openFile(const std::string &filename);
 
     std::string getLine(const BigEntry &entry);
+    bool seek(const BigEntry &entry, uint32_t pos);
+    uint32_t tell(const BigEntry &entry);
     bool eof(const BigEntry &entry);
 
     bool extract(const std::string &filename, const std::string &directory, bool fullPath);
@@ -50,7 +52,10 @@ protected:
 
 public:
     inline std::string getLine() const { return archive.getLine(*this); }
+    inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
+    inline uint32_t tell() const { return archive.tell(*this); }
     inline bool eof() const { return archive.eof(*this); }
+
 };
 inline bool operator <(const BigEntry& e1,const BigEntry& e2){ return e1.filename < e2.filename;}
 
