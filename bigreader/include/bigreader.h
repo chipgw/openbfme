@@ -29,6 +29,7 @@ public:
     const BigEntry* openFile(const std::string &filename);
 
     std::string getLine(const BigEntry &entry);
+    std::string getWord(const BigEntry &entry);
     bool seek(const BigEntry &entry, uint32_t pos);
     uint32_t tell(const BigEntry &entry);
     bool eof(const BigEntry &entry);
@@ -49,6 +50,7 @@ public:
     BigEntry(BigArchive &arch, uint32_t start, uint32_t end, std::string file);
 
     inline std::string getLine() const { return archive.getLine(*this); }
+    inline std::string getWord() const { return archive.getWord(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
     inline bool eof() const { return archive.eof(*this); }

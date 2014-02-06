@@ -133,6 +133,67 @@ std::string BigArchive::getLine(const BigEntry &entry){
     return str;
 }
 
+std::string BigArchive::getWord(const BigEntry &entry){
+    if(!open() || eof(entry)){
+        return "";
+    }
+
+    bool isWrd = false;
+    bool isStr = false;
+    bool isNmb = false;
+    bool isSym = false;
+
+    std::string data;
+    char c;
+    do{
+        c = fgetc(file);
+
+        if(ferror(file) || feof(file)){
+            break;
+        }
+
+        if(data.empty()){
+            if(c == '\n'){
+                // return a newline character if it's the first non-space we run into.
+                entry.line++;
+                return "\n";
+            }
+            if(std::isspace(c)){
+                // Ignore a space.
+                continue;
+            }
+            if(std::isalpha(c)){
+                // we have a word!
+                isWrd = true;
+            }else if(std::isdigit(c)){
+                // we have a number!
+                isNmb = true;
+            }else if(c == '"'){
+                // we have a string!
+                isStr = true;
+            }else{
+                // TODO - filter this further.
+                isSym = true;
+            }
+        }else{
+            if(std::isspace(c) ||
+                    (isWrd && !std::isalpha(c) && c != '_') ||
+                    (isNmb && !std::isdigit(c)) ||
+                    (isSym && std::isalnum(c))){
+                ungetc(c, file);
+                break;
+            }
+            if(isStr && c == '"'){
+                data += c;
+                break;
+            }
+        }
+        data += c;
+    }while(ftell(file) < entry.end);
+
+    return data;
+}
+
 bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
     pos += entry.start;
     if(pos < entry.end){
