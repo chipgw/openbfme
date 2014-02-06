@@ -8,7 +8,7 @@ int main(){
     BigFilesystem big;
     big.mount("test.big", true);
 
-    BigEntry* file = big.openFile("folder/inifile.ini");
+    const BigEntry* file = big.openFile("folder/inifile.ini");
 
     if(file != nullptr){
         for(int i = 0; !file->eof(); ++i){

@@ -56,7 +56,7 @@ bool BigFilesystem::unmount(BigArchive* archive){
     return false;
 }
 
-BigEntry* BigFilesystem::openFile(const std::string &filename, const std::string &relativeTo){
+const BigEntry* BigFilesystem::openFile(const std::string &filename, const std::string &relativeTo){
     std::string fullPath = filename;
     std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
@@ -81,7 +81,7 @@ BigEntry* BigFilesystem::openFile(const std::string &filename, const std::string
 
     Log::info("attempting to open file \"%s\", expanded to \"%s\"", filename.c_str(), fullPath.c_str());
     for(BigArchive &archive : archives){
-        BigEntry* entry = archive.openFile(fullPath);
+        const BigEntry* entry = archive.openFile(fullPath);
         if(entry != nullptr){
             return entry;
         }

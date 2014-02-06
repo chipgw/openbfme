@@ -76,7 +76,7 @@ bool BigArchive::readHeader(){
         std::string path = readString(file, headerEnd);
         std::replace(path.begin(), path.end(), '\\', '/');
 
-        entries.emplace(path, BigEntry(*this, start, end));
+        entries.emplace(BigEntry(*this, start, end, path));
 
         Log::info("File #%04d start: 0x%08x end: 0x%08x path: \"%s\"", f + 1, start, end, path.c_str());
     }
@@ -105,17 +105,19 @@ void BigArchive::close(){
     }
 }
 
-BigEntry* BigArchive::openFile(const std::string &filename){
-    if(entries.count(filename) && open()){
-        BigEntry &entry = entries.at(filename);
-        fseek(file, entry.start, SEEK_SET);
-        return &entry;
+const BigEntry* BigArchive::openFile(const std::string &filename){
+    if(open()){
+        auto entry = entries.find(BigEntry(*this, 0, 0, filename));
+        if(entry != entries.end()){
+            fseek(file, entry->start, SEEK_SET);
+            return &(*entry);
+        }
     }
 
     return nullptr;
 }
 
-std::string BigArchive::getLine(BigEntry &entry){
+std::string BigArchive::getLine(const BigEntry &entry){
     if(!open() || eof(entry)){
         return "";
     }
@@ -128,13 +130,13 @@ std::string BigArchive::getLine(BigEntry &entry){
     return str;
 }
 
-bool BigArchive::eof(BigEntry &entry){
+bool BigArchive::eof(const BigEntry &entry){
     uint32_t cpos = ftell(file);
     return cpos < entry.start || cpos >= entry.end;
 }
 
 bool BigArchive::extract(const std::string &filename, const std::string &directory, bool fullPath){
-    BigEntry* entry = openFile(filename);
+    const BigEntry* entry = openFile(filename);
 
     if(entry == nullptr){
         return false;
@@ -173,7 +175,7 @@ bool BigArchive::extract(const std::string &filename, const std::string &directo
 bool BigArchive::extractAll(const std::string &directory){
     mkPath(directory);
     for(auto &entry : entries){
-        if(!extract(entry.first, directory, true)){
+        if(!extract(entry.filename, directory, true)){
             return false;
         }
     }
