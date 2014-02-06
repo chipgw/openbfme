@@ -109,6 +109,7 @@ const BigEntry* BigArchive::openFile(const std::string &filename){
     if(open()){
         auto entry = entries.find(BigEntry(*this, 0, 0, filename));
         if(entry != entries.end()){
+            entry->line = 0;
             fseek(file, entry->start, SEEK_SET);
             return &(*entry);
         }
@@ -126,6 +127,8 @@ std::string BigArchive::getLine(const BigEntry &entry){
     if(str.back() == '\r'){
         str.pop_back();
     }
+
+    entry.line++;
 
     return str;
 }

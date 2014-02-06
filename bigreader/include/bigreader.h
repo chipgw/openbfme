@@ -42,6 +42,7 @@ public:
 
 class BigEntry{
 public:
+    mutable uint32_t line;
     const std::string filename;
     const uint32_t start, end;
     BigArchive &archive;
