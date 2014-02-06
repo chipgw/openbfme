@@ -18,7 +18,7 @@ int main(){
         Log::warning("unable to open file!");
     }
 
-    file = big.openFile("..\\NewFile.ini", "folder\\inifile.ini");
+    file = big.openFile("..\\NewFile.inc", "folder\\inifile.ini");
 
     if(file != nullptr){
         for(int i = 0; !file->eof(); ++i){
