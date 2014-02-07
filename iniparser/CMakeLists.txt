@@ -14,6 +14,10 @@ file(GLOB SOURCES "*.cpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} log bigreader)
+endif()
+
 if(INIPARSER_TEST)
     add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} log bigreader)
