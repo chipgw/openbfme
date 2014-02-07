@@ -1,6 +1,10 @@
 project (openbfme)
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for libraries")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for executables.")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for static libraries.")
+
 option(BUILD_CLIENT "Build the client binary." OFF)
 option(BUILD_SERVER "Build the server binary." OFF)
 
