@@ -176,10 +176,10 @@ std::string BigArchive::getWord(const BigEntry &entry){
                 isSym = true;
             }
         }else{
-            if(std::isspace(c) ||
-                    (isWrd && !std::isalpha(c) && c != '_') ||
+            if(!isStr && (std::isspace(c) ||
+                    (isWrd && !std::isalnum(c) && c != '_') ||
                     (isNmb && !std::isdigit(c)) ||
-                    (isSym && std::isalnum(c))){
+                    (isSym && std::isalnum(c)))){
                 ungetc(c, file);
                 break;
             }
