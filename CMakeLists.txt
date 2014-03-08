@@ -15,6 +15,10 @@ include_directories("./bigreader/include")
 include_directories("./iniparser/include")
 include_directories("./log/include")
 
+# files not needed in build, but included so they show up in IDE.
+file(GLOB_RECURSE HEADERS "*.h")
+add_custom_target(Headers SOURCES ${HEADERS})
+
 add_subdirectory(log)
 add_subdirectory(bigreader)
 add_subdirectory(iniparser)
