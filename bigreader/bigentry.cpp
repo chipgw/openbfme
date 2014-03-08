@@ -4,6 +4,6 @@
 
 namespace OpenBFME {
 
-BigEntry::BigEntry(BigArchive &arch, uint32_t start, uint32_t end, std::string file) : archive(arch), start(start), end(end), filename(file) {}
+BigEntry::BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file) : archive(arch), start(start), end(end), filename(file) {}
 
 }

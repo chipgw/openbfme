@@ -4,7 +4,7 @@
 
 namespace OpenBFME {
 
-BigArchive *BigFilesystem::mount(const std::string &filename, bool append){
+BigArchive *BigFilesystem::mount(const string &filename, bool append){
     Log::info("Attempting to mount \"%s\" in %s mode", filename.c_str(), append ? "append" : "prepend");
 
     if(append){
@@ -32,7 +32,7 @@ BigArchive *BigFilesystem::mount(const std::string &filename, bool append){
     return nullptr;
 }
 
-bool BigFilesystem::unmount(const std::string &filename){
+bool BigFilesystem::unmount(const string &filename){
     Log::info("Unmounting \"%s\"", filename.c_str());
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
@@ -56,22 +56,22 @@ bool BigFilesystem::unmount(BigArchive* archive){
     return false;
 }
 
-const BigEntry* BigFilesystem::openFile(const std::string &filename, const std::string &relativeTo){
-    std::string fullPath = filename;
+const BigEntry* BigFilesystem::openFile(const string &filename, const string &relativeTo){
+    string fullPath = filename;
     std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
-    if(!relativeTo.empty() && fullPath.find("../") != std::string::npos){
+    if(!relativeTo.empty() && fullPath.find("../") != string::npos){
         fullPath.insert(0, relativeTo.substr(0, relativeTo.find_last_of("\\/")) + '/');
         std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
-        for(std::string::size_type p, folder; (p = fullPath.find("../")) != std::string::npos;){
+        for(string::size_type p, folder; (p = fullPath.find("../")) != string::npos;){
             if(p == 0){
                 folder = 0;
             }else{
                 folder = fullPath.find_last_of('/', p - 2);
             }
 
-            if(folder == std::string::npos){
+            if(folder == string::npos){
                 folder = 0;
             }
 

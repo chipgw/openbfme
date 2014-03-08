@@ -11,9 +11,10 @@ option(BUILD_SERVER "Build the server binary." OFF)
 # TODO - make this use the new detect cxx features thing when it's released.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-include_directories("./bigreader/include")
-include_directories("./iniparser/include")
-include_directories("./log/include")
+include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
+include_directories("${CMAKE_SOURCE_DIR}/bigreader/include")
+include_directories("${CMAKE_SOURCE_DIR}/iniparser/include")
+include_directories("${CMAKE_SOURCE_DIR}/log/include")
 
 # files not needed in build, but included so they show up in IDE.
 file(GLOB_RECURSE HEADERS "*.h")

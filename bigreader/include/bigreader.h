@@ -1,9 +1,9 @@
 #ifndef OPENBFME_BIGREADER_H
 #define OPENBFME_BIGREADER_H
 
+#include "types.h"
 #include <set>
 #include <deque>
-#include <string>
 #include <cstdio>
 #include <cstdint>
 
@@ -16,41 +16,41 @@ class BigFilesystem;
 class BigArchive{
     std::set<BigEntry> entries;
     FILE* file;
-    std::string archiveFilename;
+    string archiveFilename;
 
 public:
-    BigArchive(const std::string &filename);
+    BigArchive(const string &filename);
     ~BigArchive();
 
     bool readHeader();
     bool open();
     void close();
 
-    const BigEntry* openFile(const std::string &filename);
+    const BigEntry* openFile(const string &filename);
 
-    std::string getLine(const BigEntry &entry);
-    std::string getWord(const BigEntry &entry);
+    string getLine(const BigEntry &entry);
+    string getWord(const BigEntry &entry);
     bool seek(const BigEntry &entry, uint32_t pos);
     uint32_t tell(const BigEntry &entry);
     bool eof(const BigEntry &entry);
 
-    bool extract(const std::string &filename, const std::string &directory, bool fullPath);
-    bool extractAll(const std::string &directory);
+    bool extract(const string &filename, const string &directory, bool fullPath);
+    bool extractAll(const string &directory);
 
-    inline const std::string &getArchiveFilename() { return archiveFilename; }
+    inline const string &getArchiveFilename() { return archiveFilename; }
 };
 
 
 class BigEntry{
 public:
     mutable uint32_t line;
-    const std::string filename;
+    const string filename;
     const uint32_t start, end;
     BigArchive &archive;
-    BigEntry(BigArchive &arch, uint32_t start, uint32_t end, std::string file);
+    BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file);
 
-    inline std::string getLine() const { return archive.getLine(*this); }
-    inline std::string getWord() const { return archive.getWord(*this); }
+    inline string getLine() const { return archive.getLine(*this); }
+    inline string getWord() const { return archive.getWord(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
     inline bool eof() const { return archive.eof(*this); }
@@ -62,11 +62,11 @@ class BigFilesystem{
     std::deque<BigArchive> archives;
 
 public:
-    BigArchive* mount(const std::string &filename, bool append);
-    bool unmount(const std::string &filename);
+    BigArchive* mount(const string &filename, bool append);
+    bool unmount(const string &filename);
     bool unmount(BigArchive* archive);
 
-    const BigEntry *openFile(const std::string &filename, const std::string &relativeTo = "");
+    const BigEntry *openFile(const string &filename, const string &relativeTo = "");
 };
 
 }

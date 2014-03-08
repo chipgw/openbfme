@@ -9,7 +9,7 @@ namespace OpenBFME{
 
 class IniParser{
     BigFilesystem &filesystem;
-    std::map<std::string, std::string> macros;
+    std::map<string, string> macros;
 
 public:
     IniParser(BigFilesystem &filesys);

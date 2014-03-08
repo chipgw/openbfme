@@ -1,7 +1,6 @@
 #include "iniparser.h"
 #include "log.h"
 #include <algorithm>
-#include <functional>
 #include <locale>
 
 namespace OpenBFME {
@@ -10,7 +9,7 @@ IniParser::IniParser(BigFilesystem &filesys) : filesystem(filesys) {}
 
 void IniParser::parse(const BigEntry &file, std::function<void (std::string, std::string)> set){
     while(!file.eof()){
-        std::string word = file.getWord();
+        string word = file.getWord();
 
         if((word.size() > 1 && word[0] == '/' && word[1] == '/') || word[0] == ';'){
             file.getLine();
@@ -51,8 +50,6 @@ void IniParser::parse(const BigEntry &file, std::function<void (std::string, std
                     Log::error("%s:%d: expected newline after #include!", file.filename.c_str(), file.line);
                 }
             }else if(word == "define"){
-                // TODO - store defined value.
-
                 auto macroName = file.getWord();
 
                 if(macroName == "\n"){

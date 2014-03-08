@@ -13,8 +13,8 @@ uint32_t readUInt32(FILE* file){
     return val[0] << 24 | val[1] << 16 | val[2] << 8 | val[3];
 }
 
-std::string readString(FILE* file, uint32_t limit, char terminator = '\0'){
-    std::string data;
+string readString(FILE* file, uint32_t limit, char terminator = '\0'){
+    string data;
     char c;
     do{
         c = fgetc(file);
@@ -26,7 +26,7 @@ std::string readString(FILE* file, uint32_t limit, char terminator = '\0'){
     return data;
 }
 
-bool mkPath(std::string dir){
+bool mkPath(string dir){
     for(char &p : dir){
         if(p == '/' || p == '\\'){
             p = '\0';
@@ -42,7 +42,7 @@ bool mkPath(std::string dir){
     return true;
 }
 
-BigArchive::BigArchive(const std::string &filename) : archiveFilename(filename), file(nullptr) {
+BigArchive::BigArchive(const string &filename) : archiveFilename(filename), file(nullptr) {
     std::replace(archiveFilename.begin(), archiveFilename.end(), '\\', '/');
 }
 
@@ -73,7 +73,7 @@ bool BigArchive::readHeader(){
     for(uint32_t f = 0; f < fileCount; ++f){
         uint32_t start = readUInt32(file);
         uint32_t end   = start + readUInt32(file);
-        std::string path = readString(file, headerEnd);
+        string path = readString(file, headerEnd);
         std::replace(path.begin(), path.end(), '\\', '/');
 
         entries.emplace(*this, start, end, path);
@@ -105,7 +105,7 @@ void BigArchive::close(){
     }
 }
 
-const BigEntry* BigArchive::openFile(const std::string &filename){
+const BigEntry* BigArchive::openFile(const string &filename){
     if(open()){
         auto entry = entries.find(BigEntry(*this, 0, 0, filename));
         if(entry != entries.end()){
@@ -118,11 +118,11 @@ const BigEntry* BigArchive::openFile(const std::string &filename){
     return nullptr;
 }
 
-std::string BigArchive::getLine(const BigEntry &entry){
+string BigArchive::getLine(const BigEntry &entry){
     if(!open() || eof(entry)){
         return "";
     }
-    std::string str = readString(file, entry.end, '\n');
+    string str = readString(file, entry.end, '\n');
 
     if(str.back() == '\r'){
         str.pop_back();
@@ -133,7 +133,7 @@ std::string BigArchive::getLine(const BigEntry &entry){
     return str;
 }
 
-std::string BigArchive::getWord(const BigEntry &entry){
+string BigArchive::getWord(const BigEntry &entry){
     if(!open() || eof(entry)){
         return "";
     }
@@ -143,7 +143,7 @@ std::string BigArchive::getWord(const BigEntry &entry){
     bool isNmb = false;
     bool isSym = false;
 
-    std::string data;
+    string data;
     char c;
     do{
         c = fgetc(file);
@@ -219,14 +219,14 @@ bool BigArchive::eof(const BigEntry &entry){
     return cpos < entry.start || cpos >= entry.end;
 }
 
-bool BigArchive::extract(const std::string &filename, const std::string &directory, bool fullPath){
+bool BigArchive::extract(const string &filename, const string &directory, bool fullPath){
     const BigEntry* entry = openFile(filename);
 
     if(entry == nullptr){
         return false;
     }
 
-    std::string outfilename = filename;
+    string outfilename = filename;
 
     if(!fullPath){
         outfilename.erase(0, outfilename.find_last_of('/') + 1);
@@ -256,7 +256,7 @@ bool BigArchive::extract(const std::string &filename, const std::string &directo
     return true;
 }
 
-bool BigArchive::extractAll(const std::string &directory){
+bool BigArchive::extractAll(const string &directory){
     mkPath(directory);
     for(auto &entry : entries){
         if(!extract(entry.filename, directory, true)){
