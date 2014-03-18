@@ -7,7 +7,9 @@ namespace OpenBFME {
 
 typedef int integer;
 typedef float decimal;
-typedef std::string string;
+typedef char character;
+typedef const character* cstring;
+typedef std::basic_string<character> string;
 
 }
 
