@@ -37,11 +37,11 @@ public:
     }
 
     template<typename ...Args> inline static void warning(const string &fmt, Args... args){
-        print(format(fmt, args...), LogOutputLevel::Info);
+        print(format(fmt, args...), LogOutputLevel::Warning);
     }
 
     template<typename ...Args> inline static void error(const string &fmt, Args... args){
-        print(format(fmt, args...), LogOutputLevel::Info);
+        print(format(fmt, args...), LogOutputLevel::Error);
     }
 };
 
