@@ -1,5 +1,5 @@
-#ifndef OPENBFME_TYPES_H
-#define OPENBFME_TYPES_H
+#ifndef OPENBFME_TYPES_HPP
+#define OPENBFME_TYPES_HPP
 
 #include <string>
 
@@ -13,4 +13,4 @@ typedef std::basic_string<character> string;
 
 }
 
-#endif //OPENBFME_TYPES_H
+#endif //OPENBFME_TYPES_HPP

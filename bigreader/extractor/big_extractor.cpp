@@ -1,5 +1,5 @@
-#include "log.h"
-#include "bigreader.h"
+#include "log.hpp"
+#include "bigreader.hpp"
 #include <vector>
 
 using namespace OpenBFME;

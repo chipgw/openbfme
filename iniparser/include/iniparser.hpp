@@ -1,7 +1,7 @@
-#ifndef OPENBFME_INIPARSER_H
-#define OPENBFME_INIPARSER_H
+#ifndef OPENBFME_INIPARSER_HPP
+#define OPENBFME_INIPARSER_HPP
 
-#include "bigreader.h"
+#include "bigreader.hpp"
 #include <functional>
 #include <map>
 
@@ -19,4 +19,4 @@ public:
 
 }
 
-#endif //OPENBFME_INIPARSER_H
+#endif //OPENBFME_INIPARSER_HPP

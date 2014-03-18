@@ -1,7 +1,7 @@
-#ifndef OPENBFME_BIGREADER_H
-#define OPENBFME_BIGREADER_H
+#ifndef OPENBFME_BIGREADER_HPP
+#define OPENBFME_BIGREADER_HPP
 
-#include "types.h"
+#include "types.hpp"
 #include <set>
 #include <deque>
 #include <cstdio>
@@ -71,4 +71,4 @@ public:
 
 }
 
-#endif //OPENBFME_BIGREADER_H
+#endif //OPENBFME_BIGREADER_HPP

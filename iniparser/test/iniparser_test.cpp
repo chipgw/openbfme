@@ -1,5 +1,5 @@
-#include "iniparser.h"
-#include "log.h"
+#include "iniparser.hpp"
+#include "log.hpp"
 
 using namespace OpenBFME;
 

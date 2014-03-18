@@ -1,5 +1,5 @@
-#ifndef OPENBFME_LOG_H
-#define OPENBFME_LOG_H
+#ifndef OPENBFME_LOG_HPP
+#define OPENBFME_LOG_HPP
 
 #include <cstdint>
 #include <cstdio>
@@ -39,4 +39,4 @@ public:
 
 }
 
-#endif // OPENBFME_LOG_H
+#endif // OPENBFME_LOG_HPP

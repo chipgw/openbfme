@@ -17,7 +17,7 @@ include_directories("${CMAKE_SOURCE_DIR}/iniparser/include")
 include_directories("${CMAKE_SOURCE_DIR}/log/include")
 
 # files not needed in build, but included so they show up in IDE.
-file(GLOB_RECURSE HEADERS "*.h")
+file(GLOB_RECURSE HEADERS "*.hpp")
 add_custom_target(Headers SOURCES ${HEADERS})
 
 add_subdirectory(log)
