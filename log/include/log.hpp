@@ -1,8 +1,8 @@
 #ifndef OPENBFME_LOG_HPP
 #define OPENBFME_LOG_HPP
 
-#include <cstdint>
-#include <cstdio>
+#include "types.hpp"
+#include "string.hpp"
 #include <list>
 
 namespace OpenBFME {
@@ -27,14 +27,22 @@ constexpr inline bool operator &(LogOutputLevel a, LogOutputLevel b){
 class Log{
     static std::list<LogOutput> outputs;
 
-    static void print(const char* format, LogOutputLevel level, va_list args);
+    static void print(const string& output, LogOutputLevel level);
 
 public:
     static void init(const char* filename);
 
-    static void info(const char* format,...);
-    static void warning(const char* format,...);
-    static void error(const char* format,...);
+    template<typename ...Args> inline static void info(const string &fmt, Args... args){
+        print(format(fmt, args...), LogOutputLevel::Info);
+    }
+
+    template<typename ...Args> inline static void warning(const string &fmt, Args... args){
+        print(format(fmt, args...), LogOutputLevel::Info);
+    }
+
+    template<typename ...Args> inline static void error(const string &fmt, Args... args){
+        print(format(fmt, args...), LogOutputLevel::Info);
+    }
 };
 
 }
