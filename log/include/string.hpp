@@ -28,6 +28,8 @@ struct Printable{
 
 string to_base(unsigned int value, unsigned int base, char start = 'a');
 
+inline string format(const string& fmt){ return fmt; }
+
 string format(const string& fmt, std::vector<Printable> args);
 
 /*!
