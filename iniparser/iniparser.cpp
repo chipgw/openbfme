@@ -7,7 +7,7 @@ namespace OpenBFME {
 
 IniParser::IniParser(BigFilesystem &filesys) : filesystem(filesys) {}
 
-void IniParser::parse(const BigEntry &file, std::function<void (std::string, std::string)> set){
+void IniParser::parse(const BigEntry &file, IniType type){
     while(!file.eof()){
         string word = file.getWord();
 
@@ -38,7 +38,7 @@ void IniParser::parse(const BigEntry &file, std::function<void (std::string, std
                 const BigEntry* includeFile = filesystem.openFile(word, file.filename);
 
                 if(includeFile != nullptr){
-                    parse(*includeFile, set);
+                    parse(*includeFile, type);
                 }else{
                     Log::error("Unable to open included file \"%s\"", word.c_str());
                 }
@@ -66,9 +66,38 @@ void IniParser::parse(const BigEntry &file, std::function<void (std::string, std
                     macros.emplace(macroName, macroValue);
                 }
             }
+        }else if(type.breaks && word == type.breakWord){
+            break;
+        }else if(type.subTypes.count(word)){
+            IniType::StringArgs args;
+
+            string arg;
+            while(arg != "\n"){
+                if(!arg.empty()){
+                    args.push_back(arg);
+                }
+                arg = file.getWord();
+            }
+
+            IniType::Creator creator = type.subTypes[word];
+            if(creator){
+                IniType subtype = creator(args);
+                parse(file, subtype);
+            }
         }else{
-            set(word.c_str(), "");
-            Log::info("%s:%d: %s", file.filename.c_str(), file.line, word.c_str());
+            if(type.setRawVariable){
+                IniType::StringArgs args;
+
+                string arg;
+                while(arg != "\n"){
+                    if(!arg.empty()){
+                        args.push_back(arg);
+                    }
+                    arg = file.getWord();
+                }
+
+                type.setRawVariable(word, args);
+            }
         }
     }
 }
