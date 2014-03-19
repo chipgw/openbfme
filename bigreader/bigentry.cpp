@@ -1,6 +1,4 @@
 #include "bigreader.hpp"
-#include "log.hpp"
-#include <cstdio>
 
 namespace OpenBFME {
 

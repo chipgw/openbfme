@@ -42,7 +42,7 @@ bool mkPath(string dir){
     return true;
 }
 
-BigArchive::BigArchive(const string &filename) : archiveFilename(filename), file(nullptr) {
+BigArchive::BigArchive(const string &filename, BigFilesystem &fs) : archiveFilename(filename), file(nullptr), filesystem(fs) {
     std::replace(archiveFilename.begin(), archiveFilename.end(), '\\', '/');
 }
 

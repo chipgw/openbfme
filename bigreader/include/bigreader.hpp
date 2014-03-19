@@ -3,9 +3,7 @@
 
 #include "types.hpp"
 #include <set>
-#include <deque>
 #include <cstdio>
-#include <cstdint>
 
 namespace OpenBFME {
 
@@ -17,9 +15,10 @@ class BigArchive{
     std::set<BigEntry> entries;
     FILE* file;
     string archiveFilename;
+    BigFilesystem &filesystem;
 
 public:
-    BigArchive(const string &filename);
+    BigArchive(const string &filename, BigFilesystem &fs);
     ~BigArchive();
 
     bool readHeader();
@@ -59,7 +58,7 @@ public:
 inline bool operator <(const BigEntry& e1,const BigEntry& e2){ return e1.filename < e2.filename;}
 
 class BigFilesystem{
-    std::deque<BigArchive> archives;
+    std::list<BigArchive> archives;
 
 public:
     BigArchive* mount(const string &filename, bool append);
