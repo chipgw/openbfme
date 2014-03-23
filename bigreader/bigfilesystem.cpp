@@ -8,7 +8,7 @@ BigArchive *BigFilesystem::mount(const string &filename, bool append){
     Log::info("Attempting to mount \"%s\" in %s mode", filename.c_str(), append ? "append" : "prepend");
 
     if(append){
-        archives.emplace_front(filename);
+        archives.emplace_front(filename, *this);
 
         BigArchive &newArchive = archives.front();
 
@@ -18,7 +18,7 @@ BigArchive *BigFilesystem::mount(const string &filename, bool append){
 
         archives.pop_front();
     }else{
-        archives.emplace_back(filename);
+        archives.emplace_back(filename, *this);
 
         BigArchive &newArchive = archives.back();
 
