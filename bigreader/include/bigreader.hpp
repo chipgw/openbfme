@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include <set>
 #include <cstdio>
+#include <list>
 
 namespace OpenBFME {
 
