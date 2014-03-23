@@ -2,6 +2,7 @@
 #include "log.hpp"
 #include <algorithm>
 #include <cstdio>
+#include <cctype>
 #include <sys/stat.h>
 
 namespace OpenBFME {

@@ -1,5 +1,6 @@
 #include "string.hpp"
 #include <algorithm>
+#include <cctype>
 
 namespace OpenBFME {
 

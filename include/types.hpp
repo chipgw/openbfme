@@ -2,6 +2,7 @@
 #define OPENBFME_TYPES_HPP
 
 #include <string>
+#include <cstdint>
 
 namespace OpenBFME {
 
