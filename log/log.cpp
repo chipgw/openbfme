@@ -5,7 +5,7 @@ using namespace std;
 
 namespace OpenBFME {
 
-class LogOutput{
+class Log::LogOutput{
 public:
     LogOutputLevel level;
     FILE* output;
@@ -15,7 +15,7 @@ public:
 
 void Log::init(const char *filename){
     if(outputs.size() < 1){
-        outputs.push_back(LogOutput(LogOutputLevel::Info | LogOutputLevel::Warning, stdout));
+        outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning), stdout));
         outputs.push_back(LogOutput(LogOutputLevel::Error, stderr));
 
         FILE* file = fopen(filename, "w");
@@ -59,6 +59,6 @@ void Log::print(const string& str, LogOutputLevel level){
     }
 }
 
-list<LogOutput> Log::outputs = list<LogOutput>();
+list<Log::LogOutput> Log::outputs = list<Log::LogOutput>();
 
 }
