@@ -1,6 +1,7 @@
 #ifndef OPENBFME_TYPES_HPP
 #define OPENBFME_TYPES_HPP
 
+#include "build_platform.hpp"
 #include <string>
 #include <cstdint>
 

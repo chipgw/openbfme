@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include <set>
 #include <cstdio>
+#include <cstdint>
 #include <list>
 
 namespace OpenBFME {
@@ -19,25 +20,25 @@ class BigArchive{
     BigFilesystem &filesystem;
 
 public:
-    BigArchive(const string &filename, BigFilesystem &fs);
-    ~BigArchive();
+    EXPORT BigArchive(const string &filename, BigFilesystem &fs);
+    EXPORT ~BigArchive();
 
-    bool readHeader();
-    bool open();
-    void close();
+    EXPORT bool readHeader();
+    EXPORT bool open();
+    EXPORT void close();
 
-    const BigEntry* openFile(const string &filename);
+    EXPORT const BigEntry* openFile(const string &filename);
 
-    string getLine(const BigEntry &entry);
-    string getWord(const BigEntry &entry);
-    bool seek(const BigEntry &entry, uint32_t pos);
-    uint32_t tell(const BigEntry &entry);
-    bool eof(const BigEntry &entry);
+    EXPORT string getLine(const BigEntry &entry);
+    EXPORT string getWord(const BigEntry &entry);
+    EXPORT bool seek(const BigEntry &entry, uint32_t pos);
+    EXPORT uint32_t tell(const BigEntry &entry);
+    EXPORT bool eof(const BigEntry &entry);
 
-    bool extract(const string &filename, const string &directory, bool fullPath);
-    bool extractAll(const string &directory);
+    EXPORT bool extract(const string &filename, const string &directory, bool fullPath);
+    EXPORT bool extractAll(const string &directory);
 
-    inline const string &getArchiveFilename() { return archiveFilename; }
+    EXPORT inline const string &getArchiveFilename() { return archiveFilename; }
 };
 
 
@@ -62,11 +63,11 @@ class BigFilesystem{
     std::list<BigArchive> archives;
 
 public:
-    BigArchive* mount(const string &filename, bool append);
-    bool unmount(const string &filename);
-    bool unmount(BigArchive* archive);
+    EXPORT BigArchive* mount(const string &filename, bool append);
+    EXPORT bool unmount(const string &filename);
+    EXPORT bool unmount(BigArchive* archive);
 
-    const BigEntry *openFile(const string &filename, const string &relativeTo = "");
+    EXPORT const BigEntry *openFile(const string &filename, const string &relativeTo = "");
 };
 
 }

@@ -19,10 +19,10 @@ class Log{
 
     static std::list<LogOutput> outputs;
 
-    static void print(const string& output, LogOutputLevel level);
+    EXPORT static void print(const string& output, LogOutputLevel level);
 
 public:
-    static void init(const char* filename);
+    EXPORT static void init(const char* filename);
 
     template<typename ...Args> inline static void info(const string &fmt, Args... args){
         print(format(fmt, args...), LogOutputLevel::Info);

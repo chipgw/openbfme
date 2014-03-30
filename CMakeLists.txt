@@ -8,8 +8,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directo
 option(BUILD_CLIENT "Build the client binary." OFF)
 option(BUILD_SERVER "Build the server binary." OFF)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
 # TODO - make this use the new detect cxx features thing when it's released.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
 include_directories("${CMAKE_SOURCE_DIR}/bigreader/include")

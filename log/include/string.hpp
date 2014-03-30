@@ -26,11 +26,11 @@ struct Printable{
     inline Printable(cstring s) : type(String), str(s) {}
 };
 
-string to_base(unsigned int value, unsigned int base, char start = 'a');
+EXPORT string to_base(unsigned int value, unsigned int base, char start = 'a');
 
 inline string format(const string& fmt){ return fmt; }
 
-string format(const string& fmt, std::vector<Printable> args);
+EXPORT string format(const string& fmt, std::vector<Printable> args);
 
 /*!
  * \brief Formats the string with a subset of printf syntax.

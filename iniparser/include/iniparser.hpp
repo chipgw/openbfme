@@ -42,9 +42,9 @@ class IniParser{
     std::map<string, string> macros;
 
 public:
-    IniParser(BigFilesystem &filesys);
+    EXPORT IniParser(BigFilesystem &filesys);
 
-    void parse(const BigEntry &file, IniType type);
+    EXPORT void parse(const BigEntry &file, IniType type);
 };
 
 }
