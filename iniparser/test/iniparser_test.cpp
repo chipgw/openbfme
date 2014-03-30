@@ -17,7 +17,7 @@ int main(){
         Log::info("root set variable %s", name.c_str());
     };
 
-    root.subTypes["Object"] = [](const IniType::StringArgs &args){
+    root.subTypes["Object"] = [] (const IniType::StringArgs &args){
         IniType type;
         std::shared_ptr<string> typeName(new string("Object"));
 

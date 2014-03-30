@@ -1,4 +1,4 @@
-project (openbfme)
+project(openbfme)
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for libraries")

@@ -42,7 +42,7 @@ void Log::print(const string& str, LogOutputLevel level){
         break;
     }
 
-    std::chrono::high_resolution_clock::time_point current = std::chrono::high_resolution_clock::now();
+    chrono::high_resolution_clock::time_point current = chrono::high_resolution_clock::now();
 
     time_t tnow = chrono::high_resolution_clock::to_time_t(current);
     tm *date = localtime(&tnow);

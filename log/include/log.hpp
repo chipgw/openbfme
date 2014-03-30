@@ -24,16 +24,25 @@ class Log{
 public:
     EXPORT static void init(const char* filename);
 
-    template<typename ...Args> inline static void info(const string &fmt, Args... args){
-        print(format(fmt, args...), LogOutputLevel::Info);
+    inline static void info(const string &output){
+        print(output, LogOutputLevel::Info);
+    }
+    template<typename First, typename ...Args> inline static void info(const string &fmt, First first, Args... args){
+        print(format(fmt, first, args...), LogOutputLevel::Info);
     }
 
-    template<typename ...Args> inline static void warning(const string &fmt, Args... args){
-        print(format(fmt, args...), LogOutputLevel::Warning);
+    inline static void warning(const string &output){
+        print(output, LogOutputLevel::Warning);
+    }
+    template<typename First, typename ...Args> inline static void warning(const string &fmt, First first, Args... args){
+        print(format(fmt, first, args...), LogOutputLevel::Warning);
     }
 
-    template<typename ...Args> inline static void error(const string &fmt, Args... args){
-        print(format(fmt, args...), LogOutputLevel::Error);
+    inline static void error(const string &output){
+        print(output, LogOutputLevel::Error);
+    }
+    template<typename First, typename ...Args> inline static void error(const string &fmt, First first, Args... args){
+        print(format(fmt, first, args...), LogOutputLevel::Error);
     }
 };
 
