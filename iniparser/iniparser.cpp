@@ -7,7 +7,7 @@ namespace OpenBFME {
 
 IniParser::IniParser(BigFilesystem &filesys) : filesystem(filesys) {}
 
-void IniParser::parse(const BigEntry &file, IniType type){
+void IniParser::parse(const BigEntry &file, IniObject object){
     while(!file.eof()){
         string word = file.getWord();
 
@@ -38,7 +38,7 @@ void IniParser::parse(const BigEntry &file, IniType type){
                 const BigEntry* includeFile = filesystem.openFile(word, file.filename);
 
                 if(includeFile != nullptr){
-                    parse(*includeFile, type);
+                    parse(*includeFile, object);
                 }else{
                     Log::error("Unable to open included file \"%s\"", word.c_str());
                 }
@@ -66,37 +66,36 @@ void IniParser::parse(const BigEntry &file, IniType type){
                     macros.emplace(macroName, macroValue);
                 }
             }
-        }else if(type.breaks && word == type.breakWord){
+        }else if(object.type.breaks && word == object.type.breakWord){
             break;
-        }else if(type.subTypes.count(word)){
-            IniType::StringArgs args;
+        }else if(object.type.subTypes.count(word)){
+            object.subObjects.emplace(word, object.type.subTypes.at(word));
 
             string arg;
             while(arg != "\n"){
                 if(!arg.empty()){
-                    args.push_back(arg);
+                    object.subObjects.at(word).args.push_back(arg);
                 }
                 arg = file.getWord();
             }
 
-            IniType::Creator creator = type.subTypes[word];
-            if(creator){
-                IniType subtype = creator(args);
-                parse(file, subtype);
-            }
-        }else{
-            if(type.setRawVariable){
-                IniType::StringArgs args;
+            Log::info("Created object of type: \"%s\"", word);
 
-                string arg;
-                while(arg != "\n"){
-                    if(!arg.empty()){
-                        args.push_back(arg);
-                    }
-                    arg = file.getWord();
-                }
+            parse(file, object.subObjects.at(word));
+        }else if(object.type.variableTypes.count(word)){
+            object.variables[word].type = object.type.variableTypes.at(word);
 
-                type.setRawVariable(word, args);
+            /* TODO - Implement. */
+            switch(object.variables[word].type){
+            case IniVariable::Integer:
+                Log::info("added variable: \"%s\" of type: \"Integer\"", word);
+                break;
+            case IniVariable::Decimal:
+                Log::info("added variable: \"%s\" of type: \"Decimal\"", word);
+                break;
+            case IniVariable::String:
+                Log::info("added variable: \"%s\" of type: \"String\"", word);
+                break;
             }
         }
     }

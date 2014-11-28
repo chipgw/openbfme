@@ -2,39 +2,45 @@
 #define OPENBFME_INIPARSER_HPP
 
 #include "bigreader.hpp"
-#include <functional>
+#include <memory>
 #include <map>
 #include <vector>
 
 namespace OpenBFME{
 
-struct IniType{
+
+struct IniVariable{
     enum VariableType{
         Integer,/* for integer numbers and bitflags */
         Decimal,/* for decimal numbers */
-        String, /* for a single string value */
-        Raw     /* call setRawVariable with the raw StringArgs */
+        String  /* for a single string value */
     };
 
-    struct Variable{
-        VariableType type;
-        void* variable = nullptr;
+    VariableType type;
+
+    union{
+        integer i;
+        decimal d;
     };
+    string s;
+};
 
-    /* NOTE: You must be very careful about capturing variables in lambda functions.
-     * These functions are called from a completely different scope so the variables may not still be around!
-     * For safety's sake don't do auto capture. */
-    typedef std::vector<string> StringArgs;
-    typedef std::function<void(const string&, const StringArgs&)> RawVariableSetter;
-    typedef std::function<IniType(const StringArgs&)> Creator;
-
-    RawVariableSetter setRawVariable;
+struct IniType{
+    std::map<string, IniVariable::VariableType> variableTypes;
+    std::map<string, IniType> subTypes;
 
     bool breaks = true;
     string breakWord = "End";
+};
 
-    std::map<string, Creator> subTypes;
-    std::map<string, Variable> variables;
+struct IniObject{
+    const IniType &type;
+    std::vector<string> args;
+
+    std::map<string, IniObject> subObjects;
+    std::map<string, IniVariable> variables;
+
+    IniObject(const IniType &baseType) : type(baseType) { }
 };
 
 class IniParser{
@@ -44,7 +50,7 @@ class IniParser{
 public:
     EXPORT IniParser(BigFilesystem &filesys);
 
-    EXPORT void parse(const BigEntry &file, IniType type);
+    EXPORT void parse(const BigEntry &file, IniObject object);
 };
 
 }
