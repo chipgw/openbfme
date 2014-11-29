@@ -23,6 +23,10 @@ include_directories("${CMAKE_SOURCE_DIR}/log/include")
 file(GLOB_RECURSE HEADERS "*.hpp")
 add_custom_target(Headers SOURCES ${HEADERS})
 
+# I hope to use the upcoming standard filesystem library when it comes out, but until then use boost filesystem.
+find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
+
 add_subdirectory(log)
 add_subdirectory(bigreader)
 add_subdirectory(iniparser)

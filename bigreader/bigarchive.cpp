@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <cstdio>
 #include <cctype>
-#include <sys/stat.h>
+#include <boost/filesystem.hpp>
+
+namespace bfs = boost::filesystem;
 
 namespace OpenBFME {
 
@@ -25,22 +27,6 @@ string readString(FILE* file, uint32_t limit, char terminator = '\0'){
         data += c;
     }while(ftell(file) < limit);
     return data;
-}
-
-bool mkPath(string dir){
-    for(char &p : dir){
-        if(p == '/' || p == '\\'){
-            p = '\0';
-#ifdef _WIN32
-            mkdir(dir.c_str());
-#else
-            mkdir(dir.c_str(), 0777);
-#endif
-            p = '/';
-        }
-    }
-    // TODO - error handling/reporting.
-    return true;
 }
 
 BigArchive::BigArchive(const string &filename, BigFilesystem &fs) : archiveFilename(filename), file(nullptr), filesystem(fs) {
@@ -233,7 +219,7 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
         outfilename.erase(0, outfilename.find_last_of('/') + 1);
     }
     outfilename.insert(0, directory);
-    mkPath(outfilename);
+    bfs::create_directories(outfilename.substr(0, outfilename.find_last_of('/')));
 
     Log::info("Extracting to \"%s\"...", outfilename.c_str());
 
@@ -258,7 +244,7 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
 }
 
 bool BigArchive::extractAll(const string &directory){
-    mkPath(directory);
+    bfs::create_directories(directory);
     for(auto &entry : entries){
         if(!extract(entry.filename, directory, true)){
             return false;
