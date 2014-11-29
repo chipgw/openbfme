@@ -8,6 +8,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directo
 option(BUILD_CLIENT "Build the client binary." OFF)
 option(BUILD_SERVER "Build the server binary." OFF)
 
+option(STD_FILESYSTEM "Use system provided filesystem library instead of boost filesystem. Only works with MSVC currently" OFF)
+
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -23,9 +25,13 @@ include_directories("${CMAKE_SOURCE_DIR}/log/include")
 file(GLOB_RECURSE HEADERS "*.hpp")
 add_custom_target(Headers SOURCES ${HEADERS})
 
-# I hope to use the upcoming standard filesystem library when it comes out, but until then use boost filesystem.
-find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
-include_directories(${Boost_INCLUDE_DIR})
+if(NOT STD_FILESYSTEM)
+    # I hope to use the upcoming standard filesystem library when it comes out, but until then use boost filesystem.
+    find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
+    include_directories(${Boost_INCLUDE_DIR})
+else(NOT STD_FILESYSTEM)
+    add_definitions(-DSTD_FILESYSTEM)
+endif(NOT STD_FILESYSTEM)
 
 add_subdirectory(log)
 add_subdirectory(bigreader)

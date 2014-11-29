@@ -14,8 +14,10 @@ if(WIN32)
     target_link_libraries(${PROJECT_NAME} log)
 endif()
 
-# Is this the right place to link?
-target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY_RELEASE})
+if(NOT STD_FILESYSTEM)
+    # Is this the right place to link?
+    target_link_libraries(${PROJECT_NAME} ${Boost_FILESYSTEM_LIBRARY_RELEASE})
+endif(NOT STD_FILESYSTEM)
 
 if(BUILD_BIGREADER_TEST)
     add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)

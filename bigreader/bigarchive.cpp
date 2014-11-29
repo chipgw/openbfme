@@ -3,9 +3,15 @@
 #include <algorithm>
 #include <cstdio>
 #include <cctype>
-#include <boost/filesystem.hpp>
 
-namespace bfs = boost::filesystem;
+#ifdef STD_FILESYSTEM
+#include <filesystem>
+/* TODO - this namespace is temporary, as this functionality isn't final yet. */
+namespace fs = std::tr2::sys;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 namespace OpenBFME {
 
@@ -219,7 +225,7 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
         outfilename.erase(0, outfilename.find_last_of('/') + 1);
     }
     outfilename.insert(0, directory);
-    bfs::create_directories(outfilename.substr(0, outfilename.find_last_of('/')));
+    fs::create_directories(fs::path(outfilename.substr(0, outfilename.find_last_of('/'))));
 
     Log::info("Extracting to \"%s\"...", outfilename.c_str());
 
@@ -244,7 +250,7 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
 }
 
 bool BigArchive::extractAll(const string &directory){
-    bfs::create_directories(directory);
+    fs::create_directories(fs::path(directory));
     for(auto &entry : entries){
         if(!extract(entry.filename, directory, true)){
             return false;
