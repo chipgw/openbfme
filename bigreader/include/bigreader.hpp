@@ -14,10 +14,20 @@ class BigArchive;
 class BigFilesystem;
 
 class BigArchive{
+public:
+    enum Backend{
+        BigFile,
+        Folder
+    };
+
+private:
     std::set<BigEntry> entries;
+    const BigEntry* currentEntry;
     FILE* file;
     string archiveFilename;
     BigFilesystem &filesystem;
+
+    Backend backend;
 
 public:
     EXPORT BigArchive(const string &filename, BigFilesystem &fs);
@@ -25,6 +35,7 @@ public:
 
     EXPORT bool readHeader();
     EXPORT bool open();
+    EXPORT bool openEntry(const BigEntry& entry);
     EXPORT void close();
 
     EXPORT const BigEntry* openFile(const string &filename);
@@ -39,6 +50,7 @@ public:
     EXPORT bool extractAll(const string &directory);
 
     EXPORT inline const string &getArchiveFilename() { return archiveFilename; }
+    EXPORT inline const Backend &getBackend() { return backend; }
 };
 
 

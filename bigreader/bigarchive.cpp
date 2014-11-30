@@ -44,6 +44,20 @@ BigArchive::~BigArchive(){
 }
 
 bool BigArchive::readHeader(){
+    if (fs::is_directory(archiveFilename)) {
+        backend = Folder;
+
+        for (fs::recursive_directory_iterator dir(archiveFilename), end; dir != end; ++dir) {
+            const fs::path& currentPath = dir->path();
+            if (fs::is_regular_file(currentPath)) {
+                auto entry = entries.emplace(*this, 0, fs::file_size(currentPath), currentPath.string().substr(currentPath.string().find_first_of('/') + 1));
+                Log::info("File path: \"%s\" length: 0x%08x", entry.first->filename, entry.first->end);
+            }
+        }
+
+        return true;
+    }
+
     if(!open()){
         return false;
     }
@@ -55,6 +69,8 @@ bool BigArchive::readHeader(){
         close();
         return false;
     }
+
+    backend = BigFile;
 
     fseek(file, 8, SEEK_SET);
 
@@ -96,14 +112,35 @@ void BigArchive::close(){
         fclose(file);
         file = nullptr;
     }
+    currentEntry = nullptr;
+}
+
+bool BigArchive::openEntry(const BigEntry& entry) {
+    entry.line = 0;
+
+    switch (backend) {
+    case BigFile:
+        if (open()) {
+            fseek(file, entry.start, SEEK_SET);
+            currentEntry = &entry;
+            return true;
+        }
+        break;
+    case Folder:
+        file = fopen((archiveFilename + '/' + entry.filename).c_str(), "rb");
+        if (file != nullptr) {
+            currentEntry = &entry;
+            return true;
+        }
+        break;
+    }
+    return false;
 }
 
 const BigEntry* BigArchive::openFile(const string &filename){
-    if(open()){
-        auto entry = entries.find(BigEntry(*this, 0, 0, filename));
-        if(entry != entries.end()){
-            entry->line = 0;
-            fseek(file, entry->start, SEEK_SET);
+    auto entry = entries.find(BigEntry(*this, 0, 0, filename));
+    if(entry != entries.end()){
+        if(openEntry(*entry)){
             return &(*entry);
         }
     }
@@ -188,6 +225,10 @@ string BigArchive::getWord(const BigEntry &entry){
 }
 
 bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
+    if(&entry != currentEntry){
+        openEntry(entry);
+    }
+
     pos += entry.start;
     if(pos < entry.end){
         fseek(file, pos, SEEK_SET);
@@ -197,6 +238,10 @@ bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
 }
 
 uint32_t BigArchive::tell(const BigEntry &entry){
+    if(&entry != currentEntry){
+        openEntry(entry);
+    }
+
     uint32_t pos = ftell(file);
     if(pos < entry.start){
         return 0;
