@@ -44,7 +44,7 @@ BigArchive::~BigArchive(){
 }
 
 bool BigArchive::readHeader(){
-    if (fs::is_directory(archiveFilename)) {
+    if (fs::is_directory(fs::path(archiveFilename))) {
         backend = Folder;
 
         for (fs::recursive_directory_iterator dir(archiveFilename), end; dir != end; ++dir) {
