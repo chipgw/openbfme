@@ -21,17 +21,21 @@ int main(int argc, const char* argv[]){
         BigArchive* archive = big.mount(arg, true);
 
         if(archive != nullptr){
-            std::string path = arg;
-            auto lastSlash = path.find_last_of("/\\");
+            if(archive->getBackend() != BigArchive::Folder){
+                std::string path = arg;
+                auto lastSlash = path.find_last_of("/\\");
 
-            if(lastSlash != std::string::npos){
-                path.erase(0, lastSlash + 1);
+                if(lastSlash != std::string::npos){
+                    path.erase(0, lastSlash + 1);
+                }
+
+                path.erase(path.find_last_of("."));
+                path.push_back('/');
+
+                archive->extractAll(path);
+            } else{
+                Log::warning("Cannot extract from a folder. Why would you want to anyway?");
             }
-
-            path.erase(path.find_last_of("."));
-            path.push_back('/');
-
-            archive->extractAll(path);
 
             big.unmount(archive);
         }
