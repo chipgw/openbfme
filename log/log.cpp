@@ -5,14 +5,6 @@ using namespace std;
 
 namespace OpenBFME {
 
-class Log::LogOutput{
-public:
-    LogOutputLevel level;
-    FILE* output;
-
-    LogOutput(LogOutputLevel l, FILE* o) : level(l), output(o) {}
-};
-
 void Log::init(const char *filename){
     if(outputs.size() < 1){
         outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning), stdout));
@@ -50,11 +42,11 @@ void Log::print(const string& str, LogOutputLevel level){
     string timestamp = format("[%02i:%02i:%02i.%06i] %s: ", date->tm_hour, date->tm_min, date->tm_sec, microseconds, type);
 
     for(LogOutput output : outputs){
-        if(output.level & level){
-            fputs(timestamp.c_str(), output.output);
-            fputs(str.c_str(), output.output);
-            fputc('\n', output.output);
-            fflush(output.output);
+        if(output.first & level){
+            fputs(timestamp.c_str(), output.second);
+            fputs(str.c_str(), output.second);
+            fputc('\n', output.second);
+            fflush(output.second);
         }
     }
 }

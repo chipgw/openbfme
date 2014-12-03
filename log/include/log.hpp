@@ -8,8 +8,6 @@
 namespace OpenBFME {
 
 class Log{
-    class LogOutput;
-
     enum LogOutputLevel{
         Error   = 0x01,
         Warning = 0x02,
@@ -17,6 +15,7 @@ class Log{
         All     = 0xff
     };
 
+    typedef std::pair<LogOutputLevel, FILE*> LogOutput;
     static std::list<LogOutput> outputs;
 
     EXPORT static void print(const string& output, LogOutputLevel level);
