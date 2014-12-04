@@ -51,7 +51,7 @@ bool BigArchive::readHeader(){
             const fs::path& currentPath = dir->path();
             if (fs::is_regular_file(currentPath)) {
                 auto entry = entries.emplace(*this, 0, fs::file_size(currentPath), currentPath.string().substr(currentPath.string().find_first_of('/') + 1));
-                Log::info("File path: \"%s\" length: 0x%08x", entry.first->filename, entry.first->end);
+                Log::debug("File path: \"%s\" length: 0x%08x", entry.first->filename, entry.first->end);
             }
         }
 
@@ -87,7 +87,7 @@ bool BigArchive::readHeader(){
 
         entries.emplace(*this, start, end, path);
 
-        Log::info("File #%04d start: 0x%08x end: 0x%08x path: \"%s\"", f + 1, start, end, path.c_str());
+        Log::debug("File #%04d start: 0x%08x end: 0x%08x path: \"%s\"", f + 1, start, end, path.c_str());
     }
 
     if(ftell(file) > headerEnd){

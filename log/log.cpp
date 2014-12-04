@@ -5,9 +5,14 @@ using namespace std;
 
 namespace OpenBFME {
 
-void Log::init(const char *filename){
+void Log::init(const char *filename, bool forceVerbose){
     if(outputs.size() < 1){
-        outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning), stdout));
+#ifdef NDEBUG
+        outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning | (forceVerbose ? LogOutputLevel::Debug : 0)), stdout));
+#else
+        /* Debug output is always on in debug builds. */
+        outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning | LogOutputLevel::Debug), stdout));
+#endif
         outputs.push_back(LogOutput(LogOutputLevel::Error, stderr));
 
         FILE* file = fopen(filename, "w");
@@ -27,6 +32,9 @@ void Log::print(const string& str, LogOutputLevel level){
         break;
     case LogOutputLevel::Warning:
         type = "WARNING";
+        break;
+    case LogOutputLevel::Debug:
+        type = "DEBUG";
         break;
     case LogOutputLevel::Info:
     default:

@@ -12,6 +12,7 @@ class Log{
         Error   = 0x01,
         Warning = 0x02,
         Info    = 0x04,
+        Debug   = 0x08,
         All     = 0xff
     };
 
@@ -21,7 +22,14 @@ class Log{
     EXPORT static void print(const string& output, LogOutputLevel level);
 
 public:
-    EXPORT static void init(const char* filename);
+    EXPORT static void init(const char* filename, bool forceVerbose = false);
+
+    inline static void debug(const string &output){
+        print(output, LogOutputLevel::Debug);
+    }
+    template<typename First, typename ...Args> inline static void debug(const string &fmt, First first, Args... args){
+        print(format(fmt, first, args...), LogOutputLevel::Debug);
+    }
 
     inline static void info(const string &output){
         print(output, LogOutputLevel::Info);
