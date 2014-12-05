@@ -57,6 +57,7 @@ string format(const string& fmt, std::vector<Printable> args){
 
             const char &type = fmt[i];
 
+            const char* prefix;
             string out;
 
             // TODO - handle errors and support more options.
@@ -67,20 +68,30 @@ string format(const string& fmt, std::vector<Printable> args){
                 break;
             case 'd':
             case 'i':
+            case 'u':
                 if(args[arg].type == Printable::Integer)
                     out = std::to_string(args[arg].num);
                 break;
             case 'o':
-                if(args[arg].type == Printable::Integer)
+                if(args[arg].type == Printable::Integer){
+                    if(std::count(flags.cbegin(), flags.cend(), '#') > 0)
+                        prefix = "0";
                     out = to_base(args[arg].num, 8);
+                }
                 break;
             case 'x':
-                if(args[arg].type == Printable::Integer)
+                if(args[arg].type == Printable::Integer){
+                    if(std::count(flags.cbegin(), flags.cend(), '#') > 0)
+                        prefix = "0x";
                     out = to_base(args[arg].num, 16);
+                }
                 break;
             case 'X':
-                if(args[arg].type == Printable::Integer)
+                if(args[arg].type == Printable::Integer){
+                    if(std::count(flags.cbegin(), flags.cend(), '#') > 0)
+                        prefix = "0X";
                     out = to_base(args[arg].num, 16, 'A');
+                }
                 break;
             case 'c':
                 if(args[arg].type == Printable::Character)
@@ -94,8 +105,9 @@ string format(const string& fmt, std::vector<Printable> args){
             }
 
             if(width > out.size()){
-                out.insert(0, width - out.size(), (flags.find_first_of('0') != string::npos) ? '0' : ' ');
+                out.insert(0, width - out.size(), (std::count(flags.cbegin(), flags.cend(), '0') > 0) ? '0' : ' ');
             }
+            out.insert(0, prefix);
 
             result += out;
             ++arg;
