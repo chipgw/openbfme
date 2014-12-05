@@ -57,7 +57,7 @@ string format(const string& fmt, std::vector<Printable> args){
 
             const char &type = fmt[i];
 
-            const char* prefix;
+            const char* prefix = nullptr;
             string out;
 
             // TODO - handle errors and support more options.
@@ -107,7 +107,10 @@ string format(const string& fmt, std::vector<Printable> args){
             if(width > out.size()){
                 out.insert(0, width - out.size(), (std::count(flags.cbegin(), flags.cend(), '0') > 0) ? '0' : ' ');
             }
-            out.insert(0, prefix);
+
+            if(prefix != nullptr){
+                out.insert(0, prefix);
+            }
 
             result += out;
             ++arg;
