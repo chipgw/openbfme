@@ -31,23 +31,30 @@ string format(const string& fmt, std::vector<Printable> args){
     // TODO - maybe split the rest of this into a single non-template function?
     for(string::size_type i = 0; i < fmt.length(); ++i){
         if(fmt[i] == '%'){
-            string flags;
             integer width = 0;
             integer precision = 0;
+
+            bool usePrefix = false;
+            bool zeroForPadding = false;
 
             if(fmt[++i] == '%'){
                 result += fmt[i];
                 continue;
             }
             while(!std::isalnum(fmt[i]) || fmt[i] == '0'){
-                flags += fmt[i];
+                if(fmt[i] == '#')
+                    usePrefix = true;
+                else if(fmt[i] == '0')
+                    zeroForPadding = true;
                 ++i;
             }
+
             while(std::isdigit(fmt[i])){
                 width *= 10;
                 width += fmt[i] - '0';
                 ++i;
             }
+
             if(fmt[i] == '.'){
                 while(std::isdigit(fmt[++i])){
                     precision *= 10;
@@ -55,13 +62,11 @@ string format(const string& fmt, std::vector<Printable> args){
                 }
             }
 
-            const char &type = fmt[i];
-
             const char* prefix = nullptr;
             string out;
 
             // TODO - handle errors and support more options.
-            switch(type){
+            switch(fmt[i]){
             case 's':
                 if(args[arg].type == Printable::String)
                     out = args[arg].str;
@@ -74,22 +79,19 @@ string format(const string& fmt, std::vector<Printable> args){
                 break;
             case 'o':
                 if(args[arg].type == Printable::Integer){
-                    if(std::count(flags.cbegin(), flags.cend(), '#') > 0)
-                        prefix = "0";
+                    prefix = "0";
                     out = to_base(args[arg].num, 8);
                 }
                 break;
             case 'x':
                 if(args[arg].type == Printable::Integer){
-                    if(std::count(flags.cbegin(), flags.cend(), '#') > 0)
-                        prefix = "0x";
+                    prefix = "0x";
                     out = to_base(args[arg].num, 16);
                 }
                 break;
             case 'X':
                 if(args[arg].type == Printable::Integer){
-                    if(std::count(flags.cbegin(), flags.cend(), '#') > 0)
-                        prefix = "0X";
+                    prefix = "0X";
                     out = to_base(args[arg].num, 16, 'A');
                 }
                 break;
@@ -105,10 +107,10 @@ string format(const string& fmt, std::vector<Printable> args){
             }
 
             if(width > out.size()){
-                out.insert(0, width - out.size(), (std::count(flags.cbegin(), flags.cend(), '0') > 0) ? '0' : ' ');
+                out.insert(0, width - out.size(), zeroForPadding ? '0' : ' ');
             }
 
-            if(prefix != nullptr){
+            if(prefix != nullptr && usePrefix){
                 out.insert(0, prefix);
             }
 
