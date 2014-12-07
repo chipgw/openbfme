@@ -8,16 +8,16 @@ namespace OpenBFME {
 void Log::init(const char *filename, bool forceVerbose){
     if(outputs.size() < 1){
 #ifdef NDEBUG
-        outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning | (forceVerbose ? LogOutputLevel::Debug : 0)), stdout));
+        outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | (forceVerbose ? Debug : 0)), stdout));
 #else
         /* Debug output is always on in debug builds. */
-        outputs.push_back(LogOutput(LogOutputLevel(LogOutputLevel::Info | LogOutputLevel::Warning | LogOutputLevel::Debug), stdout));
+        outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | Debug), stdout));
 #endif
-        outputs.push_back(LogOutput(LogOutputLevel::Error, stderr));
+        outputs.push_back(LogOutput(Error, stderr));
 
         FILE* file = fopen(filename, "w");
         if(file != nullptr){
-            outputs.push_back(LogOutput(LogOutputLevel::All, file));
+            outputs.push_back(LogOutput(All, file));
         }
     }
 }
@@ -27,16 +27,16 @@ void Log::print(const string& str, LogOutputLevel level){
     const char* type;
 
     switch (level) {
-    case LogOutputLevel::Error:
+    case Error:
         type = "ERROR";
         break;
-    case LogOutputLevel::Warning:
+    case Warning:
         type = "WARNING";
         break;
-    case LogOutputLevel::Debug:
+    case Debug:
         type = "DEBUG";
         break;
-    case LogOutputLevel::Info:
+    case Info:
     default:
         type = "INFO";
         break;

@@ -12,7 +12,7 @@ int main(){
 
     if(file != nullptr){
         for(int i = 0; !file->eof(); ++i){
-            Log::info("line #%04d: \"%s\"", i, file->getLine().c_str());
+            Log::info("line #%04d: \"%s\"", i, file->getLine());
         }
     }else{
         Log::warning("unable to open file!");
@@ -22,7 +22,7 @@ int main(){
 
     if(file != nullptr){
         for(int i = 0; !file->eof(); ++i){
-            Log::info("line #%04d: \"%s\"", i, file->getLine().c_str());
+            Log::info("line #%04d: \"%s\"", i, file->getLine());
         }
     }else{
         Log::warning("unable to open file!");

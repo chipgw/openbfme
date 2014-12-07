@@ -26,7 +26,7 @@ void IniParser::parse(const BigEntry &file, IniObject object){
                 word = file.getWord();
 
                 if(word[0] != '"'){
-                    Log::error("%s:%d: expected a string after #include!", file.filename.c_str(), file.line);
+                    Log::error("%s:%d: expected a string after #include!", file.filename, file.line);
                     // TODO - figure out what happens on an error...
                     continue;
                 }
@@ -40,20 +40,20 @@ void IniParser::parse(const BigEntry &file, IniObject object){
                 if(includeFile != nullptr){
                     parse(*includeFile, object);
                 }else{
-                    Log::error("Unable to open included file \"%s\"", word.c_str());
+                    Log::error("Unable to open included file \"%s\"", word);
                 }
 
                 file.seek(pos);
 
                 word = file.getWord();
                 if(word != "\n"){
-                    Log::error("%s:%d: expected newline after #include!", file.filename.c_str(), file.line);
+                    Log::error("%s:%d: expected newline after #include!", file.filename, file.line);
                 }
             }else if(word == "define"){
                 auto macroName = file.getWord();
 
                 if(macroName == "\n"){
-                    Log::error("%s:%d: expected macro name after #define!", file.filename.c_str(), file.line);
+                    Log::error("%s:%d: expected macro name after #define!", file.filename, file.line);
                     // TODO - figure out what happens on an error...
                     continue;
                 }

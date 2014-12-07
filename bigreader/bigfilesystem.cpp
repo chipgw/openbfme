@@ -5,7 +5,7 @@
 namespace OpenBFME {
 
 BigArchive *BigFilesystem::mount(const string &filename, bool append){
-    Log::info("Attempting to mount \"%s\" in %s mode", filename.c_str(), append ? "append" : "prepend");
+    Log::info("Attempting to mount \"%s\" in %s mode", filename, append ? "append" : "prepend");
 
     if(append){
         archives.emplace_front(filename, *this);
@@ -28,12 +28,12 @@ BigArchive *BigFilesystem::mount(const string &filename, bool append){
 
         archives.pop_back();
     }
-    Log::error("Unable to mount \"%s\"!", filename.c_str());
+    Log::error("Unable to mount \"%s\"!", filename);
     return nullptr;
 }
 
 bool BigFilesystem::unmount(const string &filename){
-    Log::info("Unmounting \"%s\"", filename.c_str());
+    Log::info("Unmounting \"%s\"", filename);
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
         if(i->getArchiveFilename() == filename){
@@ -45,7 +45,7 @@ bool BigFilesystem::unmount(const string &filename){
 }
 
 bool BigFilesystem::unmount(BigArchive* archive){
-    Log::info("Unmounting \"%s\"", archive->getArchiveFilename().c_str());
+    Log::info("Unmounting \"%s\"", archive->getArchiveFilename());
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
         if(&*i == archive){
@@ -79,7 +79,7 @@ const BigEntry* BigFilesystem::openFile(const string &filename, const string &re
         }
     }
 
-    Log::info("attempting to open file \"%s\", expanded to \"%s\"", filename.c_str(), fullPath.c_str());
+    Log::info("attempting to open file \"%s\", expanded to \"%s\"", filename, fullPath);
     for(BigArchive &archive : archives){
         const BigEntry* entry = archive.openFile(fullPath);
         if(entry != nullptr){

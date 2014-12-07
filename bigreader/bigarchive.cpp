@@ -87,7 +87,7 @@ bool BigArchive::readHeader(){
 
         entries.emplace(*this, start, end, path);
 
-        Log::debug("File #%04d start: %#08x end: %#08x path: \"%s\"", f + 1, start, end, path.c_str());
+        Log::debug("File #%04d start: %#08x end: %#08x path: \"%s\"", f + 1, start, end, path);
     }
 
     if(ftell(file) > headerEnd){
@@ -272,12 +272,12 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
     outfilename.insert(0, directory);
     fs::create_directories(fs::path(outfilename.substr(0, outfilename.find_last_of('/'))));
 
-    Log::info("Extracting to \"%s\"...", outfilename.c_str());
+    Log::info("Extracting to \"%s\"...", outfilename);
 
     FILE* out = fopen(outfilename.c_str(), "wb");
 
     if(out == nullptr){
-        Log::error("Unable to create file \"%s\"!", outfilename.c_str());
+        Log::error("Unable to create file \"%s\"!", outfilename);
         return false;
     }
     uint32_t length = entry->end - entry->start;

@@ -28,7 +28,6 @@ string format(const string& fmt, std::vector<Printable> args){
     string result;
     integer arg = 0;
 
-    // TODO - maybe split the rest of this into a single non-template function?
     for(string::size_type i = 0; i < fmt.length(); ++i){
         if(fmt[i] == '%'){
             integer width = 0;
