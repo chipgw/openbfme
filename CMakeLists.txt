@@ -33,6 +33,16 @@ else(NOT STD_FILESYSTEM)
     add_definitions(-DSTD_FILESYSTEM)
 endif(NOT STD_FILESYSTEM)
 
+# use to create ${PROJECT_NAME}_test executables.
+macro(ADD_TEST_EXE)
+    string(TOUPPER ${PROJECT_NAME} CAPSNAME)
+    option(BUILD_${CAPSNAME}_TEST "Builds test binary for ${PROJECT_NAME}" OFF)
+    if(BUILD_${CAPSNAME}_TEST)
+        add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
+        target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} log ${ARGN})
+    endif()
+endmacro()
+
 add_subdirectory(log)
 add_subdirectory(bigreader)
 add_subdirectory(iniparser)
