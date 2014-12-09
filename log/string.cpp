@@ -24,9 +24,9 @@ string to_base(unsigned int value, unsigned int base, char start) {
  * \todo Support more printf options.
  * \todo Make it more safe.
  */
-string format(const string& fmt, std::vector<Printable> args){
+string format(const string& fmt, std::initializer_list<Printable> args){
     string result;
-    integer arg = 0;
+    auto arg = args.begin();
 
     for(string::size_type i = 0; i < fmt.length(); ++i){
         if(fmt[i] == '%'){
@@ -67,41 +67,41 @@ string format(const string& fmt, std::vector<Printable> args){
             // TODO - handle errors and support more options.
             switch(fmt[i]){
             case 's':
-                if(args[arg].type == Printable::String)
-                    out = args[arg].str;
+                if(arg->type == Printable::String)
+                    out = arg->str;
                 break;
             case 'd':
             case 'i':
             case 'u':
-                if(args[arg].type == Printable::Integer)
-                    out = std::to_string(args[arg].num);
+                if(arg->type == Printable::Integer)
+                    out = std::to_string(arg->num);
                 break;
             case 'o':
-                if(args[arg].type == Printable::Integer){
+                if(arg->type == Printable::Integer){
                     prefix = "0";
-                    out = to_base(args[arg].num, 8);
+                    out = to_base(arg->num, 8);
                 }
                 break;
             case 'x':
-                if(args[arg].type == Printable::Integer){
+                if(arg->type == Printable::Integer){
                     prefix = "0x";
-                    out = to_base(args[arg].num, 16);
+                    out = to_base(arg->num, 16);
                 }
                 break;
             case 'X':
-                if(args[arg].type == Printable::Integer){
+                if(arg->type == Printable::Integer){
                     prefix = "0X";
-                    out = to_base(args[arg].num, 16, 'A');
+                    out = to_base(arg->num, 16, 'A');
                 }
                 break;
             case 'c':
-                if(args[arg].type == Printable::Character)
-                    out = args[arg].ch;
+                if(arg->type == Printable::Character)
+                    out = arg->ch;
                 break;
             case 'f':
             case 'F': // IDK what the difference is supposed to be...
-                if(args[arg].type == Printable::Decimal)
-                    out = std::to_string(args[arg].dec);
+                if(arg->type == Printable::Decimal)
+                    out = std::to_string(arg->dec);
                 break;
             }
 

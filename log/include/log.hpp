@@ -28,28 +28,28 @@ public:
         print(output, LogOutputLevel::Debug);
     }
     template<typename First, typename ...Args> inline static void debug(const string &fmt, First first, Args... args){
-        print(format(fmt, first, args...), LogOutputLevel::Debug);
+        print(format(fmt, {first, args...}), LogOutputLevel::Debug);
     }
 
     inline static void info(const string &output){
         print(output, LogOutputLevel::Info);
     }
     template<typename First, typename ...Args> inline static void info(const string &fmt, First first, Args... args){
-        print(format(fmt, first, args...), LogOutputLevel::Info);
+        print(format(fmt, {first, args...}), LogOutputLevel::Info);
     }
 
     inline static void warning(const string &output){
         print(output, LogOutputLevel::Warning);
     }
     template<typename First, typename ...Args> inline static void warning(const string &fmt, First first, Args... args){
-        print(format(fmt, first, args...), LogOutputLevel::Warning);
+        print(format(fmt, {first, args...}), LogOutputLevel::Warning);
     }
 
     inline static void error(const string &output){
         print(output, LogOutputLevel::Error);
     }
     template<typename First, typename ...Args> inline static void error(const string &fmt, First first, Args... args){
-        print(format(fmt, first, args...), LogOutputLevel::Error);
+        print(format(fmt, {first, args...}), LogOutputLevel::Error);
     }
 };
 

@@ -2,7 +2,7 @@
 #define OPENBFME_STRING_HPP
 
 #include "types.hpp"
-#include <vector>
+#include <initializer_list>
 
 namespace OpenBFME {
 
@@ -28,7 +28,7 @@ struct Printable{
 
 EXPORT string to_base(unsigned int value, unsigned int base, char start = 'a');
 
-EXPORT string format(const string& fmt, std::vector<Printable> args);
+EXPORT string format(const string& fmt, std::initializer_list<Printable> args);
 
 /*!
  * \brief Formats the string with a subset of printf syntax.
@@ -36,7 +36,7 @@ EXPORT string format(const string& fmt, std::vector<Printable> args);
  * \todo Make it more safe.
  */
 template<typename First, typename... Args> inline string format(const string& fmt, First first, Args... args){
-    return format(fmt, std::vector<Printable>{ first, args... });
+    return format(fmt, { first, args... });
 }
 
 }
