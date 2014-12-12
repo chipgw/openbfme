@@ -33,11 +33,19 @@ else(NOT STD_FILESYSTEM)
     add_definitions(-DSTD_FILESYSTEM)
 endif(NOT STD_FILESYSTEM)
 
+option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
+
 # use to create ${PROJECT_NAME}_test executables.
 macro(ADD_TEST_EXE)
-    string(TOUPPER ${PROJECT_NAME} CAPSNAME)
-    option(BUILD_${CAPSNAME}_TEST "Builds test binary for ${PROJECT_NAME}" OFF)
-    if(BUILD_${CAPSNAME}_TEST)
+    string(TOUPPER "BUILD_${PROJECT_NAME}_TEST" OPTION_NAME)
+
+    if(BUILD_ALL_TESTS)
+        unset(${OPTION_NAME} CACHE)
+    else()
+        option(${OPTION_NAME} "Builds test binary for ${PROJECT_NAME}" OFF)
+    endif()
+
+    if(${OPTION_NAME} OR BUILD_ALL_TESTS)
         add_executable(${PROJECT_NAME}_test test/${PROJECT_NAME}_test.cpp)
         target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} log ${ARGN})
     endif()
