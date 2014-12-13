@@ -8,20 +8,26 @@
 
 namespace OpenBFME{
 
-
 struct IniVariable{
     enum VariableType{
-        Integer,/* for integer numbers and bitflags */
-        Decimal,/* for decimal numbers */
-        String  /* for a single string value */
+        Bool,   /* Put a true/false value in b. */
+        Integer,/* Put an integer in i. */
+        Decimal,/* Put a decimal number in d. */
+        Percent,/* Map XXX% to X.XX and put it in d */
+        String, /* Put a single string value in s. */
+        Color,  /* Put a RGB(A) color value in v. */
+        Vector, /* Put an XYZ vector in v. */
+        Line    /* Put the rest of the line in s, use when built in parsing doesn't do what you need. */
     };
 
     VariableType type;
 
     union{
+        bool b;
         integer i;
         decimal d;
     };
+    vec4 v;
     string s;
 };
 
@@ -50,7 +56,16 @@ class IniParser{
 public:
     EXPORT IniParser(BigFilesystem &filesys);
 
-    EXPORT void parse(const BigEntry &file, IniObject object);
+    EXPORT void parse(const BigEntry &file, IniObject &object);
+
+    EXPORT bool parseMacro(const BigEntry &file, IniObject &object);
+
+    EXPORT bool parseVariable(const BigEntry &file, IniVariable &var, const std::string &name);
+
+    EXPORT bool parseBool(const BigEntry &file, IniVariable &var, const std::string &name);
+    EXPORT bool parseInteger(const BigEntry &file, IniVariable &var, const std::string &name, integer mult = 1);
+    EXPORT bool parseDecimal(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
+    EXPORT bool parseVector(const BigEntry &file, IniVariable &var, const std::string &name);
 };
 
 }

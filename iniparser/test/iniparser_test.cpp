@@ -6,7 +6,16 @@ using namespace OpenBFME;
 
 int main(){
     IniType rootType;
-    rootType.subTypes["Object"].variableTypes["Variable"] = IniVariable::Integer;
+
+    IniType& objectType = rootType.subTypes["Object"];
+    objectType.variableTypes["BoolVar"] = IniVariable::Bool;
+    objectType.variableTypes["IntVar"] = IniVariable::Integer;
+    objectType.variableTypes["DecVar"] = IniVariable::Decimal;
+    objectType.variableTypes["StrVar"] = IniVariable::String;
+    objectType.variableTypes["PercentVar"] = IniVariable::Percent;
+    objectType.variableTypes["ColorVar"] = IniVariable::Color;
+    objectType.variableTypes["VectorVar"] = IniVariable::Vector;
+    objectType.variableTypes["LineVar"] = IniVariable::Line;
 
     IniObject root(rootType);
 

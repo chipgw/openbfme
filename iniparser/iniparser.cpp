@@ -7,7 +7,7 @@ namespace OpenBFME {
 
 IniParser::IniParser(BigFilesystem &filesys) : filesystem(filesys) {}
 
-void IniParser::parse(const BigEntry &file, IniObject object){
+void IniParser::parse(const BigEntry &file, IniObject &object){
     while(!file.eof()){
         string word = file.getWord();
 
@@ -20,52 +20,7 @@ void IniParser::parse(const BigEntry &file, IniObject object){
         }
 
         if(word == "#"){
-            word = file.getWord();
-
-            if(word == "include"){
-                word = file.getWord();
-
-                if(word[0] != '"'){
-                    Log::error("%s:%d: expected a string after #include!", file.filename, file.line);
-                    // TODO - figure out what happens on an error...
-                    continue;
-                }
-                word.erase(0, 1);
-                word.erase(word.length() - 1, 1);
-
-                uint32_t pos = file.tell();
-
-                const BigEntry* includeFile = filesystem.openFile(word, file.filename);
-
-                if(includeFile != nullptr){
-                    parse(*includeFile, object);
-                }else{
-                    Log::error("Unable to open included file \"%s\"", word);
-                }
-
-                file.seek(pos);
-
-                word = file.getWord();
-                if(word != "\n"){
-                    Log::error("%s:%d: expected newline after #include!", file.filename, file.line);
-                }
-            }else if(word == "define"){
-                auto macroName = file.getWord();
-
-                if(macroName == "\n"){
-                    Log::error("%s:%d: expected macro name after #define!", file.filename, file.line);
-                    // TODO - figure out what happens on an error...
-                    continue;
-                }
-
-                auto macroValue = file.getWord();
-
-                if(macroValue == "\n"){
-                    macros.emplace(macroName, "");
-                }else{
-                    macros.emplace(macroName, macroValue);
-                }
-            }
+            parseMacro(file, object);
         }else if(object.type.breaks && word == object.type.breakWord){
             break;
         }else if(object.type.subTypes.count(word)){
@@ -79,26 +34,149 @@ void IniParser::parse(const BigEntry &file, IniObject object){
                 arg = file.getWord();
             }
 
-            Log::info("Created object of type: \"%s\"", word);
+            Log::debug("Created object of type: \"%s\"", word);
 
             parse(file, object.subObjects.at(word));
         }else if(object.type.variableTypes.count(word)){
-            object.variables[word].type = object.type.variableTypes.at(word);
+            IniVariable &var = object.variables[word];
+            var.type = object.type.variableTypes.at(word);
 
-            /* TODO - Implement. */
-            switch(object.variables[word].type){
-            case IniVariable::Integer:
-                Log::info("added variable: \"%s\" of type: \"Integer\"", word);
-                break;
-            case IniVariable::Decimal:
-                Log::info("added variable: \"%s\" of type: \"Decimal\"", word);
-                break;
-            case IniVariable::String:
-                Log::info("added variable: \"%s\" of type: \"String\"", word);
-                break;
-            }
+            parseVariable(file, var, word);
         }
     }
+}
+
+bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
+    string word = file.getWord();
+
+    if(word == "include"){
+        word = file.getWord();
+
+        if(word[0] != '"'){
+            Log::error("%s:%d: expected a string after #include!", file.filename, file.line);
+            return false;
+        }
+        word.erase(0, 1);
+        word.erase(word.length() - 1, 1);
+
+        uint32_t pos = file.tell();
+
+        const BigEntry* includeFile = filesystem.openFile(word, file.filename);
+
+        if(includeFile != nullptr){
+            parse(*includeFile, object);
+        }else{
+            Log::error("%s:%d: Unable to open included file \"%s\"", file.filename, file.line, word);
+        }
+
+        file.seek(pos);
+
+        word = file.getWord();
+        if(word != "\n"){
+            Log::warning("%s:%d: expected newline after #include!", file.filename, file.line);
+        }
+        return true;
+    }else if(word == "define"){
+        auto macroName = file.getWord();
+
+        if(macroName == "\n"){
+            Log::error("%s:%d: expected macro name after #define!", file.filename, file.line);
+            return false;
+        }
+
+        auto macroValue = file.getWord();
+
+        if(macroValue == "\n"){
+            macros.emplace(macroName, "");
+            Log::debug("Added macro: %s", macroName);
+        }else{
+            macros.emplace(macroName, macroValue);
+            Log::debug("Added macro: %s value: %s", macroName, macroValue);
+        }
+        return true;
+    }
+
+    return false;
+}
+
+bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std::string& name){
+    string next = file.getWord();
+    if(next == "="){
+        /* This should be true most of the time, but IDK if it always is... */
+    }
+
+    switch(var.type){
+    case IniVariable::Bool:
+        return parseBool(file, var, name);
+    case IniVariable::Integer:
+        return parseInteger(file, var, name);
+    case IniVariable::Decimal:
+        return parseDecimal(file, var, name);
+    case IniVariable::Percent:
+        return parseDecimal(file, var, name, 0.01f);
+    case IniVariable::String:
+        /* TODO - IDK if this should trim quotes or not... */
+        var.s = file.getWord();
+        Log::debug("Added variable: \"%s\" of type: \"String\" value: %s", name, var.s);
+        break;
+    case IniVariable::Color:
+    case IniVariable::Vector:
+        return parseVector(file, var, name);
+    case IniVariable::Line:
+        var.s = file.getLine();
+        Log::debug("Added variable: \"%s\" of type: \"Line\" value: \"%s\"", name, var.s);
+        return true;
+    }
+
+    return false;
+}
+
+bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::string &name){
+    string value = file.getWord();
+    if(value == "Yes"){
+        var.b = true;
+    }else if(value == "No"){
+        var.b = false;
+    }else{
+        Log::error("%s:%d: Expected \"Yes\" or \"No\" value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.line, name, value);
+        return false;
+    }
+    Log::debug("Added variable: \"%s\" of type: \"Bool\" value: %s", name, value);
+    return true;
+}
+
+bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult){
+    string value = file.getWord();
+
+    try{
+        var.i = std::stoi(value) * mult;
+    }catch(...){
+        Log::error("%s:%d: Expected integer value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.line, name, value);
+        return false;
+    }
+
+    Log::debug("Added variable: \"%s\" of type: \"Integer\" value: %i", name, var.i);
+    return true;
+}
+
+bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
+    string value = file.getWord();
+
+    try{
+        var.d = std::stof(value) * mult;
+    }catch(...){
+        Log::error("%s:%d: Expected decimal value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.line, name, value);
+        return false;
+    }
+
+    Log::debug("Added variable: \"%s\" of type: \"Decimal\" value: %f", name, var.d);
+    return true;
+}
+
+bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name){
+    /* TODO - implement. */
+    Log::debug("Added variable: \"%s\" of type: \"Vector\"", name);
+    return false;
 }
 
 }
