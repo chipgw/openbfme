@@ -195,7 +195,7 @@ string BigArchive::getWord(const BigEntry &entry){
             if(std::isalpha(c)){
                 // we have a word!
                 isWrd = true;
-            }else if(std::isdigit(c)){
+            }else if(std::isdigit(c) || c == '-'){
                 // we have a number!
                 isNmb = true;
             }else if(c == '"'){
@@ -208,7 +208,7 @@ string BigArchive::getWord(const BigEntry &entry){
         }else{
             if(!isStr && (std::isspace(c) ||
                     (isWrd && !std::isalnum(c) && c != '_') ||
-                    (isNmb && !std::isdigit(c)) ||
+                    (isNmb && !std::isdigit(c) && c != '.') ||
                     (isSym && std::isalnum(c)))){
                 ungetc(c, file);
                 break;
