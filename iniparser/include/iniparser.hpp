@@ -65,7 +65,7 @@ public:
     EXPORT bool parseBool(const BigEntry &file, IniVariable &var, const std::string &name);
     EXPORT bool parseInteger(const BigEntry &file, IniVariable &var, const std::string &name, integer mult = 1);
     EXPORT bool parseDecimal(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
-    EXPORT bool parseVector(const BigEntry &file, IniVariable &var, const std::string &name);
+    EXPORT bool parseVector(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
 };
 
 }

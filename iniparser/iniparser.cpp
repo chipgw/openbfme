@@ -120,6 +120,7 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
         Log::debug("Added variable: \"%s\" of type: \"String\" value: %s", name, var.s);
         break;
     case IniVariable::Color:
+        return parseVector(file, var, name, 1.f / 255.f);
     case IniVariable::Vector:
         return parseVector(file, var, name);
     case IniVariable::Line:
@@ -173,10 +174,37 @@ bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::
     return true;
 }
 
-bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name){
-    /* TODO - implement. */
-    Log::debug("Added variable: \"%s\" of type: \"Vector\"", name);
-    return false;
+bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
+    string component = file.getWord();
+
+    while(component != "\n"){
+        float val;
+        string valStr;
+        try{
+            file.getWord(); /* <- This should be a colon, just ignore it. */
+            valStr = file.getWord();
+            val = std::stof(valStr) * mult;
+        }catch(...){
+            Log::error("%s:%d: Expected decimal value after vector component, got \"%s\"!", file.filename.c_str(), file.line, valStr);
+            return false;
+        }
+
+        if(component == "X" || component == "R"){
+            var.v.x = val;
+        }else if(component == "Y" || component == "G"){
+            var.v.y = val;
+        }else if(component == "Z" || component == "B"){
+            var.v.z = val;
+        }else{
+            Log::error("%s:%d: Expected a vector component letter, got \"%s\"!", file.filename.c_str(), file.line, component);
+            return false;
+        }
+
+        component = file.getWord();
+    }
+
+    Log::debug("Added variable: \"%s\" of type: \"Vector\" %f %f %f", name, var.v.x, var.v.y, var.v.z);
+    return true;
 }
 
 }
