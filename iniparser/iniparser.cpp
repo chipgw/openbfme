@@ -132,8 +132,13 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
     return false;
 }
 
+string IniParser::getVariableWord(const BigEntry &file){
+    string word = file.getWord();
+    return (macros.count(word) > 0) ? macros[word] : word;
+}
+
 bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::string &name){
-    string value = file.getWord();
+    string value = getVariableWord(file);
     if(value == "Yes"){
         var.b = true;
     }else if(value == "No"){
@@ -147,7 +152,7 @@ bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::str
 }
 
 bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult){
-    string value = file.getWord();
+    string value = getVariableWord(file);
 
     try{
         var.i = std::stoi(value) * mult;
@@ -161,7 +166,7 @@ bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::
 }
 
 bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
-    string value = file.getWord();
+    string value = getVariableWord(file);
 
     try{
         var.d = std::stof(value) * mult;

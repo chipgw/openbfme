@@ -62,6 +62,7 @@ private:
     bool parseMacro(const BigEntry &file, IniObject &object);
 
     bool parseVariable(const BigEntry &file, IniVariable &var, const std::string &name);
+    string getVariableWord(const BigEntry &file);
 
     bool parseBool(const BigEntry &file, IniVariable &var, const std::string &name);
     bool parseInteger(const BigEntry &file, IniVariable &var, const std::string &name, integer mult = 1);
