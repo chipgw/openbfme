@@ -58,14 +58,15 @@ public:
 
     EXPORT void parse(const BigEntry &file, IniObject &object);
 
-    EXPORT bool parseMacro(const BigEntry &file, IniObject &object);
+private:
+    bool parseMacro(const BigEntry &file, IniObject &object);
 
-    EXPORT bool parseVariable(const BigEntry &file, IniVariable &var, const std::string &name);
+    bool parseVariable(const BigEntry &file, IniVariable &var, const std::string &name);
 
-    EXPORT bool parseBool(const BigEntry &file, IniVariable &var, const std::string &name);
-    EXPORT bool parseInteger(const BigEntry &file, IniVariable &var, const std::string &name, integer mult = 1);
-    EXPORT bool parseDecimal(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
-    EXPORT bool parseVector(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
+    bool parseBool(const BigEntry &file, IniVariable &var, const std::string &name);
+    bool parseInteger(const BigEntry &file, IniVariable &var, const std::string &name, integer mult = 1);
+    bool parseDecimal(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
+    bool parseVector(const BigEntry &file, IniVariable &var, const std::string &name, decimal mult = 1.0f);
 };
 
 }
