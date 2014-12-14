@@ -195,7 +195,7 @@ string BigArchive::getWord(const BigEntry &entry){
             if(std::isalpha(c)){
                 // we have a word!
                 isWrd = true;
-            }else if(std::isdigit(c) || c == '-'){
+            }else if(std::isdigit(c)){
                 // we have a number!
                 isNmb = true;
             }else if(c == '"'){

@@ -86,6 +86,11 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 
         auto macroValue = file.getWord();
 
+        /* TODO - There may be other situations where this is needed. */
+        if(macroValue == "-"){
+            macroValue += file.getWord();
+        }
+
         if(macroValue == "\n"){
             macros.emplace(macroName, "");
             Log::debug("Added macro: %s", macroName);
@@ -154,6 +159,11 @@ bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::str
 bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult){
     string value = getVariableWord(file);
 
+    if(value == "-"){
+        value = getVariableWord(file);
+        mult *= -1;
+    }
+
     try{
         var.i = std::stoi(value) * mult;
     }catch(...){
@@ -167,6 +177,11 @@ bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::
 
 bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
     string value = getVariableWord(file);
+
+    if(value == "-"){
+        value = getVariableWord(file);
+        mult *= -1.0f;
+    }
 
     try{
         var.d = std::stof(value) * mult;
@@ -183,12 +198,19 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
     string component = file.getWord();
 
     while(component != "\n"){
-        float val;
-        string valStr;
-        try{
-            file.getWord(); /* <- This should be a colon, just ignore it. */
+        float val = 1.0f;
+
+        file.getWord(); /* <- This should be a colon, just ignore it. */
+        string valStr = file.getWord();
+
+        if(valStr == "-"){
             valStr = file.getWord();
-            val = std::stof(valStr) * mult;
+            val = -1.0f;
+        }
+
+        try{
+            /* multiply by either 1 or -1 based on whether or not there was a negative symbol beforehand. */
+            val *= std::stof(valStr) * mult;
         }catch(...){
             Log::error("%s:%d: Expected decimal value after vector component, got \"%s\"!", file.filename.c_str(), file.line, valStr);
             return false;
