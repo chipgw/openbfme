@@ -6,6 +6,8 @@ It is currently *nowhere* near playable, with only a small amount of groundwork 
 Dependencies:
 -------------
 * [CMake]
+* [GLM]
+* [Boost] filesystem library (MSVC can use the tr2 std filesystem library instead, add `-DSTD_FILESYSTEM=On` to cmake command to enable.)
 
 Building
 --------
@@ -21,4 +23,6 @@ License
 
 
 [CMake]:http://www.cmake.org
+[GLM]:http://glm.g-truc.net/
+[Boost]:http://boost.org
 [MIT License]:LICENSE

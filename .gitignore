@@ -49,3 +49,6 @@ Thumbs.db
 # Build Directory #
 ###################
 build/*
+
+# Allow putting glm in local include folder #
+include/glm
