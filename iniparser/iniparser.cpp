@@ -91,7 +91,13 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
             macroValue += file.getWord();
         }
 
-        if(macroValue == "\n"){
+        if(macros.count(macroName) > 0){
+            /* TODO - I'm not sure if using the original value is the correct behavior,
+             * but with emplace() it happens anyway, so this makes it clear what's going on.
+             * If this turns out to be wrong I'll fix it. */
+            Log::warning("%s:%d: Macro with name \"%s\" already exists! Using original value of \"%s\".",
+                         file.filename, file.line, macroName, macros[macroName]);
+        }else if(macroValue == "\n"){
             macros.emplace(macroName, "");
             Log::debug("Added macro: %s", macroName);
         }else{
