@@ -1,5 +1,4 @@
-#ifndef OPENBFME_TYPES_HPP
-#define OPENBFME_TYPES_HPP
+#pragma once
 
 #include "build_platform.hpp"
 #include <string>
@@ -20,5 +19,3 @@ typedef glm::vec3 vec3;
 typedef glm::vec4 vec4;
 
 }
-
-#endif //OPENBFME_TYPES_HPP

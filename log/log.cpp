@@ -23,7 +23,6 @@ void Log::init(const char *filename, bool forceVerbose){
 }
 
 void Log::print(const string& str, LogOutputLevel level){
-    // TODO - do a better job of this.
     const char* type;
 
     switch (level) {

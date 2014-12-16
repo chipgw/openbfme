@@ -111,10 +111,8 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 }
 
 bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std::string& name){
-    string next = file.getWord();
-    if(next == "="){
-        /* This should be true most of the time, but IDK if it always is... */
-    }
+    /* This should be "=" most of the time, but IDK if it always is. Ignore it for now... */
+    file.getWord();
 
     switch(var.type){
     case IniVariable::Bool:

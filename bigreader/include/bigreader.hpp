@@ -1,5 +1,4 @@
-#ifndef OPENBFME_BIGREADER_HPP
-#define OPENBFME_BIGREADER_HPP
+#pragma once
 
 #include "types.hpp"
 #include <set>
@@ -83,5 +82,3 @@ public:
 };
 
 }
-
-#endif //OPENBFME_BIGREADER_HPP

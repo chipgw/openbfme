@@ -19,11 +19,6 @@ string to_base(unsigned int value, unsigned int base, char start) {
     return result;
 }
 
-/*!
- * \brief Formats the string with a subset of printf syntax.
- * \todo Support more printf options.
- * \todo Make it more safe.
- */
 string format(const string& fmt, std::initializer_list<Printable> args){
     string result;
     auto arg = args.begin();
@@ -64,7 +59,6 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             const char* prefix = nullptr;
             string out;
 
-            // TODO - handle errors and support more options.
             switch(fmt[i]){
             case 's':
                 if(arg->type == Printable::String)
@@ -99,7 +93,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                     out = arg->ch;
                 break;
             case 'f':
-            case 'F': // IDK what the difference is supposed to be...
+            case 'F': /* IDK what the difference is supposed to be... */
                 if(arg->type == Printable::Decimal)
                     out = std::to_string(arg->dec);
                 break;

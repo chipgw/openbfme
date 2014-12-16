@@ -1,5 +1,4 @@
-#ifndef OPENBFME_STRING_HPP
-#define OPENBFME_STRING_HPP
+#pragma once
 
 #include "types.hpp"
 #include <initializer_list>
@@ -7,7 +6,6 @@
 namespace OpenBFME {
 
 struct Printable{
-    // TODO - support more stuffs.
     enum Type{
         Integer, Decimal, Character, String
     };
@@ -40,5 +38,3 @@ template<typename First, typename... Args> inline string format(const string& fm
 }
 
 }
-
-#endif //OPENBFME_STRING_HPP

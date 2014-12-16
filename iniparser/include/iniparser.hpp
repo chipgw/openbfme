@@ -1,5 +1,4 @@
-#ifndef OPENBFME_INIPARSER_HPP
-#define OPENBFME_INIPARSER_HPP
+#pragma once
 
 #include "bigreader.hpp"
 #include <memory>
@@ -71,5 +70,3 @@ private:
 };
 
 }
-
-#endif //OPENBFME_INIPARSER_HPP

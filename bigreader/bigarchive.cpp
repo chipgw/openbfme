@@ -15,7 +15,6 @@ namespace fs = boost::filesystem;
 
 namespace OpenBFME {
 
-// TODO - do a better job of this... (maybe use SDL?)
 uint32_t readUInt32(FILE* file){
     uint8_t val[4];
     fread(val, 1, 4, file);
@@ -184,25 +183,24 @@ string BigArchive::getWord(const BigEntry &entry){
 
         if(data.empty()){
             if(c == '\n'){
-                // return a newline character if it's the first non-space we run into.
+                /* return a newline character if it's the first non-space we run into. */
                 entry.line++;
                 return "\n";
             }
             if(std::isspace(c)){
-                // Ignore a space.
+                /* Ignore a space. */
                 continue;
             }
             if(std::isalpha(c)){
-                // we have a word!
+                /* we have a word! */
                 isWrd = true;
             }else if(std::isdigit(c)){
-                // we have a number!
+                /* we have a number! */
                 isNmb = true;
             }else if(c == '"'){
-                // we have a string!
+                /* we have a string! */
                 isStr = true;
             }else{
-                // TODO - filter this further.
                 isSym = true;
             }
         }else{

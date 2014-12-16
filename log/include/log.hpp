@@ -1,5 +1,4 @@
-#ifndef OPENBFME_LOG_HPP
-#define OPENBFME_LOG_HPP
+#pragma once
 
 #include "types.hpp"
 #include "string.hpp"
@@ -54,5 +53,3 @@ public:
 };
 
 }
-
-#endif // OPENBFME_LOG_HPP
