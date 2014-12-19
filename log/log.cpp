@@ -7,17 +7,16 @@ namespace OpenBFME {
 
 void Log::init(const char *filename, bool forceVerbose){
     if(outputs.size() < 1){
-#ifdef NDEBUG
-        outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | (forceVerbose ? Debug : 0)), stdout));
-#else
+#ifndef NDEBUG
         /* Debug output is always on in debug builds. */
-        outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | Debug), stdout));
+        forceVerbose = true;
 #endif
+        outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | (forceVerbose ? Debug : 0)), stdout));
         outputs.push_back(LogOutput(Error, stderr));
 
         FILE* file = fopen(filename, "w");
         if(file != nullptr){
-            outputs.push_back(LogOutput(All, file));
+            outputs.push_back(LogOutput(LogOutputLevel(All & forceVerbose ? ~0 : ~Debug), file));
         }
     }
 }
