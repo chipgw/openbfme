@@ -8,12 +8,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directo
 option(BUILD_CLIENT "Build the client binary." OFF)
 option(BUILD_SERVER "Build the server binary." OFF)
 
-option(STD_FILESYSTEM "Use system provided filesystem library instead of boost filesystem. Only works with MSVC currently" OFF)
+option(USE_STD_FILESYSTEM "Use system provided filesystem library instead of boost filesystem. Only tested with MSVC currently." OFF)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    # add any future MSVC related stuff here.
 endif()
 
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
@@ -23,15 +21,15 @@ include_directories("${CMAKE_SOURCE_DIR}/log/include")
 
 # files not needed in build, but included so they show up in IDE.
 file(GLOB_RECURSE HEADERS "*.hpp")
-add_custom_target(Headers SOURCES ${HEADERS})
+add_custom_target(IDE_FILES SOURCES ${HEADERS})
 
-if(NOT STD_FILESYSTEM)
+if(NOT USE_STD_FILESYSTEM)
     # I hope to use the upcoming standard filesystem library when it comes out, but until then use boost filesystem.
     find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
     include_directories(${Boost_INCLUDE_DIR})
-else(NOT STD_FILESYSTEM)
+else(NOT USE_STD_FILESYSTEM)
     add_definitions(-DSTD_FILESYSTEM)
-endif(NOT STD_FILESYSTEM)
+endif(NOT USE_STD_FILESYSTEM)
 
 option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 
