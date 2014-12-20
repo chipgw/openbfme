@@ -28,16 +28,16 @@ private:
 
     Backend backend;
 
+    bool open();
+    void close();
+    bool openEntry(const BigEntry& entry);
+
 public:
     EXPORT BigArchive(const string &filename, BigFilesystem &fs);
     EXPORT ~BigArchive();
 
-    EXPORT bool readHeader();
-    EXPORT bool open();
-    EXPORT bool openEntry(const BigEntry& entry);
-    EXPORT void close();
-
-    EXPORT const BigEntry* openFile(const string &filename);
+    bool readHeader();
+    const BigEntry* openFile(const string &filename);
 
     EXPORT string getLine(const BigEntry &entry);
     EXPORT string getWord(const BigEntry &entry);
@@ -48,10 +48,9 @@ public:
     EXPORT bool extract(const string &filename, const string &directory, bool fullPath);
     EXPORT bool extractAll(const string &directory);
 
-    EXPORT inline const string &getArchiveFilename() { return archiveFilename; }
-    EXPORT inline const Backend &getBackend() { return backend; }
+    inline const string &getArchiveFilename() { return archiveFilename; }
+    inline const Backend &getBackend() { return backend; }
 };
-
 
 class BigEntry{
 public:
@@ -59,15 +58,15 @@ public:
     const string filename;
     const uint32_t start, end;
     BigArchive &archive;
-    BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file);
+    BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file) : archive(arch), start(start), end(end), filename(file) {}
 
     inline string getLine() const { return archive.getLine(*this); }
     inline string getWord() const { return archive.getWord(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
     inline bool eof() const { return archive.eof(*this); }
-
 };
+
 inline bool operator <(const BigEntry& e1,const BigEntry& e2){ return e1.filename < e2.filename;}
 
 class BigFilesystem{

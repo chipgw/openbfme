@@ -79,7 +79,7 @@ const BigEntry* BigFilesystem::openFile(const string &filename, const string &re
         }
     }
 
-    Log::info("attempting to open file \"%s\", expanded to \"%s\"", filename, fullPath);
+    Log::info("Attempting to open file \"%s\", expanded to \"%s\"", filename, fullPath);
     for(BigArchive &archive : archives){
         const BigEntry* entry = archive.openFile(fullPath);
         if(entry != nullptr){

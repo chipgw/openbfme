@@ -23,14 +23,13 @@ uint32_t readUInt32(FILE* file){
 
 string readString(FILE* file, uint32_t limit, char terminator = '\0'){
     string data;
-    char c;
-    do{
-        c = fgetc(file);
+    while(ftell(file) < limit){
+        character c = fgetc(file);
         if(c == '\0' || c == terminator || ferror(file) || feof(file)){
             break;
         }
         data += c;
-    }while(ftell(file) < limit);
+    }
     return data;
 }
 
@@ -57,19 +56,19 @@ bool BigArchive::readHeader(){
         return true;
     }
 
+    backend = BigFile;
+
     if(!open()){
         return false;
     }
 
-    char id[4] = {0};
+    character id[4] = {0};
     fread(id, 1, 4, file);
 
     if (id[0] != 'B' || id[1] != 'I' || id[2] != 'G' || (id[3] != '4' && id[3] != 'F')){
         close();
         return false;
     }
-
-    backend = BigFile;
 
     fseek(file, 8, SEEK_SET);
 
@@ -101,7 +100,9 @@ bool BigArchive::open(){
         return true;
     }
 
-    file = fopen(archiveFilename.c_str(), "rb");
+    if(backend == BigFile){
+        file = fopen(archiveFilename.c_str(), "rb");
+    }
 
     return file != nullptr;
 }
@@ -138,10 +139,8 @@ bool BigArchive::openEntry(const BigEntry& entry) {
 
 const BigEntry* BigArchive::openFile(const string &filename){
     auto entry = entries.find(BigEntry(*this, 0, 0, filename));
-    if(entry != entries.end()){
-        if(openEntry(*entry)){
-            return &(*entry);
-        }
+    if(entry != entries.end() && openEntry(*entry)){
+        return &(*entry);
     }
 
     return nullptr;
@@ -173,9 +172,8 @@ string BigArchive::getWord(const BigEntry &entry){
     bool isSym = false;
 
     string data;
-    char c;
-    do{
-        c = fgetc(file);
+    while(!eof(entry)){
+        character c = fgetc(file);
 
         if(ferror(file) || feof(file)){
             break;
@@ -217,7 +215,7 @@ string BigArchive::getWord(const BigEntry &entry){
             }
         }
         data += c;
-    }while(ftell(file) < entry.end);
+    }
 
     return data;
 }
