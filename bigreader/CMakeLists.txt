@@ -15,5 +15,3 @@ if(NOT STD_FILESYSTEM)
 endif(NOT STD_FILESYSTEM)
 
 add_test_exe()
-
-add_project_exe(big_extractor ${PROJECT_NAME})

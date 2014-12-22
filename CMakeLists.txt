@@ -72,5 +72,6 @@ add_subdirectory(log)
 add_subdirectory(bigreader)
 add_subdirectory(iniparser)
 
+add_project_exe(big_extractor bigreader)
 add_project_exe(openbfme_server)
 add_project_exe(openbfme_client)
