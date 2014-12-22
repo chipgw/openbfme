@@ -5,9 +5,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directo
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for executables.")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for static libraries.")
 
-option(BUILD_CLIENT "Build the client binary." OFF)
-option(BUILD_SERVER "Build the server binary." OFF)
-
 option(USE_STD_FILESYSTEM "Use system provided filesystem library instead of boost filesystem. Only tested with MSVC currently." OFF)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -31,13 +28,14 @@ else(NOT USE_STD_FILESYSTEM)
     add_definitions(-DSTD_FILESYSTEM)
 endif(NOT USE_STD_FILESYSTEM)
 
+option(BUILD_ALL "Enables building all binaries" OFF)
 option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 
-# use to create ${PROJECT_NAME}_test executables.
+# Use to create ${PROJECT_NAME}_test executables.
 macro(ADD_TEST_EXE)
     string(TOUPPER "BUILD_${PROJECT_NAME}_TEST" OPTION_NAME)
 
-    if(BUILD_ALL_TESTS)
+    if(BUILD_ALL OR BUILD_ALL_TESTS)
         unset(${OPTION_NAME} CACHE)
     else()
         option(${OPTION_NAME} "Builds test binary for ${PROJECT_NAME}" OFF)
@@ -49,14 +47,30 @@ macro(ADD_TEST_EXE)
     endif()
 endmacro()
 
+# Use to create executables.
+# TODO - Add some way of setting the option description.
+macro(ADD_PROJECT_EXE)
+    string(TOUPPER "BUILD_${ARGV0}" OPTION_NAME)
+
+    if(BUILD_ALL)
+        unset(${OPTION_NAME} CACHE)
+    else()
+        option(${OPTION_NAME} "Builds ${ARGV0} binary" OFF)
+    endif()
+
+    if(${OPTION_NAME} OR BUILD_ALL)
+        include_directories("./include")
+
+        file(GLOB SOURCES "${ARGV0}/*.cpp")
+
+        add_executable(${ARGV0} ${SOURCES})
+        target_link_libraries(${ARGN} log)
+    endif()
+endmacro()
+
 add_subdirectory(log)
 add_subdirectory(bigreader)
 add_subdirectory(iniparser)
 
-if(BUILD_SERVER)
-    add_subdirectory(server)
-endif(BUILD_SERVER)
-
-if(BUILD_CLIENT)
-    add_subdirectory(client)
-endif(BUILD_CLIENT)
+add_project_exe(openbfme_server)
+add_project_exe(openbfme_client)

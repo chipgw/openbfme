@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(bigreader)
 
-option(BUILD_BIG_EXTRACTOR "Builds extractor program for .big files" OFF)
-
 file(GLOB SOURCES "*.cpp")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
@@ -18,7 +16,4 @@ endif(NOT STD_FILESYSTEM)
 
 add_test_exe()
 
-if(BUILD_BIG_EXTRACTOR)
-    add_executable(big_extractor extractor/big_extractor.cpp)
-    target_link_libraries(big_extractor ${PROJECT_NAME} log)
-endif()
+add_project_exe(big_extractor ${PROJECT_NAME})
