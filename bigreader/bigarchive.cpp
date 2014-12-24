@@ -127,6 +127,7 @@ bool BigArchive::openEntry(const BigEntry& entry) {
         }
         break;
     case Folder:
+        close();
         file = fopen((archiveFilename + '/' + entry.filename).c_str(), "rb");
         if (file != nullptr) {
             currentEntry = &entry;
