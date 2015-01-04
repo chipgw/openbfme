@@ -7,7 +7,7 @@
 
 namespace OpenBFME {
 
-typedef int integer;
+typedef int32_t integer;
 typedef float decimal;
 
 typedef char character;

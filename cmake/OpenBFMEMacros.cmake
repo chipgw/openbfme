@@ -1,4 +1,4 @@
-# Use to create ${PROJECT_NAME}_test executables.
+# Use to create test executables.
 macro(ADD_TEST_EXE)
     string(TOUPPER "BUILD_${ARGV0}_TEST" OPTION_NAME)
 
@@ -20,7 +20,7 @@ macro(ADD_PROJECT_LIB)
 
     add_library(${ARGV0} SHARED ${SOURCES})
 
-    if(WIN32)
+    if(WIN32 AND NOT "${ARGV0}" STREQUAL "log")
         target_link_libraries(${ARGV0} log)
     endif()
 

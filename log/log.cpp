@@ -16,7 +16,7 @@ void Log::init(const char *filename, bool forceVerbose){
 
         FILE* file = fopen(filename, "w");
         if(file != nullptr){
-            outputs.push_back(LogOutput(LogOutputLevel(All & forceVerbose ? ~0 : ~Debug), file));
+            outputs.push_back(LogOutput(LogOutputLevel(All & (forceVerbose ? ~0 : ~Debug)), file));
         }
     }
 }
