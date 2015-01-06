@@ -2,6 +2,10 @@
 #include <vector>
 #include <cstdio>
 
+#ifdef OPENBFME_PLATFORM_MSVC
+#define snprintf _snprintf
+#endif
+
 using namespace OpenBFME;
 
 class FormatTest {
