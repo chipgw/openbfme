@@ -56,7 +56,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 }
             }
 
-            const char* prefix = nullptr;
+            string prefix;
             string out;
 
             switch(fmt[i]){
@@ -99,12 +99,12 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 break;
             }
 
-            if(width > out.size()){
-                out.insert(0, width - out.size(), zeroForPadding ? '0' : ' ');
+            if(usePrefix){
+                out.insert(0, prefix);
             }
 
-            if(prefix != nullptr && usePrefix){
-                out.insert(0, prefix);
+            if(width > out.size()){
+                out.insert(zeroForPadding ? prefix.size() : 0, width - out.size(), zeroForPadding ? '0' : ' ');
             }
 
             result += out;
