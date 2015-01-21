@@ -6,4 +6,7 @@
 /* If this header is included we define MSVC related stuff. */
 #define OPENBFME_PLATFORM_MSVC
 
+/* I'm sick of MSVC warning me that fopen() is unsafe. */
+#define _CRT_SECURE_NO_WARNINGS
+
 #define EXPORT __declspec(dllexport)
