@@ -7,6 +7,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directo
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+    find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
+    include_directories(${Boost_INCLUDE_DIR})
+    set(FS_LIBRARY ${Boost_FILESYSTEM_LIBRARY_RELEASE})
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    set(FS_LIBRARY)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
@@ -22,16 +28,6 @@ add_custom_target(IDE_FILES SOURCES ${HEADERS})
 
 option(BUILD_ALL "Enables building all binaries" OFF)
 option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
-option(USE_STD_FILESYSTEM "Use system provided filesystem library instead of boost filesystem. Only tested with MSVC currently." OFF)
-
-if(USE_STD_FILESYSTEM)
-    add_definitions(-DSTD_FILESYSTEM)
-    set(FS_LIBRARY)
-else(USE_STD_FILESYSTEM)
-    find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
-    include_directories(${Boost_INCLUDE_DIR})
-    set(FS_LIBRARY ${Boost_FILESYSTEM_LIBRARY_RELEASE})
-endif(USE_STD_FILESYSTEM)
 
 include(OpenBFMEMacros)
 

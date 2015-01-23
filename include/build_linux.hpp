@@ -7,3 +7,7 @@
 #define OPENBFME_PLATFORM_LINUX
 
 #define EXPORT
+
+/* TODO - Once the std filesystem is out use that. */
+#define FILESYSTEM_HEADER <boost/filesystem.hpp>
+#define FILESYSTEM_NAMESPACE boost::filesystem

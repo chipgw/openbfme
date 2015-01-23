@@ -4,14 +4,8 @@
 #include <cstdio>
 #include <cctype>
 
-#ifdef STD_FILESYSTEM
-#include <filesystem>
-/* TODO - this namespace is temporary, as this functionality isn't final yet. */
-namespace fs = std::tr2::sys;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
+#include FILESYSTEM_HEADER
+namespace fs = FILESYSTEM_NAMESPACE;
 
 namespace OpenBFME {
 

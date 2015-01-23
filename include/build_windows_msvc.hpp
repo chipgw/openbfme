@@ -10,3 +10,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #define EXPORT __declspec(dllexport)
+
+#define FILESYSTEM_HEADER <filesystem>
+/* TODO - This namespace is temporary, as this functionality isn't final yet. */
+#define FILESYSTEM_NAMESPACE std::tr2::sys
