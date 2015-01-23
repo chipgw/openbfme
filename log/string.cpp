@@ -30,6 +30,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
 
             bool usePrefix = false;
             bool zeroForPadding = false;
+            bool showSign = false;
 
             if(fmt[++i] == '%'){
                 result += fmt[i];
@@ -40,6 +41,8 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                     usePrefix = true;
                 else if(fmt[i] == '0')
                     zeroForPadding = true;
+                else if(fmt[i] == '+')
+                    showSign = true;
                 ++i;
             }
 
@@ -67,24 +70,32 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             case 'd':
             case 'i':
             case 'u':
-                if(arg->type == Printable::Integer)
-                    out = std::to_string(arg->num);
+                if(arg->type == Printable::Integer){
+                    out = std::to_string(abs(arg->num));
+                    if(arg->num < 0)
+                        prefix = "-";
+                    else if(showSign)
+                        prefix = "+";
+                }
                 break;
             case 'o':
                 if(arg->type == Printable::Integer){
-                    prefix = "0";
+                    if(usePrefix)
+                        prefix = "0";
                     out = to_base(arg->num, 8);
                 }
                 break;
             case 'x':
                 if(arg->type == Printable::Integer){
-                    prefix = "0x";
+                    if(usePrefix)
+                        prefix = "0x";
                     out = to_base(arg->num, 16);
                 }
                 break;
             case 'X':
                 if(arg->type == Printable::Integer){
-                    prefix = "0X";
+                    if(usePrefix)
+                        prefix = "0X";
                     out = to_base(arg->num, 16, 'A');
                 }
                 break;
@@ -99,9 +110,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 break;
             }
 
-            if(usePrefix){
-                out.insert(0, prefix);
-            }
+            out.insert(0, prefix);
 
             if(width > out.size()){
                 out.insert(zeroForPadding ? prefix.size() : 0, width - out.size(), zeroForPadding ? '0' : ' ');
