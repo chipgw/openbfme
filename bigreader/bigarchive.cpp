@@ -17,7 +17,7 @@ uint32_t readUInt32(FILE* file){
 
 string readString(FILE* file, uint32_t limit, char terminator = '\0'){
     string data;
-    while(ftell(file) < limit){
+    while(uint32_t(ftell(file)) < limit){
         character c = fgetc(file);
         if(c == '\0' || c == terminator || ferror(file) || feof(file)){
             break;
@@ -42,7 +42,8 @@ bool BigArchive::readHeader(){
         for (fs::recursive_directory_iterator dir(archiveFilename), end; dir != end; ++dir) {
             const fs::path& currentPath = dir->path();
             if (fs::is_regular_file(currentPath)) {
-                auto entry = entries.emplace(*this, 0, fs::file_size(currentPath), currentPath.string().substr(currentPath.string().find_first_of('/') + 1));
+                auto entry = entries.emplace(*this, 0, uint32_t(fs::file_size(currentPath)),
+                                             currentPath.string().substr(currentPath.string().find_first_of('/') + 1));
                 Log::debug("File path: \"%s\" length: %#08x", entry.first->filename, entry.first->end);
             }
         }
@@ -82,7 +83,7 @@ bool BigArchive::readHeader(){
         Log::debug("File #%04d start: %#08x end: %#08x path: \"%s\"", f + 1, start, end, path);
     }
 
-    if(ftell(file) > headerEnd){
+    if(uint32_t(ftell(file)) > headerEnd){
         Log::warning("Reading of file info passed through end of header.");
     }
 

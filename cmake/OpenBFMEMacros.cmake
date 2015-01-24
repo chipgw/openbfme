@@ -19,11 +19,6 @@ macro(ADD_PROJECT_LIB)
     file(GLOB SOURCES "${ARGV0}/*.cpp")
 
     add_library(${ARGV0} SHARED ${SOURCES})
-
-    if(WIN32 AND NOT "${ARGV0}" STREQUAL "log")
-        target_link_libraries(${ARGV0} log)
-    endif()
-
     target_link_libraries(${ARGN})
 
     add_test_exe(${ARGV0})
@@ -46,6 +41,6 @@ macro(ADD_PROJECT_EXE)
         file(GLOB SOURCES "${ARGV0}/*.cpp")
 
         add_executable(${ARGV0} ${SOURCES})
-        target_link_libraries(${ARGN} log)
+        target_link_libraries(${ARGN})
     endif()
 endmacro()
