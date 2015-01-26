@@ -17,6 +17,9 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
+find_package(TinyXML REQUIRED)
+include_directories(${TINYXML_INCLUDE_DIR})
+
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
 include_directories("${CMAKE_SOURCE_DIR}/bigreader/include")
 include_directories("${CMAKE_SOURCE_DIR}/iniparser/include")
@@ -33,7 +36,7 @@ include(OpenBFMEMacros)
 
 add_project_lib(log)
 add_project_lib(bigreader log ${FS_LIBRARY})
-add_project_lib(iniparser bigreader)
+add_project_lib(iniparser bigreader ${TINYXML_LIBRARIES})
 
 add_project_exe(big_extractor bigreader)
 add_project_exe(openbfme_server iniparser)

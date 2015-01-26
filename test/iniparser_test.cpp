@@ -5,21 +5,13 @@
 using namespace OpenBFME;
 
 int main(){
-    IniType rootType;
+    Log::init("iniparser_test.log");
 
-    IniType& objectType = rootType.subTypes["Object"];
-    objectType.variableTypes["BoolVar"] = IniVariable::Bool;
-    objectType.variableTypes["IntVar"] = IniVariable::Integer;
-    objectType.variableTypes["DecVar"] = IniVariable::Decimal;
-    objectType.variableTypes["StrVar"] = IniVariable::String;
-    objectType.variableTypes["PercentVar"] = IniVariable::Percent;
-    objectType.variableTypes["ColorVar"] = IniVariable::Color;
-    objectType.variableTypes["VectorVar"] = IniVariable::Vector;
-    objectType.variableTypes["LineVar"] = IniVariable::Line;
+    IniType rootType;
+    rootType.loadFromXML("iniparser_test_root.xml");
+
 
     IniObject root(rootType);
-
-    Log::init("iniparser_test.log");
     BigFilesystem big;
     IniParser ini(big);
     big.mount("test.big", true);
@@ -29,7 +21,7 @@ int main(){
     if(file1 != nullptr){
         ini.parse(*file1, root);
     }else{
-        Log::warning("unable to open file!");
+        Log::warning("Unable to open file!");
     }
 
     big.unmount("test.big");
@@ -41,7 +33,7 @@ int main(){
     if(file2 != nullptr){
         ini.parse(*file2, root);
     }else{
-        Log::warning("unable to open file!");
+        Log::warning("Unable to open file!");
     }
     return 0;
 }

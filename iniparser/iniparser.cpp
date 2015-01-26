@@ -199,9 +199,7 @@ bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::
 }
 
 bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
-    string component = file.getWord();
-
-    while(component != "\n"){
+    for(string component = file.getWord(); component != "\n"; component = file.getWord()){
         float val = 1.0f;
 
         file.getWord(); /* <- This should be a colon, just ignore it. */
@@ -230,8 +228,6 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
             Log::error("%s:%d: Expected a vector component letter, got \"%s\"!", file.filename.c_str(), file.line, component);
             return false;
         }
-
-        component = file.getWord();
     }
 
     Log::debug("Added variable: \"%s\" of type: \"Vector\" %f %f %f", name, var.v.x, var.v.y, var.v.z);

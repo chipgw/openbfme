@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 
+class TiXmlElement;
+
 namespace OpenBFME{
 
 struct IniVariable{
@@ -30,12 +32,16 @@ struct IniVariable{
     string s;
 };
 
-struct IniType{
+class IniType{
+public:
     std::map<string, IniVariable::VariableType> variableTypes;
     std::map<string, IniType> subTypes;
 
     bool breaks = true;
     string breakWord = "End";
+
+    bool loadFromXML(const string& filename);
+    bool loadFromXML(TiXmlElement* element, const string &filename);
 };
 
 struct IniObject{
