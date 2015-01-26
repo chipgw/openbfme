@@ -18,19 +18,25 @@ public:
     int run(const integer& number) const {
         string result = format(formatString, arg);
         string correct = result;
+        int correctNum = 0;
         switch (arg.type){
         case Printable::Character:
-            snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.ch);
+            correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.ch);
             break;
         case Printable::Decimal:
-            snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.dec);
+            correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.dec);
             break;
         case Printable::Integer:
-            snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.num);
+            correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.num);
             break;
         case Printable::String:
-            snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.str);
+            correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.str);
             break;
+        }
+
+        if(correctNum != result.size()) {
+            Log::error("Test #%2d result is too short! Expected length: %i Result length: %i Result: \"%s\"", number, correctNum, result.size(), result);
+            return 1;
         }
 
         if (correct != result) {
@@ -48,7 +54,9 @@ int main() {
     int failed = 0;
 
     const static std::vector<FormatTest> tests {
-                FormatTest("%s",    "Hi"),
+                FormatTest("%s",    "Hello"),
+                FormatTest("%.s",   "Hello"),
+                FormatTest("%.2s",  "Hello"),
                 FormatTest("%d",    1234),
                 FormatTest("%i",    1234),
                 FormatTest("%i",   -1234),
@@ -56,10 +64,14 @@ int main() {
                 FormatTest("%8i",  -1234),
                 FormatTest("%08i",  1234),
                 FormatTest("%08i", -1234),
+                FormatTest("%+i",   1234),
+                FormatTest("%+i",  -1234),
                 FormatTest("%+8i",  1234),
                 FormatTest("%+8i", -1234),
                 FormatTest("%+08i", 1234),
                 FormatTest("%+08i",-1234),
+                FormatTest("%-8i",  1234),
+                FormatTest("%-8i", -1234),
                 FormatTest("%u",    1234),
                 FormatTest("%o",    1234),
                 FormatTest("%#o",   1234),
@@ -70,6 +82,13 @@ int main() {
                 FormatTest("%X",    1234),
                 FormatTest("%#X",   1234),
                 FormatTest("%f",    0.4f),
+                FormatTest("%.f",   0.4f),
+                FormatTest("%.1f",  0.4f),
+                FormatTest("%.3f",  0.4f),
+                FormatTest("%.10f", 0.4f),
+                FormatTest("%e",    0.4f),
+                FormatTest("%E",    0.4f),
+                FormatTest("%.1e",  0.4f),
                 FormatTest("%c",    '0')
     };
 
@@ -78,9 +97,9 @@ int main() {
     }
 
     if (failed == 0) {
-        Log::info("All tests successful!");
+        Log::info("All %i tests successful!", tests.size());
     } else {
-        Log::error("%d test(s) failed!", failed);
+        Log::error("%i/%i test(s) failed!", failed, tests.size());
     }
 
     return 0;

@@ -1,6 +1,9 @@
 #include "string.hpp"
 #include <algorithm>
 #include <cctype>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 namespace OpenBFME {
 
@@ -26,23 +29,26 @@ string format(const string& fmt, std::initializer_list<Printable> args){
     for(string::size_type i = 0; i < fmt.length(); ++i){
         if(fmt[i] == '%'){
             integer width = 0;
-            integer precision = 0;
+            integer precision = -1;
 
             bool usePrefix = false;
             bool zeroForPadding = false;
             bool showSign = false;
+            bool leftJustify = false;
 
             if(fmt[++i] == '%'){
                 result += fmt[i];
                 continue;
             }
-            while(!std::isalnum(fmt[i]) || fmt[i] == '0'){
+            while((!std::isalnum(fmt[i]) || fmt[i] == '0') && fmt[i] != '.'){
                 if(fmt[i] == '#')
                     usePrefix = true;
                 else if(fmt[i] == '0')
                     zeroForPadding = true;
                 else if(fmt[i] == '+')
                     showSign = true;
+                else if(fmt[i] == '-')
+                    leftJustify = true;
                 ++i;
             }
 
@@ -53,6 +59,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             }
 
             if(fmt[i] == '.'){
+                precision = 0;
                 while(std::isdigit(fmt[++i])){
                     precision *= 10;
                     precision += fmt[i] - '0';
@@ -64,8 +71,11 @@ string format(const string& fmt, std::initializer_list<Printable> args){
 
             switch(fmt[i]){
             case 's':
-                if(arg->type == Printable::String)
+                if(arg->type == Printable::String){
                     out = arg->str;
+                    if(precision > -1 && out.size() > precision)
+                        out.erase(precision, string::npos);
+                }
                 break;
             case 'd':
             case 'i':
@@ -105,15 +115,28 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 break;
             case 'f':
             case 'F': /* IDK what the difference is supposed to be... */
-                if(arg->type == Printable::Decimal)
-                    out = std::to_string(arg->dec);
+                if(arg->type == Printable::Decimal){
+                    std::ostringstream floatStr;
+                    floatStr << std::fixed << std::setprecision(precision) << arg->dec;
+                    out = floatStr.str();
+                }
+                break;
+            case 'e':
+            case 'E':
+                if(arg->type == Printable::Decimal){
+                    std::ostringstream floatStr;
+                    if(fmt[i] == 'E')
+                        floatStr << std::uppercase;
+                    floatStr << std::fixed << std::scientific << std::setprecision(precision) << arg->dec;
+                    out = floatStr.str();
+                }
                 break;
             }
 
             out.insert(0, prefix);
 
             if(width > out.size()){
-                out.insert(zeroForPadding ? prefix.size() : 0, width - out.size(), zeroForPadding ? '0' : ' ');
+                out.insert(zeroForPadding ? prefix.size() : leftJustify ? out.size() : 0, width - out.size(), zeroForPadding ? '0' : ' ');
             }
 
             result += out;
