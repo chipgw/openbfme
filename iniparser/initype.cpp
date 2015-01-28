@@ -35,14 +35,15 @@ bool IniType::loadFromXML(TiXmlElement* element, const string& filename) {
             }
         }else if(element->ValueStr() == "subtype"){
             string name = element->Attribute("name");
-            try{
-                string file = element->Attribute("file");
+            string file;
+            if(element->QueryStringAttribute("file", &file) == TIXML_SUCCESS)
                 subTypes[name].loadFromXML(file);
-            }catch(...){
+            else
                 subTypes[name].loadFromXML(element->FirstChildElement(), filename);
-            }
         }
     }
+
+    return true;
 }
 
 bool IniType::loadFromXML(const string& filename) {

@@ -40,7 +40,7 @@ public:
     bool breaks = true;
     string breakWord = "End";
 
-    bool loadFromXML(const string& filename);
+    EXPORT bool loadFromXML(const string& filename);
     bool loadFromXML(TiXmlElement* element, const string &filename);
 };
 
