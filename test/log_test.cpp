@@ -35,7 +35,8 @@ public:
         }
 
         if(correctNum != result.size()) {
-            Log::error("Test #%2d result is too short! Expected length: %i Result length: %i Result: \"%s\"", number, correctNum, result.size(), result);
+            Log::error("Test #%2d result is too short! Expected length: %i Result length: %i Result: \"%s\"",
+                       number, correctNum, integer(result.size()), result);
             return 1;
         }
 
@@ -97,9 +98,9 @@ int main() {
     }
 
     if (failed == 0) {
-        Log::info("All %i tests successful!", tests.size());
+        Log::info("All %i tests successful!", integer(tests.size()));
     } else {
-        Log::error("%i/%i test(s) failed!", failed, tests.size());
+        Log::error("%i/%i test(s) failed!", failed, integer(tests.size()));
     }
 
     return 0;
