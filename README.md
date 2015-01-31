@@ -7,7 +7,14 @@ Dependencies:
 -------------
 * [CMake]
 * [GLM]
-* [Boost] filesystem library (MSVC can use the tr2 std filesystem library instead, add `-DSTD_FILESYSTEM=On` to cmake command to enable.)
+* [TinyXML]
+
+On Linux:
+* [Boost] filesystem library
+* Compiler with C++11 support.
+
+On Windows:
+* MSVC12 (aka Visual Studio 2013)
 
 Building
 --------
@@ -24,5 +31,6 @@ License
 
 [CMake]:http://www.cmake.org
 [GLM]:http://glm.g-truc.net/
+[TinyXml]:http://www.grinninglizard.com/tinyxml/
 [Boost]:http://boost.org
 [MIT License]:LICENSE
