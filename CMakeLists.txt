@@ -1,19 +1,19 @@
 project(openbfme)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for libraries")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for executables.")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for static libraries.")
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
+set(FS_LIBRARY)
+if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
     include_directories(${Boost_INCLUDE_DIR})
     set(FS_LIBRARY ${Boost_FILESYSTEM_LIBRARY_RELEASE})
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    set(FS_LIBRARY)
 endif()
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 

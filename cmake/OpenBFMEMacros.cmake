@@ -10,7 +10,7 @@ macro(ADD_TEST_EXE)
 
     if(${OPTION_NAME} OR BUILD_ALL_TESTS)
         add_executable(${ARGV0}_test test/${ARGV0}_test.cpp)
-        target_link_libraries(${ARGV0}_test ${ARGN} log)
+        target_link_libraries(${ARGV0}_test ${ARGN})
     endif()
 endmacro()
 
