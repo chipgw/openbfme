@@ -90,6 +90,10 @@ int main() {
                 FormatTest("%e",    0.4f),
                 FormatTest("%E",    0.4f),
                 FormatTest("%.1e",  0.4f),
+                FormatTest("%g",    0.4f),
+                FormatTest("%G",    0.4f),
+                FormatTest("%g",    0.4e8f),
+                FormatTest("%G",    0.4e8f),
                 FormatTest("%c",    '0')
     };
 

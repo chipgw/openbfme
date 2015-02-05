@@ -40,6 +40,8 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 result += fmt[i];
                 continue;
             }
+
+            /* Check for flags, stop on a letter, number (excluding 0), or '.' */
             while((!std::isalnum(fmt[i]) || fmt[i] == '0') && fmt[i] != '.'){
                 if(fmt[i] == '#')
                     usePrefix = true;
@@ -66,6 +68,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 }
             }
 
+            std::ostringstream floatStr;
             string prefix;
             string out;
 
@@ -73,6 +76,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             case 's':
                 if(arg->type == Printable::String){
                     out = arg->str;
+                    /* With a string precision sets the maximum output length. */
                     if(precision > -1 && out.size() > precision)
                         out.erase(precision, string::npos);
                 }
@@ -81,6 +85,8 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             case 'i':
             case 'u':
                 if(arg->type == Printable::Integer){
+                    /* We use the absolute value and handle the sign using the prefix string,
+                     * because otherwise it ends up between the number and padding zeroes. */
                     out = std::to_string(abs(arg->num));
                     if(arg->num < 0)
                         prefix = "-";
@@ -113,21 +119,28 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 if(arg->type == Printable::Character)
                     out = arg->ch;
                 break;
+            case 'F':
+                /* I honestly have no clue if this actually makes any difference... */
+                floatStr << std::uppercase;
             case 'f':
-            case 'F': /* IDK what the difference is supposed to be... */
                 if(arg->type == Printable::Decimal){
-                    std::ostringstream floatStr;
                     floatStr << std::fixed << std::setprecision(precision) << arg->dec;
                     out = floatStr.str();
                 }
                 break;
-            case 'e':
             case 'E':
+                floatStr << std::uppercase;
+            case 'e':
                 if(arg->type == Printable::Decimal){
-                    std::ostringstream floatStr;
-                    if(fmt[i] == 'E')
-                        floatStr << std::uppercase;
                     floatStr << std::fixed << std::scientific << std::setprecision(precision) << arg->dec;
+                    out = floatStr.str();
+                }
+                break;
+            case 'G':
+                floatStr << std::uppercase;
+            case 'g':
+                if(arg->type == Printable::Decimal){
+                    floatStr << std::setprecision(precision) << arg->dec;
                     out = floatStr.str();
                 }
                 break;
@@ -136,7 +149,10 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             out.insert(0, prefix);
 
             if(width > out.size()){
-                out.insert(zeroForPadding ? prefix.size() : leftJustify ? out.size() : 0, width - out.size(), zeroForPadding ? '0' : ' ');
+                if(zeroForPadding)
+                    out.insert(prefix.size(), width - out.size(), '0');
+                else
+                    out.insert(leftJustify ? out.size() : 0, width - out.size(), ' ');
             }
 
             result += out;
