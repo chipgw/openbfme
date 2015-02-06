@@ -28,6 +28,10 @@ include_directories("${CMAKE_SOURCE_DIR}/log/include")
 file(GLOB_RECURSE HEADERS "*.hpp")
 add_custom_target(IDE_FILES SOURCES ${HEADERS})
 
+add_custom_target(test_big)
+add_custom_command(TARGET test_big COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test/test.big
+                                                                    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/test.big)
+
 option(BUILD_ALL "Enables building all binaries" OFF)
 option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 
