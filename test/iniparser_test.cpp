@@ -4,36 +4,38 @@
 
 using namespace OpenBFME;
 
+void runTest(IniParser& ini, BigFilesystem& big, IniType& rootType) {
+    if(const BigEntry* file = big.openFile("folder/inifile.ini")){
+        IniObject root(rootType);
+        ini.parse(*file, root);
+
+        /* TODO - check loaded data. */
+    }else{
+        Log::warning("Unable to open file!");
+    }
+}
+
 int main(){
     Log::init("iniparser_test.log");
 
-    IniType rootType;
-    rootType.loadFromXML("iniparser_test_root.xml");
+    IniType rootType("iniparser_test_root.xml");
 
-
-    IniObject root(rootType);
     BigFilesystem big;
     IniParser ini(big);
+
+    /* Parse from a .big file. */
     big.mount("test.big", true);
 
-    const BigEntry* file1 = big.openFile("folder/inifile.ini");
-
-    if(file1 != nullptr){
-        ini.parse(*file1, root);
-    }else{
-        Log::warning("Unable to open file!");
-    }
+    runTest(ini, big, rootType);
 
     big.unmount("test.big");
 
+    /* Parse from a folder. */
     big.mount("test", true);
 
-    const BigEntry* file2 = big.openFile("folder/inifile.ini");
+    runTest(ini, big, rootType);
 
-    if(file2 != nullptr){
-        ini.parse(*file2, root);
-    }else{
-        Log::warning("Unable to open file!");
-    }
+    big.unmount("test");
+
     return 0;
 }

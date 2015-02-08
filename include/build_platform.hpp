@@ -4,6 +4,7 @@
 
 #if defined(_WIN32)
 /* Begin Windows */
+#define OPENBFME_PLATFORM_WINDOWS
 #if defined(_MSC_VER) && _MSC_VER == 1800
 #include "build_windows_msvc.hpp"
 #else

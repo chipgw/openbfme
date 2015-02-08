@@ -40,6 +40,9 @@ public:
     bool breaks = true;
     string breakWord = "End";
 
+    IniType() = default;
+    IniType(const string& filename) { loadFromXML(filename); }
+
     EXPORT bool loadFromXML(const string& filename);
     bool loadFromXML(TiXmlElement* element, const string &filename);
 };

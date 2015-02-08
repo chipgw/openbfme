@@ -40,13 +40,14 @@ void Log::print(const string& str, LogOutputLevel level){
         break;
     }
 
+    /* Make the timestamp string. */
     chrono::high_resolution_clock::time_point current = chrono::high_resolution_clock::now();
-
     time_t tnow = chrono::high_resolution_clock::to_time_t(current);
     tm *date = localtime(&tnow);
     int microseconds = chrono::duration_cast<chrono::microseconds>(current.time_since_epoch()).count() % 1000000;
     string timestamp = format("[%02i:%02i:%02i.%06i] %s: ", date->tm_hour, date->tm_min, date->tm_sec, microseconds, type);
 
+    /* Write the string to every relevant output. */
     for(LogOutput output : outputs){
         if(output.first & level){
             fputs(timestamp.c_str(), output.second);

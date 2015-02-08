@@ -2,7 +2,8 @@
 #include <vector>
 #include <cstdio>
 
-#ifdef OPENBFME_PLATFORM_MSVC
+/* Because MSVC. */
+#ifdef OPENBFME_COMPILER_MSVC
 #define snprintf _snprintf
 #endif
 
@@ -15,6 +16,7 @@ class FormatTest {
 public:
     FormatTest(string fmt, Printable a) : formatString(fmt), arg(a) {}
 
+    /* Compares string produced by our format() function to output of snprintf(). */
     int run(const integer& number) const {
         string result = format(formatString, arg);
         string correct = result;
@@ -34,6 +36,7 @@ public:
             break;
         }
 
+        /* It's possible that the buffer was too short. */
         if(correctNum != result.size()) {
             Log::error("Test #%2d result is too short! Expected length: %i Result length: %i Result: \"%s\"",
                        number, correctNum, integer(result.size()), result);
