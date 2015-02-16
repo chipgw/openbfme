@@ -17,6 +17,7 @@ bool testFile(const BigEntry* file){
 int main(){
     Log::init("bigreader_test.log");
     BigFilesystem big;
+
     big.mount("test.big", true);
 
     testFile(big.openFile("folder/inifile.ini"));
@@ -24,6 +25,18 @@ int main(){
     testFile(big.openFile("inifile.ini", "folder/"));
     testFile(big.openFile("..\\NewFile.inc", "folder\\inifile.ini"));
     testFile(big.openFile("..\\NewFile.inc", "folder/inifile.ini"));
+
+    big.unmount("test.big");
+
+    big.mount("test", true);
+
+    testFile(big.openFile("folder/inifile.ini"));
+    testFile(big.openFile("inifile.ini", "folder\\inifile.ini"));
+    testFile(big.openFile("inifile.ini", "folder/"));
+    testFile(big.openFile("..\\NewFile.inc", "folder\\inifile.ini"));
+    testFile(big.openFile("..\\NewFile.inc", "folder/inifile.ini"));
+
+    big.unmount("test");
 
     return 0;
 }
