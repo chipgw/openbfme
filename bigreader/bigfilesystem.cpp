@@ -58,12 +58,15 @@ bool BigFilesystem::unmount(BigArchive* archive){
 
 const BigEntry* BigFilesystem::openFile(const string &filename, const string &relativeTo){
     string fullPath = filename;
+    /* Everything uses '/' as the folder delimiter. */
     std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
-    if(!relativeTo.empty() && fullPath.find("../") != string::npos){
+    if(!relativeTo.empty()){
+        /* Put the relativeTo path at the start of the string, minus anything after the last delimiter. */
         fullPath.insert(0, relativeTo.substr(0, relativeTo.find_last_of("\\/")) + '/');
         std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
+        /* If there are any instances of "../" in the path remove the previous folder name. */
         for(string::size_type p, folder; (p = fullPath.find("../")) != string::npos;){
             if(p == 0){
                 folder = 0;
@@ -75,6 +78,7 @@ const BigEntry* BigFilesystem::openFile(const string &filename, const string &re
                 folder = 0;
             }
 
+            /* Erase from the start of the folder to 3 characters after the end of it (the "../"). */
             fullPath.erase(folder, p - folder + 3);
         }
     }
