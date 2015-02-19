@@ -1,3 +1,10 @@
+macro(ADD_TEST_FILES)
+    foreach(FILE ${ARGN})
+        add_custom_command(TARGET test_files COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test/${FILE}
+                                                                              ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/${FILE})
+    endforeach()
+endmacro()
+
 # Use to create test executables.
 macro(ADD_TEST_EXE)
     string(TOUPPER "BUILD_${ARGV0}_TEST" OPTION_NAME)
@@ -11,7 +18,7 @@ macro(ADD_TEST_EXE)
     if(${OPTION_NAME} OR BUILD_ALL_TESTS)
         add_executable(${ARGV0}_test test/${ARGV0}_test.cpp)
         target_link_libraries(${ARGV0}_test ${ARGN})
-        add_dependencies(${ARGV0}_test test_big)
+        add_dependencies(${ARGV0}_test test_files)
     endif()
 endmacro()
 

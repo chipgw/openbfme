@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbfme-initype>
+    <subtype name="Object">
+        <variable name="BoolVar" type="bool" />
+        <variable name="IntVar" type="integer" />
+        <variable name="DecVar" type="decimal" />
+        <variable name="StrVar" type="string" />
+        <variable name="PercentVar" type="percent" />
+        <variable name="ColorVar" type="color" />
+        <variable name="VectorVar" type="vector" />
+        <variable name="LineVar" type="line" />
+    </subtype>
+</openbfme-initype>
