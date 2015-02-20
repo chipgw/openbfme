@@ -8,11 +8,12 @@ namespace OpenBFME {
 bool IniType::loadFromXML(TiXmlElement* element, const string& filename) {
     for(; element != nullptr; element = element->NextSiblingElement()){
         if(element->ValueStr() == "variable"){
-            string varName = element->Attribute("name");
-            string varType = element->Attribute("type");
-            std::transform(varType.begin(), varType.end(), varType.begin(), ::tolower);
+            string varName, varType;
 
-            if(!varName.empty()){
+            if(element->QueryStringAttribute("name", &varName) == TIXML_SUCCESS &&
+               element->QueryStringAttribute("type", &varType) == TIXML_SUCCESS && !varName.empty()){
+                std::transform(varType.begin(), varType.end(), varType.begin(), ::tolower);
+
                 if(varType == "bool")
                     variableTypes[varName] = IniVariable::Bool;
                 else if(varType == "integer")
@@ -31,15 +32,18 @@ bool IniType::loadFromXML(TiXmlElement* element, const string& filename) {
                     variableTypes[varName] = IniVariable::Line;
                 else
                     Log::error("%s:%i Invalid type \"%s\" for variable \"%s\"!", filename, element->Row(), varType, varName);
+
                 Log::debug("Variable type \"%s\" for variable \"%s\".", varType, varName);
             }
         }else if(element->ValueStr() == "subtype"){
-            string name = element->Attribute("name");
-            string file;
-            if(element->QueryStringAttribute("file", &file) == TIXML_SUCCESS)
-                subTypes[name].loadFromXML(file);
-            else
-                subTypes[name].loadFromXML(element->FirstChildElement(), filename);
+            string name, file;
+
+            if(element->QueryStringAttribute("name", &name) == TIXML_SUCCESS && !name.empty()){
+                if(element->QueryStringAttribute("file", &file) == TIXML_SUCCESS)
+                    subTypes[name].loadFromXML(file);
+                else
+                    subTypes[name].loadFromXML(element->FirstChildElement(), filename);
+            }
         }
     }
 
