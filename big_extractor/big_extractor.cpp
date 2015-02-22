@@ -1,14 +1,14 @@
 #include "log.hpp"
+#include "application.hpp"
 #include "bigreader.hpp"
 #include <vector>
 
 using namespace OpenBFME;
 
-
 int main(int argc, const char* argv[]){
-    Log::init("big_extractor.log");
+    Application app(argc, argv);
 
-    std::vector<std::string> args(argv + 1, argv + argc);
+    auto args = app.getRemainingArgs();
 
     if(args.size() < 1){
         Log::error("Not enough arguments supplied!");

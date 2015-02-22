@@ -1,3 +1,4 @@
+#include "application.hpp"
 #include "bigreader.hpp"
 #include "log.hpp"
 
@@ -14,8 +15,9 @@ bool testFile(const BigEntry* file){
     return true;
 }
 
-int main(){
-    Log::init("bigreader_test.log");
+int main(int argc, const char* argv[]){
+    Application app(argc, argv);
+
     BigFilesystem big;
 
     big.mount("test.big", true);

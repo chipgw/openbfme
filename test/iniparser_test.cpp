@@ -1,6 +1,6 @@
+#include "application.hpp"
 #include "iniparser.hpp"
 #include "log.hpp"
-#include <memory>
 
 using namespace OpenBFME;
 
@@ -15,8 +15,8 @@ void runTest(IniParser& ini, BigFilesystem& big, IniType& rootType) {
     }
 }
 
-int main(){
-    Log::init("iniparser_test.log");
+int main(int argc, const char* argv[]){
+    Application app(argc, argv);
 
     IniType rootType("iniparser_test_root.xml");
 

@@ -1,3 +1,4 @@
+#include "application.hpp"
 #include "log.hpp"
 #include <vector>
 #include <cstdio>
@@ -45,8 +46,8 @@ int runTest(const string& formatString, const Printable& arg, const integer& num
     return 0;
 }
 
-int main() {
-    Log::init("log_test.log");
+int main(int argc, const char* argv[]) {
+    Application app(argc, argv);
 
     int failed = 0;
 

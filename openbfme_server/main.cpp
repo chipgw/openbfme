@@ -1,9 +1,10 @@
 #include "log.hpp"
+#include "application.hpp"
 
 using namespace OpenBFME;
 
-int main() {
-    Log::init("openbfme_server.log");
+int main(int argc, const char* argv[]){
+    Application app(argc, argv);
 
     Log::error("OpenBFME server not yet implemented!");
 

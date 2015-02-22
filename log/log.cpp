@@ -5,18 +5,20 @@ using namespace std;
 
 namespace OpenBFME {
 
-void Log::init(const char *filename, bool forceVerbose){
+void Log::init(const string& filename, bool verbose, bool silent){
     if(outputs.size() < 1){
 #ifndef NDEBUG
         /* Debug output is always on in debug builds. */
-        forceVerbose = true;
+        verbose = true;
 #endif
-        outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | (forceVerbose ? Debug : 0)), stdout));
+        if(!silent)
+            outputs.push_back(LogOutput(LogOutputLevel(Info | Warning | (verbose ? Debug : 0)), stdout));
+
         outputs.push_back(LogOutput(Error, stderr));
 
-        FILE* file = fopen(filename, "w");
+        FILE* file = fopen(filename.c_str(), "w");
         if(file != nullptr){
-            outputs.push_back(LogOutput(LogOutputLevel(All & (forceVerbose ? ~0 : ~Debug)), file));
+            outputs.push_back(LogOutput(silent ? Error : LogOutputLevel(All & (verbose ? ~0 : ~Debug)), file));
         }
     }
 }
