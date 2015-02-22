@@ -26,6 +26,8 @@ endmacro()
 macro(ADD_PROJECT_LIB)
     file(GLOB SOURCES "${ARGV0}/*.cpp")
 
+    include_directories("${ARGV0}/include")
+
     add_library(${ARGV0} SHARED ${SOURCES})
     target_link_libraries(${ARGN})
 

@@ -23,9 +23,6 @@ find_package(TinyXML REQUIRED)
 include_directories(${TINYXML_INCLUDE_DIR})
 
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
-include_directories("${CMAKE_SOURCE_DIR}/log/include")
-include_directories("${CMAKE_SOURCE_DIR}/bigreader/include")
-include_directories("${CMAKE_SOURCE_DIR}/iniparser/include")
 
 # Files not needed in build, but included so they show up in IDE.
 file(GLOB_RECURSE HEADERS "*.hpp")
