@@ -23,7 +23,7 @@ private:
     string executablePath;
 
 public:
-    Application(int argc, const char *argv[]);
+    EXPORT Application(int argc, const char *argv[]);
 
     const ArgumentList& getRemainingArgs() { return remainingArguments; }
 
