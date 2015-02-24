@@ -134,6 +134,9 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
         return parseVector(file, var, name);
     case IniVariable::Line:
         var.s = file.getLine();
+        string::size_type comment = std::min(var.s.find(';'), var.s.find("//"));
+        if(comment != string::npos)
+            var.s.erase(comment);
         Log::debug("Added variable: \"%s\" of type: \"Line\" value: \"%s\"", name, var.s);
         return true;
     }
