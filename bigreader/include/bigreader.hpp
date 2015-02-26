@@ -28,6 +28,9 @@ private:
 
     Backend backend;
 
+    /* Whether or not we handle comments. */
+    bool comments;
+
     /* Open the archive file in a BigFile backend.
      * If called with a folder backend returns true if an entry is already open. */
     bool open();
@@ -63,6 +66,8 @@ public:
 
     inline const string &getArchiveFilename() { return archiveFilename; }
     inline const Backend &getBackend() { return backend; }
+
+    inline void enableComments() { comments = true; }
 };
 
 class BigEntry{
@@ -85,6 +90,7 @@ public:
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
     inline bool eof() const { return archive.eof(*this); }
+    inline void enableComments() const { archive.enableComments(); }
 };
 
 inline bool operator <(const BigEntry& e1,const BigEntry& e2){ return e1.filename < e2.filename;}

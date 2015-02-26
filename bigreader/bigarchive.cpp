@@ -112,6 +112,8 @@ void BigArchive::close(){
 
 bool BigArchive::openEntry(const BigEntry& entry) {
     entry.line = 0;
+    /* Comments mode must be reenabled after opening a new file. */
+    comments = false;
 
     switch (backend) {
     case BigFile:
@@ -151,6 +153,10 @@ string BigArchive::getLine(const BigEntry &entry){
     if(str.back() == '\r'){
         str.pop_back();
     }
+
+    string::size_type comment = std::min(str.find(';'), str.find("//"));
+    if(comment != string::npos)
+        str.erase(comment);
 
     entry.line++;
 
@@ -211,6 +217,17 @@ string BigArchive::getWord(const BigEntry &entry){
             }
         }
         data += c;
+    }
+
+    string::size_type comment = std::min(data.find(';'), data.find("//"));
+    if(isSym && comment != string::npos){
+        getLine(entry);
+
+        /* If the comment is at the very start of the line we return a newline character. */
+        if(comment == 0)
+            return "\n";
+
+        data.erase(comment);
     }
 
     return data;
