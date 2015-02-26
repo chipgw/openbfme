@@ -200,34 +200,46 @@ string BigArchive::getWord(const BigEntry &entry){
             }else if(c == '"'){
                 /* we have a string! */
                 isStr = true;
+            }else if(c == ';'){
+                /* We have a comment! */
+                getLine(entry);
+                return "\n";
             }else{
                 isSym = true;
             }
         }else{
-            if(!isStr && (std::isspace(c) ||
-                    (isWrd && !std::isalnum(c) && c != '_') ||
-                    (isNmb && !std::isdigit(c) && c != '.') ||
-                    (isSym && std::isalnum(c)))){
-                ungetc(c, file);
-                break;
-            }
-            if(isStr && c == '"'){
+            if(!isStr){
+                if(c == ';'){
+                    /* We have a comment! */
+                    getLine(entry);
+                    break;
+                }else if(c == '/' && data.back() == '/'){
+                    /* We have a comment! */
+                    getLine(entry);
+
+                    /* Is the comment all that was in the string? */
+                    if(data.size() == 1)
+                        return "\n";
+
+                    /* Remove the other '/' character. */
+                    data.pop_back();
+                    break;
+                }else if((std::isspace(c) || /* A space ends anything. */
+                        /* Words break on non alpha-numeric characters other than underscores. */
+                        (isWrd && !std::isalnum(c) && c != '_') ||
+                        /* Numbers break on anything that isn't a digit or a period. */
+                        (isNmb && !std::isdigit(c) && c != '.') ||
+                        /* Symbols break on anything alpha-numeric. */
+                        (isSym && std::isalnum(c)))){
+                    ungetc(c, file);
+                    break;
+                }
+            }else if(c == '"'){
                 data += c;
                 break;
             }
         }
         data += c;
-    }
-
-    string::size_type comment = std::min(data.find(';'), data.find("//"));
-    if(isSym && comment != string::npos){
-        getLine(entry);
-
-        /* If the comment is at the very start of the line we return a newline character. */
-        if(comment == 0)
-            return "\n";
-
-        data.erase(comment);
     }
 
     return data;
