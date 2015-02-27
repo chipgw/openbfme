@@ -9,9 +9,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directo
 # MSVC uses WIP std filesystem library, anything else uses boost.
 set(FS_LIBRARY)
 if(NOT MSVC)
-    find_package(Boost 1.57 COMPONENTS filesystem REQUIRED)
+    find_package(Boost 1.57 COMPONENTS system filesystem REQUIRED)
     include_directories(${Boost_INCLUDE_DIR})
-    set(FS_LIBRARY ${Boost_FILESYSTEM_LIBRARY_RELEASE})
+    set(FS_LIBRARY ${Boost_LIBRARIES})
 endif()
 
 # Enable any C++11 compiler flags if possible/nessecary.
@@ -21,6 +21,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 find_package(TinyXML REQUIRED)
 include_directories(${TINYXML_INCLUDE_DIR})
+add_definitions(-DTIXML_USE_STL)
 
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
 
@@ -40,7 +41,7 @@ option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 
 add_project_lib(log)
 add_project_lib(core log ${FS_LIBRARY})
-add_project_lib(bigreader log)
+add_project_lib(bigreader log ${FS_LIBRARY})
 add_project_lib(iniparser bigreader ${TINYXML_LIBRARIES})
 
 add_project_exe(big_extractor bigreader)

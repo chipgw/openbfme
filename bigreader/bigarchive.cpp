@@ -7,6 +7,11 @@
 #include FILESYSTEM_HEADER
 namespace fs = FILESYSTEM_NAMESPACE;
 
+/* Another name difference that should be fixed in VS 2015. */
+#ifdef OPENBFME_COMPILER_MSVC
+#define generic_string string
+#endif
+
 namespace OpenBFME {
 
 uint32_t readUInt32(FILE* file){
@@ -42,9 +47,12 @@ bool BigArchive::readHeader(){
         for (fs::recursive_directory_iterator dir(archiveFilename), end; dir != end; ++dir) {
             const fs::path& currentPath = dir->path();
             if (fs::is_regular_file(currentPath)) {
-                auto entry = entries.emplace(*this, 0, uint32_t(fs::file_size(currentPath)),
-                                             currentPath.string().substr(currentPath.string().find_first_of('/') + 1));
-                Log::debug("File path: \"%s\" length: %#08x", entry.first->filename, entry.first->end);
+                string filename = currentPath.generic_string();
+                filename.erase(0, filename.find_first_of('/') + 1);
+                uint32_t filesize = uint32_t(fs::file_size(currentPath));
+
+                entries.emplace(*this, 0, filesize, filename);
+                Log::debug("File path: \"%s\" length: %#08x", filename, filesize);
             }
         }
 
