@@ -10,11 +10,12 @@ Dependencies:
 * [TinyXML]
 
 On Linux:
-* [Boost] filesystem library
+* [Boost] filesystem library.
 * Compiler with C++11 support.
 
 On Windows:
-* MSVC12 (aka Visual Studio 2013)
+* [Visual Studio 2013]
+* OR [MinGW] 4.8 or greater. (Also requires [Boost] filesystem.)
 
 Building
 --------
@@ -33,4 +34,6 @@ License
 [GLM]:http://glm.g-truc.net/
 [TinyXml]:http://www.grinninglizard.com/tinyxml/
 [Boost]:http://boost.org
+[Visual Studio 2013]:http://www.visualstudio.com/
+[MinGW]:http://www.mingw.org/
 [MIT License]:LICENSE
