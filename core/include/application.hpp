@@ -2,6 +2,7 @@
 
 #include "types.hpp"
 #include <vector>
+#include <unordered_map>
 
 namespace OpenBFME {
 
@@ -16,6 +17,9 @@ private:
     /* All the arguments passed to the application, minus the executable path itself. */
     ArgumentList fullArguments;
 
+    /* Arguments handled by command line parser. i.e. any argument in the form: "--<key>[=<value>]". */
+    std::unordered_map<string, string> parsedArguments;
+
     /* Any arguments not handled by the commandline parser. */
     ArgumentList remainingArguments;
 
@@ -29,6 +33,12 @@ public:
 
     /* Get the Application instance. */
     static Application* getApplication() { return app; }
+
+    /* Get the value of an argument. Returns true and puts value in value if the argument was passed. */
+    EXPORT bool getBoolArgument(string name, bool* valid = nullptr);
+    EXPORT integer getIntegerArgument(string name, bool* valid = nullptr);
+    EXPORT decimal getDecimalArgument(string name, bool* valid = nullptr);
+    EXPORT string getStringArgument(string name, bool* valid = nullptr);
 };
 
 }

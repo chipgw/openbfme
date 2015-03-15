@@ -20,16 +20,20 @@ Application::Application(int argc, const char *argv[]){
 
         executablePath = fs::canonical(fs::path(argv[0])).string();
 
-        bool verbose = false, silent = false;
-
         for(string& arg : fullArguments){
-            /* TODO - Make a whole fancy system for handling other options. */
-            if(arg == "-v" || arg == "--verbose")
-                verbose = true;
-            else if(arg == "-s" || arg == "--silent")
-                silent = true;
-            else
+            if(arg.size() > 1 && arg[0] == '-'){
+                string::size_type start = (arg[1] == '-') ? 2 : 1;
+                string::size_type equals = arg.find('=');
+
+                string key = arg.substr(start, equals - start);
+
+                if(equals != string::npos)
+                    parsedArguments[key] = arg.substr(equals + 1);
+                else
+                    parsedArguments[key] = "";
+            }else{
                 remainingArguments.push_back(arg);
+            }
         }
 
         fs::path logPath = executablePath;
@@ -39,13 +43,79 @@ Application::Application(int argc, const char *argv[]){
         if(!fs::exists(logPath))
             fs::create_directories(logPath);
 
-        Log::init((logPath / logName).string(), verbose, silent);
+        Log::init((logPath / logName).string(), getBoolArgument("verbose") || getBoolArgument("v"), getBoolArgument("silent") || getBoolArgument("s"));
 
         Log::info("Starting \"%s\"", executablePath);
     }else{
         /* TODO - This may be cause for aborting. Just remember not to create an instance of this class anywhere but in main. */
         Log::error("A second instance of Application class was created!");
     }
+}
+
+bool Application::getBoolArgument(string name, bool *valid) {
+    if(valid) *valid = false;
+
+    if(parsedArguments.count(name) == 0)
+        return false;
+
+    string arg = parsedArguments[name];
+
+    if(arg == "" || arg == "yes" || arg == "1"){
+        if(valid) *valid = true;
+        return true;
+    }
+    if(arg == "no" || arg == "0"){
+        if(valid) *valid = true;
+        return false;
+    }
+
+    Log::error("Invalid command-line: Expected \"yes\", \"no\", \"1\", \"0\" after \"--%s\", got \"%s\"!", name, parsedArguments[name]);
+    return false;
+}
+
+integer Application::getIntegerArgument(string name, bool *valid){
+    if(valid) *valid = false;
+
+    if(parsedArguments.count(name) == 0)
+        return 0;
+
+    try{
+        integer value = std::stoi(parsedArguments[name]);
+        if(valid) *valid = true;
+        return value;
+    }catch(...){
+        Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, parsedArguments[name]);
+    }
+
+    return 0;
+}
+
+decimal Application::getDecimalArgument(string name, bool *valid){
+    if(valid) *valid = false;
+
+    if(parsedArguments.count(name) == 0)
+        return 0.0f;
+
+    try{
+        decimal value = std::stod(parsedArguments[name]);
+        if(valid) *valid = true;
+        return value;
+    }catch(...){
+        Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, parsedArguments[name]);
+    }
+
+    return 0.0f;
+}
+
+string Application::getStringArgument(string name, bool *valid){
+    if(parsedArguments.count(name) == 0){
+        if(valid) *valid = false;
+        return "";
+    }
+
+    if(valid) *valid = true;
+
+    return parsedArguments[name];
 }
 
 Application* Application::app = nullptr;

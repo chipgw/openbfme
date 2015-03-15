@@ -6,6 +6,11 @@ using namespace OpenBFME;
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
+    Log::info("--boolarg value is \"%s\"", app.getBoolArgument("boolarg") ? "true" : "false");
+    Log::info("--intarg value is \"%i\"", app.getIntegerArgument("intarg"));
+    Log::info("--decarg value is \"%f\"", app.getDecimalArgument("decarg"));
+    Log::info("--strarg value is \"%s\"", app.getStringArgument("strarg"));
+
     auto& args = app.getRemainingArgs();
 
     if(args.size() > 0){
