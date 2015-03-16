@@ -75,11 +75,16 @@ bool Application::getBoolArgument(string name, bool *valid) {
 }
 
 integer Application::getIntegerArgument(string name, bool *valid){
-    string arg = getStringArgument(name, valid);
-    try{
-        return std::stoi(arg);
-    }catch(...){
-        Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, arg);
+    bool stringValid;
+    string arg = getStringArgument(name, &stringValid);
+
+    if(stringValid){
+        if(valid) *valid = true;
+        try{
+            return std::stoi(arg);
+        }catch(...){
+            Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, arg);
+        }
     }
 
     if(valid) *valid = false;
@@ -87,12 +92,15 @@ integer Application::getIntegerArgument(string name, bool *valid){
 }
 
 decimal Application::getDecimalArgument(string name, bool *valid){
-    string arg = getStringArgument(name, valid);
+    bool stringValid;
+    string arg = getStringArgument(name, &stringValid);
 
-    try{
-        return std::stof(arg);
-    }catch(...){
-        Log::error("Invalid command-line: Expected decimal value after \"--%s\", got \"%s\"!", name, arg);
+    if(stringValid){
+        try{
+            return std::stof(arg);
+        }catch(...){
+            Log::error("Invalid command-line: Expected decimal value after \"--%s\", got \"%s\"!", name, arg);
+        }
     }
 
     if(valid) *valid = false;
