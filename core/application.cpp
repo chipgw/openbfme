@@ -55,12 +55,13 @@ Application::Application(int argc, const char *argv[]){
 bool Application::getBoolArgument(string name, bool *valid) {
     if(valid) *valid = false;
 
-    if(parsedArguments.count(name) == 0)
+    bool stringValid;
+    string arg = getStringArgument(name, &stringValid);
+
+    if(!stringValid)
         return false;
 
-    string arg = parsedArguments[name];
-
-    if(arg == "" || arg == "yes" || arg == "1"){
+    if(arg.size() == 0 || arg == "yes" || arg == "1"){
         if(valid) *valid = true;
         return true;
     }
@@ -69,41 +70,32 @@ bool Application::getBoolArgument(string name, bool *valid) {
         return false;
     }
 
-    Log::error("Invalid command-line: Expected \"yes\", \"no\", \"1\", \"0\" after \"--%s\", got \"%s\"!", name, parsedArguments[name]);
+    Log::error("Invalid command-line: Expected \"yes\", \"no\", \"1\", \"0\" after \"--%s\", got \"%s\"!", name, arg);
     return false;
 }
 
 integer Application::getIntegerArgument(string name, bool *valid){
-    if(valid) *valid = false;
-
-    if(parsedArguments.count(name) == 0)
-        return 0;
-
+    string arg = getStringArgument(name, valid);
     try{
-        integer value = std::stoi(parsedArguments[name]);
-        if(valid) *valid = true;
-        return value;
+        return std::stoi(arg);
     }catch(...){
-        Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, parsedArguments[name]);
+        Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, arg);
     }
 
+    if(valid) *valid = false;
     return 0;
 }
 
 decimal Application::getDecimalArgument(string name, bool *valid){
-    if(valid) *valid = false;
-
-    if(parsedArguments.count(name) == 0)
-        return 0.0f;
+    string arg = getStringArgument(name, valid);
 
     try{
-        decimal value = std::stod(parsedArguments[name]);
-        if(valid) *valid = true;
-        return value;
+        return std::stof(arg);
     }catch(...){
-        Log::error("Invalid command-line: Expected integer value after \"--%s\", got \"%s\"!", name, parsedArguments[name]);
+        Log::error("Invalid command-line: Expected decimal value after \"--%s\", got \"%s\"!", name, arg);
     }
 
+    if(valid) *valid = false;
     return 0.0f;
 }
 
