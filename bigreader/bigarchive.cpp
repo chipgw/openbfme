@@ -7,11 +7,6 @@
 #include FILESYSTEM_HEADER
 namespace fs = FILESYSTEM_NAMESPACE;
 
-/* Another name difference that should be fixed in VS 2015. */
-#ifdef OPENBFME_COMPILER_MSVC
-#define generic_string string
-#endif
-
 namespace OpenBFME {
 
 uint32_t readUInt32(FILE* file){

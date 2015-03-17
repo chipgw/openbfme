@@ -14,3 +14,8 @@
 #define FILESYSTEM_HEADER <filesystem>
 /* TODO - This namespace is temporary, as this functionality isn't final yet. */
 #define FILESYSTEM_NAMESPACE std::tr2::sys
+
+/* These name differences should be fixed in VS 2015. */
+#define canonical complete
+#define change_extension replace_extension
+#define generic_string string

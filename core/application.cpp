@@ -5,12 +5,6 @@
 #include FILESYSTEM_HEADER
 namespace fs = FILESYSTEM_NAMESPACE;
 
-/* These name differences should be fixed in VS 2015. */
-#ifdef OPENBFME_COMPILER_MSVC
-#define canonical complete
-#define change_extension replace_extension
-#endif
-
 namespace OpenBFME {
 
 Application::Application(int argc, const char *argv[]){
