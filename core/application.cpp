@@ -37,7 +37,7 @@ Application::Application(int argc, const char *argv[]){
         if(!fs::exists(logPath))
             fs::create_directories(logPath);
 
-        Log::init((logPath / logName).string(), getBoolArgument("verbose") || getBoolArgument("v"), getBoolArgument("silent") || getBoolArgument("s"));
+        Log::init((logPath / logName).string(), getBoolArgument("verbose|v"), getBoolArgument("silent|s"));
 
         Log::info("Starting \"%s\"", executablePath);
     }else{
@@ -102,14 +102,25 @@ decimal Application::getDecimalArgument(string name, bool *valid){
 }
 
 string Application::getStringArgument(string name, bool *valid){
-    if(parsedArguments.count(name) == 0){
-        if(valid) *valid = false;
-        return "";
-    }
-
+    string::size_type delim = 0;
     if(valid) *valid = true;
 
-    return parsedArguments[name];
+    while(true){
+        string::size_type newDelim = name.find('|', delim);
+
+        string subName = name.substr(delim, newDelim - delim);
+
+        if(parsedArguments.count(subName) != 0)
+            return parsedArguments[subName];
+
+        if(newDelim == string::npos)
+            break;
+
+        delim = newDelim + 1;
+    }
+
+    if(valid) *valid = false;
+    return "";
 }
 
 Application* Application::app = nullptr;

@@ -8,10 +8,10 @@ int main(int argc, const char* argv[]) {
 
     bool boolValid, intValid, decValid, strValid;
 
-    bool boolArg = app.getBoolArgument("boolarg", &boolValid);
-    integer intArg = app.getIntegerArgument("intarg", &intValid);
-    decimal decArg = app.getDecimalArgument("decarg", &decValid);
-    string strArg = app.getStringArgument("strarg", &strValid);
+    bool boolArg = app.getBoolArgument("boolarg|b", &boolValid);
+    integer intArg = app.getIntegerArgument("intarg|int|i", &intValid);
+    decimal decArg = app.getDecimalArgument("decarg|d", &decValid);
+    string strArg = app.getStringArgument("strarg|str", &strValid);
 
     if(boolValid)
         Log::info("--boolarg value is \"%s\"", boolArg ? "true" : "false");
