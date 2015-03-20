@@ -47,33 +47,32 @@ Application::Application(int argc, const char *argv[]){
 }
 
 bool Application::getBoolArgument(string name, bool *valid) {
-    if(valid) *valid = false;
+    if(valid) *valid = true;
 
-    bool stringValid;
-    string arg = getStringArgument(name, &stringValid);
-
-    if(!stringValid)
-        return false;
-
-    if(arg.size() == 0 || arg == "yes" || arg == "1"){
-        if(valid) *valid = true;
-        return true;
-    }
-    if(arg == "no" || arg == "0"){
-        if(valid) *valid = true;
-        return false;
-    }
-
-    Log::error("Invalid command-line: Expected \"yes\", \"no\", \"1\", \"0\" after \"--%s\", got \"%s\"!", name, arg);
-    return false;
-}
-
-integer Application::getIntegerArgument(string name, bool *valid){
     bool stringValid;
     string arg = getStringArgument(name, &stringValid);
 
     if(stringValid){
-        if(valid) *valid = true;
+        if(arg.size() == 0 || arg == "yes" || arg == "1")
+            return true;
+
+        if(arg == "no" || arg == "0")
+            return false;
+
+        Log::error("Invalid command-line: Expected \"yes\", \"no\", \"1\", \"0\" after \"--%s\", got \"%s\"!", name, arg);
+    }
+
+    if(valid) *valid = false;
+    return false;
+}
+
+integer Application::getIntegerArgument(string name, bool *valid){
+    if(valid) *valid = true;
+
+    bool stringValid;
+    string arg = getStringArgument(name, &stringValid);
+
+    if(stringValid){
         try{
             return std::stoi(arg);
         }catch(...){
@@ -86,6 +85,8 @@ integer Application::getIntegerArgument(string name, bool *valid){
 }
 
 decimal Application::getDecimalArgument(string name, bool *valid){
+    if(valid) *valid = true;
+
     bool stringValid;
     string arg = getStringArgument(name, &stringValid);
 

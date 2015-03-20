@@ -34,7 +34,7 @@ public:
     /* Get the Application instance. */
     static Application* getApplication() { return app; }
 
-    /* Get the value of an argument. Returns true and puts value in value if the argument was passed. */
+    /* Get the value of an argument. */
     EXPORT bool getBoolArgument(string name, bool* valid = nullptr);
     EXPORT integer getIntegerArgument(string name, bool* valid = nullptr);
     EXPORT decimal getDecimalArgument(string name, bool* valid = nullptr);
