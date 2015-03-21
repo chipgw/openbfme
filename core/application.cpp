@@ -15,7 +15,9 @@ Application::Application(int argc, const char *argv[]){
         executablePath = fs::canonical(fs::path(argv[0])).string();
 
         for(string& arg : fullArguments){
+            /* Any argument that starts with a '-' is handled by the parser. */
             if(arg.size() > 1 && arg[0] == '-'){
+                /* It doesn't matter whether one or two dashes start the argument. */
                 string::size_type start = (arg[1] == '-') ? 2 : 1;
                 string::size_type equals = arg.find('=');
 
@@ -30,6 +32,7 @@ Application::Application(int argc, const char *argv[]){
             }
         }
 
+        /* The log is stored in "logs/<executable name>.log". */
         fs::path logPath = executablePath;
         fs::path logName = fs::change_extension(logPath, string(".log")).filename();
         logPath = logPath.parent_path() / fs::path("logs");
@@ -43,6 +46,15 @@ Application::Application(int argc, const char *argv[]){
     }else{
         /* TODO - This may be cause for aborting. Just remember not to create an instance of this class anywhere but in main. */
         Log::error("A second instance of Application class was created!");
+    }
+}
+
+Application::~Application(){
+    /* Close log file and reset the static pointer when Application instance is destroyed. */
+    if(app == this){
+        Log::info("Shutting down.");
+        Log::shutdown();
+        app = nullptr;
     }
 }
 

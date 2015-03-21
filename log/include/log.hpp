@@ -22,6 +22,7 @@ class Log{
 
 public:
     EXPORT static void init(const string& filename, bool verbose = false, bool silent = false);
+    EXPORT static void shutdown();
 
     inline static void debug(const string &output){
         print(output, LogOutputLevel::Debug);

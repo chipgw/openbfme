@@ -23,6 +23,14 @@ void Log::init(const string& filename, bool verbose, bool silent){
     }
 }
 
+void Log::shutdown(){
+    for(LogOutput output : outputs)
+        if(output.second != stdout && output.second != stderr)
+            fclose(output.second);
+
+    outputs.clear();
+}
+
 void Log::print(const string& str, LogOutputLevel level){
     const char* type;
 

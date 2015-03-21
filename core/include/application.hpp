@@ -28,6 +28,7 @@ private:
 
 public:
     EXPORT Application(int argc, const char *argv[]);
+    EXPORT ~Application();
 
     const ArgumentList& getRemainingArgs() { return remainingArguments; }
 
