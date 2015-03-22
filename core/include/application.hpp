@@ -35,6 +35,9 @@ public:
     /* Get the Application instance. */
     static Application* getApplication() { return app; }
 
+    /* Splits a '|' seperated string. name is set to first one found in parsedArguments. returns true if name is valid. */
+    bool getArgumentName(string &name);
+
     /* Get the value of an argument. */
     EXPORT bool getBoolArgument(string name, bool* valid = nullptr);
     EXPORT integer getIntegerArgument(string name, bool* valid = nullptr);

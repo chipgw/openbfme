@@ -58,13 +58,28 @@ Application::~Application(){
     }
 }
 
+bool Application::getArgumentName(string &name){
+    string::size_type delim = 0;
+
+    while((delim = name.find('|')) != string::npos){
+        if(parsedArguments.count(name.substr(0, delim)) != 0)
+            name.erase(delim);
+        else
+            name.erase(0, delim + 1);
+    }
+
+    if(parsedArguments.count(name) == 0)
+        name.clear();
+
+    return name.size() != 0;
+}
+
 bool Application::getBoolArgument(string name, bool *valid) {
     if(valid) *valid = true;
 
-    bool stringValid;
-    string arg = getStringArgument(name, &stringValid);
+    if(getArgumentName(name)){
+        const string& arg = parsedArguments[name];
 
-    if(stringValid){
         if(arg.size() == 0 || arg == "yes" || arg == "1")
             return true;
 
@@ -81,10 +96,8 @@ bool Application::getBoolArgument(string name, bool *valid) {
 integer Application::getIntegerArgument(string name, bool *valid){
     if(valid) *valid = true;
 
-    bool stringValid;
-    string arg = getStringArgument(name, &stringValid);
-
-    if(stringValid){
+    if(getArgumentName(name)){
+        const string& arg = parsedArguments[name];
         try{
             return std::stoi(arg);
         }catch(...){
@@ -99,10 +112,8 @@ integer Application::getIntegerArgument(string name, bool *valid){
 decimal Application::getDecimalArgument(string name, bool *valid){
     if(valid) *valid = true;
 
-    bool stringValid;
-    string arg = getStringArgument(name, &stringValid);
-
-    if(stringValid){
+    if(getArgumentName(name)){
+        const string& arg = parsedArguments[name];
         try{
             return std::stof(arg);
         }catch(...){
@@ -115,22 +126,10 @@ decimal Application::getDecimalArgument(string name, bool *valid){
 }
 
 string Application::getStringArgument(string name, bool *valid){
-    string::size_type delim = 0;
     if(valid) *valid = true;
 
-    while(true){
-        string::size_type newDelim = name.find('|', delim);
-
-        string subName = name.substr(delim, newDelim - delim);
-
-        if(parsedArguments.count(subName) != 0)
-            return parsedArguments[subName];
-
-        if(newDelim == string::npos)
-            break;
-
-        delim = newDelim + 1;
-    }
+    if(getArgumentName(name))
+        return parsedArguments[name];
 
     if(valid) *valid = false;
     return "";
