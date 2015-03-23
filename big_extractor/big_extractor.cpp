@@ -8,6 +8,8 @@ using namespace OpenBFME;
 int main(int argc, const char* argv[]){
     Application app(argc, argv);
 
+    app.parseArguments();
+
     auto args = app.getRemainingArgs();
 
     if(args.size() < 1){

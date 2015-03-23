@@ -6,30 +6,30 @@ using namespace OpenBFME;
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
-    bool boolValid, intValid, decValid, strValid;
+    auto boolArg = app.registerArgument(ArgumentDef::Bool, "boolarg,b", "Test argument");
+    auto intArg = app.registerArgument(ArgumentDef::Integer, "intarg,int,i", "Test argument");
+    auto decArg = app.registerArgument(ArgumentDef::Decimal, "decarg,d", "Test argument");
+    auto strArg = app.registerArgument(ArgumentDef::String, "strarg,str", "Test argument");
 
-    bool boolArg = app.getBoolArgument("boolarg|b", &boolValid);
-    integer intArg = app.getIntegerArgument("intarg|int|i", &intValid);
-    decimal decArg = app.getDecimalArgument("decarg|d", &decValid);
-    string strArg = app.getStringArgument("strarg|str", &strValid);
+    app.parseArguments();
 
-    if(boolValid)
-        Log::info("--boolarg value is \"%s\"", boolArg ? "true" : "false");
+    if(boolArg->valid)
+        Log::info("--boolarg value is \"%s\"", boolArg->boolResult ? "true" : "false");
     else
         Log::info("No valid --boolarg was passed.");
 
-    if(intValid)
-        Log::info("--intarg value is \"%i\"", intArg);
+    if(intArg->valid)
+        Log::info("--intarg value is \"%i\"", intArg->intResult);
     else
         Log::info("No valid --intarg was passed.");
 
-    if(decValid)
-        Log::info("--decarg value is \"%f\"", decArg);
+    if(decArg->valid)
+        Log::info("--decarg value is \"%f\"", decArg->decResult);
     else
         Log::info("No valid --decarg was passed.");
 
-    if(strValid)
-        Log::info("--strarg value is \"%s\"", strArg);
+    if(strArg->valid)
+        Log::info("--strarg value is \"%s\"", strArg->result);
     else
         Log::info("No valid --strarg was passed.");
 

@@ -18,6 +18,8 @@ void runTest(IniParser& ini, BigFilesystem& big, IniType& rootType) {
 int main(int argc, const char* argv[]){
     Application app(argc, argv);
 
+    app.parseArguments();
+
     IniType rootType("iniparser_test_root.xml");
 
     BigFilesystem big;

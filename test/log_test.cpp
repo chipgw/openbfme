@@ -49,6 +49,8 @@ int runTest(const string& formatString, const Printable& arg, const integer& num
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
+    app.parseArguments();
+
     int failed = 0;
 
     const static std::vector<std::pair<string, Printable>> tests {

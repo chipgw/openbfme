@@ -18,6 +18,8 @@ bool testFile(const BigEntry* file){
 int main(int argc, const char* argv[]){
     Application app(argc, argv);
 
+    app.parseArguments();
+
     BigFilesystem big;
 
     big.mount("test.big", true);
