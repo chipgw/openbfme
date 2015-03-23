@@ -1,4 +1,5 @@
 #include "application.hpp"
+#include "argumentsystem.hpp"
 #include "log.hpp"
 
 using namespace OpenBFME;
@@ -6,10 +7,10 @@ using namespace OpenBFME;
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
-    auto boolArg = app.registerArgument(ArgumentDef::Bool, "boolarg,b", "Test argument");
-    auto intArg = app.registerArgument(ArgumentDef::Integer, "intarg,int,i", "Test argument");
-    auto decArg = app.registerArgument(ArgumentDef::Decimal, "decarg,d", "Test argument");
-    auto strArg = app.registerArgument(ArgumentDef::String, "strarg,str", "Test argument");
+    auto boolArg = app.registerArgument<BoolArgument>({"boolarg","b"}, "Test argument");
+    auto intArg = app.registerArgument<IntegerArgument>({"intarg","int","i"}, "Test argument");
+    auto decArg = app.registerArgument<DecimalArgument>({"decarg","d"}, "Test argument");
+    auto strArg = app.registerArgument<StringArgument>({"strarg","str"}, "Test argument");
 
     app.parseArguments();
 

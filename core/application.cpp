@@ -1,5 +1,6 @@
 #include "application.hpp"
 #include "log.hpp"
+#include "argumentsystem.hpp"
 #include <algorithm>
 
 #include FILESYSTEM_HEADER
@@ -29,8 +30,8 @@ Application::~Application(){
 }
 
 void Application::parseArguments(){
-    auto verbose = registerArgument(ArgumentDef::Bool, "verbose,v", "TODO - document.");
-    auto silent = registerArgument(ArgumentDef::Bool, "silent,s", "TODO - document.");
+    auto verbose = registerArgument<BoolArgument>({"verbose","v"}, "TODO - document.");
+    auto silent = registerArgument<BoolArgument>({"silent","s"}, "TODO - document.");
 
     for(string& arg : fullArguments){
         /* Any argument that starts with a '-' is handled by the parser. */
@@ -41,7 +42,7 @@ void Application::parseArguments(){
 
             string key = arg.substr(start, equals - start);
 
-            auto iter = std::find_if(parsedArguments.begin(), parsedArguments.end(), [&](std::shared_ptr<ArgumentDef> def){
+            auto iter = std::find_if(parsedArguments.begin(), parsedArguments.end(), [&](std::shared_ptr<StringArgument> def){
                 return def->containsName(key);
             });
             if(iter != parsedArguments.end()){
@@ -68,12 +69,6 @@ void Application::parseArguments(){
     Log::init((logDir / logName).string(), verbose->valid ? verbose->boolResult : false, silent->valid ? silent->boolResult : false);
 
     Log::info("Starting \"%s\"", executablePath);
-}
-
-std::shared_ptr<const ArgumentDef> Application::registerArgument(ArgumentDef::ArgumentType type, const string &names, const string &desc){
-    parsedArguments.emplace_back(new ArgumentDef(type, names, desc));
-
-    return parsedArguments.back();
 }
 
 Application* Application::app = nullptr;
