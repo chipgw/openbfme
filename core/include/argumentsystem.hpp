@@ -19,7 +19,7 @@ public:
     /* The raw string value passed. */
     string result;
 
-    /* Take the result string and asve the value in the subclass specific variable. */
+    /* Take the result string and save the value in the subclass specific variable. */
     virtual void parse();
 
     /* check to se if the specified name exists in names. */

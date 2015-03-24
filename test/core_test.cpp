@@ -7,10 +7,10 @@ using namespace OpenBFME;
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
-    auto boolArg = app.registerArgument<BoolArgument>({"boolarg","b"}, "Test argument");
-    auto intArg = app.registerArgument<IntegerArgument>({"intarg","int","i"}, "Test argument");
-    auto decArg = app.registerArgument<DecimalArgument>({"decarg","d"}, "Test argument");
-    auto strArg = app.registerArgument<StringArgument>({"strarg","str"}, "Test argument");
+    auto boolArg = app.registerBoolArgument({"boolarg","b"}, "Test argument");
+    auto intArg = app.registerIntegerArgument({"intarg","int","i"}, "Test argument");
+    auto decArg = app.registerDecimalArgument({"decarg","d"}, "Test argument");
+    auto strArg = app.registerStringArgument({"strarg","str"}, "Test argument");
 
     app.parseArguments();
 

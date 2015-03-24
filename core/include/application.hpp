@@ -7,6 +7,9 @@
 namespace OpenBFME {
 
 class StringArgument;
+class BoolArgument;
+class IntegerArgument;
+class DecimalArgument;
 
 /* This class parses commandline and initializes the Log. */
 class Application{
@@ -39,12 +42,10 @@ public:
     /* Get the Application instance. */
     static Application* getApplication() { return app; }
 
-    template<typename T> std::shared_ptr<const T> registerArgument(const std::initializer_list<string>& names, const string& desc) {
-        std::shared_ptr<T> pointer(new T(names, desc));
-        parsedArguments.emplace_back(pointer);
-
-        return pointer;
-    }
+    EXPORT std::shared_ptr<const BoolArgument> registerBoolArgument(const std::initializer_list<string>& names, const string& desc);
+    EXPORT std::shared_ptr<const IntegerArgument> registerIntegerArgument(const std::initializer_list<string>& names, const string& desc);
+    EXPORT std::shared_ptr<const DecimalArgument> registerDecimalArgument(const std::initializer_list<string>& names, const string& desc);
+    EXPORT std::shared_ptr<const StringArgument> registerStringArgument(const std::initializer_list<string>& names, const string& desc);
 };
 
 }

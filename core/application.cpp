@@ -30,8 +30,8 @@ Application::~Application(){
 }
 
 void Application::parseArguments(){
-    auto verbose = registerArgument<BoolArgument>({"verbose","v"}, "TODO - document.");
-    auto silent = registerArgument<BoolArgument>({"silent","s"}, "TODO - document.");
+    auto verbose = registerBoolArgument({"verbose","v"}, "TODO - document.");
+    auto silent = registerBoolArgument({"silent","s"}, "TODO - document.");
 
     for(string& arg : fullArguments){
         /* Any argument that starts with a '-' is handled by the parser. */
@@ -70,6 +70,35 @@ void Application::parseArguments(){
 
     Log::info("Starting \"%s\"", executablePath);
 }
+
+std::shared_ptr<const BoolArgument> Application::registerBoolArgument(const std::initializer_list<string>& names, const string& desc) {
+    std::shared_ptr<BoolArgument> pointer(new BoolArgument(names, desc));
+    parsedArguments.emplace_back(pointer);
+
+    return pointer;
+}
+
+std::shared_ptr<const IntegerArgument> Application::registerIntegerArgument(const std::initializer_list<string>& names, const string& desc) {
+    std::shared_ptr<IntegerArgument> pointer(new IntegerArgument(names, desc));
+    parsedArguments.emplace_back(pointer);
+
+    return pointer;
+}
+
+std::shared_ptr<const DecimalArgument> Application::registerDecimalArgument(const std::initializer_list<string>& names, const string& desc) {
+    std::shared_ptr<DecimalArgument> pointer(new DecimalArgument(names, desc));
+    parsedArguments.emplace_back(pointer);
+
+    return pointer;
+}
+
+std::shared_ptr<const StringArgument> Application::registerStringArgument(const std::initializer_list<string>& names, const string& desc) {
+    std::shared_ptr<StringArgument> pointer(new StringArgument(names, desc));
+    parsedArguments.emplace_back(pointer);
+
+    return pointer;
+}
+
 
 Application* Application::app = nullptr;
 
