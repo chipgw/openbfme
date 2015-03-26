@@ -1,4 +1,5 @@
 #include "argumentsystem.hpp"
+#include "string.hpp"
 
 namespace OpenBFME {
 
@@ -8,6 +9,20 @@ StringArgument::StringArgument(const std::initializer_list<string> &n, const str
 
 void StringArgument::parse(){
     valid = result.size() != 0;
+}
+
+void StringArgument::printHelp(){
+    string nameStr;
+
+    for(const string& name : names){
+        nameStr += ((name.size() == 1) ? "-" : "--") + name + ", ";
+    }
+
+    nameStr.erase(nameStr.size() - 2);
+    nameStr += ':';
+
+    /* Help messages are console only, with no timestamp. */
+    puts(format("  %-20s\t%s", nameStr, description).c_str());
 }
 
 bool StringArgument::containsName(const string &name) const{

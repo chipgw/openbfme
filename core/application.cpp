@@ -30,8 +30,9 @@ Application::~Application(){
 }
 
 void Application::parseArguments(){
-    auto verbose = registerBoolArgument({"verbose","v"}, "TODO - document.");
-    auto silent = registerBoolArgument({"silent","s"}, "TODO - document.");
+    auto verbose =  registerBoolArgument({"verbose","v"},   "Write all messages to the log.");
+    auto silent =   registerBoolArgument({"silent","s"},    "Only write \"ERROR\" level messages to the log.");
+    auto help =     registerBoolArgument({"help","h"},      "Show this help message and quit.");
 
     for(string& arg : fullArguments){
         /* Any argument that starts with a '-' is handled by the parser. */
@@ -58,6 +59,19 @@ void Application::parseArguments(){
         }
     }
 
+    if(help->valid && help->boolResult){
+        /* Help messages are console only, with no timestamp.
+         * TODO - make a way to customize this message. */
+        puts(format("Usage: %s [OPTIONS]\n\nOptions:", executablePath.substr(executablePath.find_last_of("/\\") + 1)).c_str());
+
+        for(auto argdef : parsedArguments){
+            argdef->printHelp();
+        }
+
+        /* TODO - Make a normal way to do this. */
+        exit(EXIT_SUCCESS);
+    }
+
     /* The log is stored in "logs/<executable name>.log". */
     fs::path logDir = executablePath;
     fs::path logName = fs::change_extension(logDir, string(".log")).filename();
@@ -65,6 +79,7 @@ void Application::parseArguments(){
 
     if(!fs::exists(logDir))
         fs::create_directories(logDir);
+
 
     Log::init((logDir / logName).string(), verbose->valid ? verbose->boolResult : false, silent->valid ? silent->boolResult : false);
 

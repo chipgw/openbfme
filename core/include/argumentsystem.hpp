@@ -22,6 +22,8 @@ public:
     /* Take the result string and save the value in the subclass specific variable. */
     virtual void parse();
 
+    void printHelp();
+
     /* check to se if the specified name exists in names. */
     bool containsName(const string& name) const;
 
