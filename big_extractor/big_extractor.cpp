@@ -1,12 +1,20 @@
 #include "log.hpp"
 #include "application.hpp"
+#include "argumentsystem.hpp"
 #include "bigreader.hpp"
 #include <vector>
+
+#include FILESYSTEM_HEADER
+namespace fs = FILESYSTEM_NAMESPACE;
 
 using namespace OpenBFME;
 
 int main(int argc, const char* argv[]){
     Application app(argc, argv);
+
+    auto overwrite =    app.registerBoolArgument({"overwrite","o"},         "Overwrite files if they exsist.");
+    auto useSubdirs =   app.registerBoolArgument({"subdirectories","d"},    "Put extracted files in subdirectories based on archive filename.");
+    auto outPath =      app.registerStringArgument({"path"},                "The path to save files to.");
 
     app.parseArguments();
 
@@ -17,6 +25,20 @@ int main(int argc, const char* argv[]){
         exit(EXIT_FAILURE);
     }
 
+    fs::path basePath;
+
+    if(outPath->valid){
+        basePath = outPath->result;
+
+        try{
+            if(!fs::exists(basePath))
+                fs::create_directories(basePath);
+        }catch(...){
+            Log::error("Could not set output path to \"%s\"", basePath.generic_string());
+            exit(EXIT_FAILURE);
+        }
+    }
+
     BigFilesystem big;
 
     for(std::string &arg : args){
@@ -24,18 +46,17 @@ int main(int argc, const char* argv[]){
 
         if(archive != nullptr){
             if(archive->getBackend() != BigArchive::Folder){
-                std::string path = arg;
-                auto lastSlash = path.find_last_of("/\\");
+                fs::path path = basePath.empty() ? fs::absolute(fs::path(arg)).parent_path() : basePath;
 
-                if(lastSlash != std::string::npos){
-                    path.erase(0, lastSlash + 1);
+                if(useSubdirs->valid && useSubdirs->boolResult){
+                    path /= fs::path(arg).stem();
                 }
+                path /= "/";
 
-                path.erase(path.find_last_of("."));
-                path.push_back('/');
+                Log::debug("Extraction path: \"%s\"", path.generic_string());
 
-                archive->extractAll(path);
-            } else{
+                archive->extractAll(path.generic_string(), overwrite->valid && overwrite->boolResult);
+            }else{
                 Log::warning("Cannot extract from a folder. Why would you want to anyway?");
             }
 

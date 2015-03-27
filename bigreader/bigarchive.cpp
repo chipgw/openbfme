@@ -281,7 +281,7 @@ bool BigArchive::eof(const BigEntry &entry){
     return cpos < entry.start || cpos >= entry.end;
 }
 
-bool BigArchive::extract(const string &filename, const string &directory, bool fullPath){
+bool BigArchive::extract(const string &filename, const string &directory, bool fullPath, bool overwrite){
     const BigEntry* entry = openFile(filename);
 
     if(entry == nullptr){
@@ -295,6 +295,12 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
     }
     outfilename.insert(0, directory);
     fs::create_directories(fs::path(outfilename.substr(0, outfilename.find_last_of('/'))));
+
+    if(!overwrite && fs::exists(outfilename)){
+        Log::info("Skipping existing file: \"%s\".", outfilename);
+
+        return true;
+    }
 
     Log::info("Extracting to \"%s\"...", outfilename);
 
@@ -318,10 +324,10 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
     return true;
 }
 
-bool BigArchive::extractAll(const string &directory){
+bool BigArchive::extractAll(const string &directory, bool overwrite){
     fs::create_directories(fs::path(directory));
     for(auto &entry : entries){
-        if(!extract(entry.filename, directory, true)){
+        if(!extract(entry.filename, directory, true, overwrite)){
             return false;
         }
     }

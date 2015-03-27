@@ -60,9 +60,9 @@ public:
     EXPORT bool eof(const BigEntry &entry);
 
     /* Extract a file to the specified directory. */
-    EXPORT bool extract(const string &filename, const string &directory, bool fullPath);
+    EXPORT bool extract(const string &filename, const string &directory, bool fullPath, bool overwrite);
     /* Extract all entries into given directory. */
-    EXPORT bool extractAll(const string &directory);
+    EXPORT bool extractAll(const string &directory, bool overwrite);
 
     inline const string &getArchiveFilename() { return archiveFilename; }
     inline const Backend &getBackend() { return backend; }
