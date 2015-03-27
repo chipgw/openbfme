@@ -20,7 +20,7 @@ private:
     static Application* app;
 
     /* All the arguments passed to the application, minus the executable path itself. */
-    ArgumentList fullArguments;
+    const ArgumentList fullArguments;
 
     /* Arguments handled by command line parser. */
     std::vector<std::shared_ptr<StringArgument>> parsedArguments;

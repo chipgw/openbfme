@@ -8,10 +8,9 @@ namespace fs = FILESYSTEM_NAMESPACE;
 
 namespace OpenBFME {
 
-Application::Application(int argc, const char *argv[]){
+Application::Application(int argc, const char *argv[]) : fullArguments(argv + 1, argv + argc) {
     if(app == nullptr){
         app = this;
-        fullArguments = std::vector<string>(argv + 1, argv + argc);
 
         executablePath = fs::canonical(fs::path(argv[0])).string();
     }else{
@@ -34,25 +33,30 @@ void Application::parseArguments(){
     auto silent =   registerBoolArgument({"silent","s"},    "Only write \"ERROR\" level messages to the log.");
     auto help =     registerBoolArgument({"help","h"},      "Show this help message and quit.");
 
-    for(string& arg : fullArguments){
+    for(auto i = fullArguments.begin(); i != fullArguments.end(); ++i){
+        const string& arg = *i;
+
         /* Any argument that starts with a '-' is handled by the parser. */
         if(arg.size() > 1 && arg[0] == '-'){
             /* It doesn't matter whether one or two dashes start the argument. */
             string::size_type start = (arg[1] == '-') ? 2 : 1;
             string::size_type equals = arg.find('=');
 
-            string key = arg.substr(start, equals - start);
+            string name = arg.substr(start, equals - start);
 
             auto iter = std::find_if(parsedArguments.begin(), parsedArguments.end(), [&](std::shared_ptr<StringArgument> def){
-                return def->containsName(key);
+                return def->containsName(name);
             });
             if(iter != parsedArguments.end()){
+                auto& def = *iter;
                 if(equals != string::npos)
-                    (*iter)->result = arg.substr(equals + 1);
+                    def->result = arg.substr(equals + 1);
+                else if(def->expectsValue && (i+1) != fullArguments.end() && (i+1)->front() != '-')
+                    def->result = *++i;
                 else
-                    (*iter)->result.clear();
+                    def->result.clear();
 
-                (*iter)->parse();
+                def->parse(name);
             }
         }else{
             remainingArguments.push_back(arg);
@@ -80,10 +84,15 @@ void Application::parseArguments(){
     if(!fs::exists(logDir))
         fs::create_directories(logDir);
 
-
     Log::init((logDir / logName).string(), verbose->valid ? verbose->boolResult : false, silent->valid ? silent->boolResult : false);
 
     Log::info("Starting \"%s\"", executablePath);
+
+    for(auto& argDef : parsedArguments){
+        if(argDef->errorMessage.size() != 0)
+            /* TODO - Does this warrant quiting? Probably... */
+            Log::error(argDef->errorMessage);
+    }
 }
 
 std::shared_ptr<const BoolArgument> Application::registerBoolArgument(const std::initializer_list<string>& names, const string& desc) {

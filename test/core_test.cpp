@@ -15,24 +15,24 @@ int main(int argc, const char* argv[]) {
     app.parseArguments();
 
     if(boolArg->valid)
-        Log::info("--boolarg value is \"%s\"", boolArg->boolResult ? "true" : "false");
+        Log::info("boolarg value is \"%s\"", boolArg->boolResult ? "true" : "false");
     else
-        Log::info("No valid --boolarg was passed.");
+        Log::info("No valid boolarg was passed.");
 
     if(intArg->valid)
-        Log::info("--intarg value is \"%i\"", intArg->intResult);
+        Log::info("intarg value is \"%i\"", intArg->intResult);
     else
-        Log::info("No valid --intarg was passed.");
+        Log::info("No valid intarg was passed.");
 
     if(decArg->valid)
-        Log::info("--decarg value is \"%f\"", decArg->decResult);
+        Log::info("decarg value is \"%f\"", decArg->decResult);
     else
-        Log::info("No valid --decarg was passed.");
+        Log::info("No valid decarg was passed.");
 
     if(strArg->valid)
-        Log::info("--strarg value is \"%s\"", strArg->result);
+        Log::info("strarg value is \"%s\"", strArg->result);
     else
-        Log::info("No valid --strarg was passed.");
+        Log::info("No valid strarg was passed.");
 
     auto& args = app.getRemainingArgs();
 
