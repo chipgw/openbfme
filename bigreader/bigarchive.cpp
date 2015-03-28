@@ -296,7 +296,7 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
     outfilename.insert(0, directory);
     fs::create_directories(fs::path(outfilename.substr(0, outfilename.find_last_of('/'))));
 
-    if(!overwrite && fs::exists(outfilename)){
+    if(!overwrite && fs::exists(fs::path(outfilename))){
         Log::info("Skipping existing file: \"%s\".", outfilename);
 
         return true;

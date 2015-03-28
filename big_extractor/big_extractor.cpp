@@ -46,14 +46,14 @@ int main(int argc, const char* argv[]){
 
         if(archive != nullptr){
             if(archive->getBackend() != BigArchive::Folder){
-                fs::path path = basePath.empty() ? fs::absolute(fs::path(arg)).parent_path() : basePath;
+                fs::path path = basePath.empty() ? fs::canonical(fs::path(arg)).parent_path() : basePath;
 
                 if(useSubdirs->valid && useSubdirs->boolResult){
                     path /= fs::path(arg).stem();
                 }
                 path /= "/";
 
-                Log::debug("Extraction path: \"%s\"", path.generic_string());
+                Log::debug("Extraction path for \"%s\": \"%s\"", arg, path.generic_string());
 
                 archive->extractAll(path.generic_string(), overwrite->valid && overwrite->boolResult);
             }else{
