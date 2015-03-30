@@ -60,7 +60,7 @@ public:
     EXPORT bool eof(const BigEntry &entry);
 
     /* Extract a file to the specified directory. */
-    EXPORT bool extract(const string &filename, const string &directory, bool fullPath, bool ignore, bool overwrite);
+    EXPORT bool extract(const BigEntry &entry, const string &directory, bool fullPath, bool ignore, bool overwrite);
     /* Extract all entries into given directory. */
     EXPORT bool extractAll(const string &directory, bool ignore, bool overwrite);
 

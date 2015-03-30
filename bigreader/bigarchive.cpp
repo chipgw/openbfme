@@ -281,32 +281,29 @@ bool BigArchive::eof(const BigEntry &entry){
     return cpos < entry.start || cpos >= entry.end;
 }
 
-bool BigArchive::extract(const string &filename, const string &directory, bool fullPath, bool ignore, bool overwrite){
-    const BigEntry* entry = openFile(filename);
-
-    if(entry == nullptr){
+bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fullPath, bool ignore, bool overwrite){
+    if(!openEntry(entry)){
+        Log::error("Error opening entry \"%s\"!", entry.filename);
         return false;
     }
 
-    string outfilename = filename;
+    fs::path path = entry.filename;
 
-    if(!fullPath){
-        outfilename.erase(0, outfilename.find_last_of('/') + 1);
-    }
-    outfilename.insert(0, directory);
-    fs::create_directories(fs::path(outfilename.substr(0, outfilename.find_last_of('/'))));
+    path = fs::canonical(fs::path(directory) / (fullPath ? path : path.filename()));
 
-    if(fs::exists(fs::path(outfilename))){
+    fs::create_directories(path.parent_path());
+
+    if(fs::exists(path)){
         /* The option to ignore existing files takes precedence over overwriting them. */
         if(ignore){
-            Log::info("Skipping existing file: \"%s\".", outfilename);
+            Log::info("Skipping existing file: \"%s\".", entry.filename);
 
             return true;
         }else if(!overwrite){
             character c = 0;
 
             do{
-                Log::info("Overwrite existing file \"%s\"? [Y/N]:", outfilename);
+                Log::info("Overwrite existing file \"%s\"? [Y/N]:", path.c_str());
 
                 c = std::tolower(std::getchar());
 
@@ -318,23 +315,23 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
             }while(c != 'n' && c != 'y');
 
             if(c == 'n'){
-                Log::info("Skipping \"%s\".", outfilename);
+                Log::info("Skipping \"%s\".", entry.filename);
 
                 return true;
             }
         }
-        Log::info("Overwriting \"%s\"...", outfilename);
+        Log::info("Overwriting \"%s\"...", entry.filename);
     }else{
-        Log::info("Extracting to \"%s\"...", outfilename);
+        Log::info("Extracting to \"%s\"...", path.c_str());
     }
 
-    FILE* out = fopen(outfilename.c_str(), "wb");
+    FILE* out = fopen(path.c_str(), "wb");
 
     if(out == nullptr){
-        Log::error("Unable to create file \"%s\"!", outfilename);
+        Log::error("Unable to create file \"%s\"!", path.c_str());
         return false;
     }
-    uint32_t length = entry->end - entry->start;
+    uint32_t length = entry.end - entry.start;
     uint8_t *buffer = new uint8_t[length];
 
     fread(buffer, 1, length, file);
@@ -351,7 +348,7 @@ bool BigArchive::extract(const string &filename, const string &directory, bool f
 bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite){
     fs::create_directories(fs::path(directory));
     for(auto &entry : entries){
-        if(!extract(entry.filename, directory, true, ignore, overwrite)){
+        if(!extract(entry, directory, true, ignore, overwrite)){
             return false;
         }
     }
