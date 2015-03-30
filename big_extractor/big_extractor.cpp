@@ -12,9 +12,10 @@ using namespace OpenBFME;
 int main(int argc, const char* argv[]){
     Application app(argc, argv);
 
-    auto overwrite =    app.registerBoolArgument({"overwrite","o"},         "Overwrite files if they exsist.");
-    auto useSubdirs =   app.registerBoolArgument({"subdirectories","d"},    "Put extracted files in subdirectories based on archive filename.");
-    auto outPath =      app.registerStringArgument({"path"},                "The path to save files to.");
+    auto overwrite  = app.registerBoolArgument({"overwrite","o"},       "Overwrite files if they exsist.");
+    auto ignore     = app.registerBoolArgument({"ignore-existing","i"}, "Skip files if they exsist.");
+    auto useSubdirs = app.registerBoolArgument({"subdirectories","d"},  "Put extracted files in subdirectories based on archive filename.");
+    auto outPath    = app.registerStringArgument({"path"},              "The path to save files to.");
 
     app.parseArguments();
 
@@ -55,7 +56,7 @@ int main(int argc, const char* argv[]){
 
                 Log::debug("Extraction path for \"%s\": \"%s\"", arg, path.generic_string());
 
-                archive->extractAll(path.generic_string(), overwrite->valid && overwrite->boolResult);
+                archive->extractAll(path.generic_string(), ignore->valid && ignore->boolResult, overwrite->valid && overwrite->boolResult);
             }else{
                 Log::warning("Cannot extract from a folder. Why would you want to anyway?");
             }
