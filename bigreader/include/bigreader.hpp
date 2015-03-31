@@ -28,9 +28,6 @@ private:
 
     Backend backend;
 
-    /* Whether or not we handle comments. */
-    bool comments;
-
     /* Open the archive file in a BigFile backend.
      * If called with a folder backend returns true if an entry is already open. */
     bool open();
@@ -47,7 +44,7 @@ public:
     const BigEntry* openFile(const string &filename);
 
     /* Get a line from a text file, does not include newline character. */
-    EXPORT string getLine(const BigEntry &entry);
+    EXPORT string getLine(const BigEntry &entry, bool checkComments);
 
     /* Get a */
     EXPORT string getWord(const BigEntry &entry);
@@ -66,8 +63,6 @@ public:
 
     inline const string &getArchiveFilename() { return archiveFilename; }
     inline const Backend &getBackend() { return backend; }
-
-    inline void enableComments() { comments = true; }
 };
 
 class BigEntry{
@@ -85,12 +80,11 @@ public:
     BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file) : archive(arch), start(start), end(end), filename(file) {}
 
     /* Wrap IO functions from BigArchive for easy access. */
-    inline string getLine() const { return archive.getLine(*this); }
+    inline string getLine(bool checkComments) const { return archive.getLine(*this, checkComments); }
     inline string getWord() const { return archive.getWord(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
     inline bool eof() const { return archive.eof(*this); }
-    inline void enableComments() const { archive.enableComments(); }
 };
 
 inline bool operator <(const BigEntry& e1,const BigEntry& e2){ return e1.filename < e2.filename;}

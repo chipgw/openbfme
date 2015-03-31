@@ -115,8 +115,6 @@ void BigArchive::close(){
 
 bool BigArchive::openEntry(const BigEntry& entry) {
     entry.line = 0;
-    /* Comments mode must be reenabled after opening a new file. */
-    comments = false;
 
     switch (backend) {
     case BigFile:
@@ -139,7 +137,8 @@ bool BigArchive::openEntry(const BigEntry& entry) {
 }
 
 const BigEntry* BigArchive::openFile(const string &filename){
-    auto entry = entries.find(BigEntry(*this, 0, 0, filename));
+    auto entry = std::find_if(entries.begin(), entries.end(), [&](const BigEntry& it){ return it.filename == filename; });
+
     if(entry != entries.end() && openEntry(*entry)){
         return &(*entry);
     }
@@ -147,7 +146,7 @@ const BigEntry* BigArchive::openFile(const string &filename){
     return nullptr;
 }
 
-string BigArchive::getLine(const BigEntry &entry){
+string BigArchive::getLine(const BigEntry &entry, bool checkComments){
     if(!open() || eof(entry)){
         return "";
     }
@@ -157,9 +156,11 @@ string BigArchive::getLine(const BigEntry &entry){
         str.pop_back();
     }
 
-    string::size_type comment = std::min(str.find(';'), str.find("//"));
-    if(comment != string::npos)
-        str.erase(comment);
+    if(checkComments){
+        string::size_type comment = std::min(str.find(';'), str.find("//"));
+        if(comment != string::npos)
+            str.erase(comment);
+    }
 
     entry.line++;
 
@@ -205,7 +206,7 @@ string BigArchive::getWord(const BigEntry &entry){
                 isStr = true;
             }else if(c == ';'){
                 /* We have a comment! */
-                getLine(entry);
+                getLine(entry, false);
                 return "\n";
             }else{
                 isSym = true;
@@ -214,11 +215,11 @@ string BigArchive::getWord(const BigEntry &entry){
             if(!isStr){
                 if(c == ';'){
                     /* We have a comment! */
-                    getLine(entry);
+                    getLine(entry, false);
                     break;
                 }else if(c == '/' && data.back() == '/'){
                     /* We have a comment! */
-                    getLine(entry);
+                    getLine(entry, false);
 
                     /* Is the comment all that was in the string? */
                     if(data.size() == 1)

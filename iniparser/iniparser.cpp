@@ -8,12 +8,11 @@ namespace OpenBFME {
 IniParser::IniParser(BigFilesystem &filesys) : filesystem(filesys) {}
 
 void IniParser::parse(const BigEntry &file, IniObject &object){
-    file.enableComments();
     while(!file.eof()){
         string word = file.getWord();
 
         if((word.size() > 1 && word[0] == '/' && word[1] == '/') || word[0] == ';'){
-            file.getLine();
+            file.getLine(true);
             continue;
         }
         if(word == "\n"){
@@ -71,7 +70,6 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
         }
 
         file.seek(pos);
-        file.enableComments();
 
         word = file.getWord();
         if(word != "\n"){
@@ -86,7 +84,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
             return false;
         }
 
-        auto macroValue = file.getLine();
+        auto macroValue = file.getLine(true);
 
         if(macros.count(macroName) > 0){
             /* TODO - I'm not sure if using the original value is the correct behavior,
@@ -130,7 +128,7 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
     case IniVariable::Vector:
         return parseVector(file, var, name);
     case IniVariable::Line:
-        var.s = file.getLine();
+        var.s = file.getLine(true);
         Log::debug("Added variable: \"%s\" of type: \"Line\" value: \"%s\"", name, var.s);
         return true;
     }

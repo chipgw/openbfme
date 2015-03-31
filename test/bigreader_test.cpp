@@ -10,7 +10,7 @@ bool testFile(const BigEntry* file){
         return false;
     }
     for(int i = 0; !file->eof(); ++i){
-        Log::info("Line #%04d: \"%s\"", i + 1, file->getLine());
+        Log::info("Line #%04d: \"%s\"", i + 1, file->getLine(false));
     }
     return true;
 }
