@@ -46,7 +46,7 @@ int main(int argc, const char* argv[]){
     big.mount("test", true);
 
     for(integer i = 0; i < tests.size(); ++i){
-        Log::info("Test #%d:", i + tests.size());
+        Log::info("Test #%d:", i + integer(tests.size()));
         if(!testFile(big.openFile(tests[i].first, tests[i].second)))
             failed++;
     }

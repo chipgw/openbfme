@@ -304,7 +304,7 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
             character c = 0;
 
             do{
-                Log::info("Overwrite existing file \"%s\"? [Y/N]:", path.c_str());
+                Log::info("Overwrite existing file \"%s\"? [Y/N]:", path.generic_string());
 
                 c = std::tolower(std::getchar());
 
@@ -323,13 +323,13 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
         }
         Log::info("Overwriting \"%s\"...", entry.filename);
     }else{
-        Log::info("Extracting to \"%s\"...", path.c_str());
+        Log::info("Extracting to \"%s\"...", path.generic_string());
     }
 
-    FILE* out = fopen(path.c_str(), "wb");
+    FILE* out = fopen(path.generic_string().c_str(), "wb");
 
     if(out == nullptr){
-        Log::error("Unable to create file \"%s\"!", path.c_str());
+        Log::error("Unable to create file \"%s\"!", path.generic_string());
         return false;
     }
     uint32_t length = entry.end - entry.start;
