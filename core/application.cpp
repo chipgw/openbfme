@@ -8,7 +8,8 @@ namespace fs = FILESYSTEM_NAMESPACE;
 
 namespace OpenBFME {
 
-Application::Application(int argc, const char *argv[]) : fullArguments(argv + 1, argv + argc) {
+Application::Application(int argc, const char *argv[]) : fullArguments(argv + 1, argv + argc),
+    startTime(std::chrono::duration_cast<TimePoint>(Clock::now().time_since_epoch())) {
     if(app == nullptr){
         app = this;
 

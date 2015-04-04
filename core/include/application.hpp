@@ -3,6 +3,7 @@
 #include "types.hpp"
 #include <vector>
 #include <memory>
+#include <chrono>
 
 namespace OpenBFME {
 
@@ -14,6 +15,10 @@ class DecimalArgument;
 /* This class parses commandline and initializes the Log. */
 class Application{
 private:
+    /* Define the standard clock and time point size. */
+    typedef std::chrono::steady_clock Clock;
+    typedef std::chrono::nanoseconds TimePoint;
+
     typedef std::vector<string> ArgumentList;
 
     /* Only one instance of this class is allowed, to be created in main and provided with the command line arguments. */
@@ -31,6 +36,8 @@ private:
     /* The path of the executable file that is running. */
     string executablePath;
 
+    const TimePoint startTime;
+
 public:
     EXPORT Application(int argc, const char *argv[]);
     EXPORT ~Application();
@@ -46,6 +53,11 @@ public:
     EXPORT std::shared_ptr<const IntegerArgument> registerIntegerArgument(const std::initializer_list<string>& names, const string& desc);
     EXPORT std::shared_ptr<const DecimalArgument> registerDecimalArgument(const std::initializer_list<string>& names, const string& desc);
     EXPORT std::shared_ptr<const StringArgument> registerStringArgument(const std::initializer_list<string>& names, const string& desc);
+
+    /* Get how long the application has been running. */
+    template<typename T> T getRunningTime() {
+        return  std::chrono::duration_cast<T>(Clock::now().time_since_epoch()) - std::chrono::duration_cast<T>(startTime);
+    }
 };
 
 }

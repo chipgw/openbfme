@@ -1,7 +1,5 @@
 #include "log.hpp"
-#include <chrono>
-
-using namespace std;
+#include "application.hpp"
 
 namespace OpenBFME {
 
@@ -50,12 +48,16 @@ void Log::print(const string& str, LogOutputLevel level){
         break;
     }
 
+    using namespace std::chrono;
+
     /* Make the timestamp string. */
-    auto current = chrono::system_clock::now();
-    time_t tnow = chrono::system_clock::to_time_t(current);
-    tm *date = localtime(&tnow);
-    int microseconds = chrono::duration_cast<chrono::microseconds>(current.time_since_epoch()).count() % 1000000;
-    string timestamp = format("[%02i:%02i:%02i.%06i] %s: ", date->tm_hour, date->tm_min, date->tm_sec, microseconds, type);
+    auto current = Application::getApplication()->getRunningTime<microseconds>();
+
+    string timestamp = format("[%02i:%02i.%06i] %s: ",
+                              duration_cast<minutes>(current).count(),
+                              duration_cast<seconds>(current).count() % 60,
+                              current.count() % 1000000,
+                              type);
 
     /* Write the string to every relevant output. */
     for(LogOutput output : outputs){
@@ -68,6 +70,6 @@ void Log::print(const string& str, LogOutputLevel level){
     }
 }
 
-list<Log::LogOutput> Log::outputs = list<Log::LogOutput>();
+std::list<Log::LogOutput> Log::outputs = std::list<Log::LogOutput>();
 
 }
