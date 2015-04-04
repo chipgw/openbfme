@@ -78,7 +78,7 @@ void Application::parseArguments(){
 
     /* The log is stored in "logs/<executable name>.log". */
     fs::path logDir = executablePath;
-    fs::path logName = fs::change_extension(logDir, string(".log")).filename();
+    fs::path logName = logDir.replace_extension(string(".log")).filename();
     logDir = logDir.parent_path() / fs::path("logs");
 
     if(!fs::exists(logDir))
