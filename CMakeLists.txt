@@ -39,9 +39,8 @@ add_custom_command(TARGET test_files COMMAND big_extractor -o -d -s test.big WOR
 option(BUILD_ALL "Enables building all binaries" OFF)
 option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 
-add_project_lib(log)
-add_project_lib(core log ${FS_LIBRARY})
-add_project_lib(bigreader log ${FS_LIBRARY})
+add_project_lib(core ${FS_LIBRARY})
+add_project_lib(bigreader core ${FS_LIBRARY})
 add_project_lib(iniparser bigreader ${TINYXML_LIBRARIES})
 
 add_project_exe(big_extractor bigreader)
