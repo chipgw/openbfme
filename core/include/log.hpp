@@ -21,8 +21,8 @@ class Log{
     EXPORT static void print(const string& output, LogOutputLevel level);
 
 public:
-    EXPORT static void init(const string& filename, bool verbose = false, bool silent = false);
-    EXPORT static void shutdown();
+    static void init(const string& filename, bool verbose = false, bool silent = false);
+    static void shutdown();
 
     inline static void debug(const string &output){
         print(output, LogOutputLevel::Debug);

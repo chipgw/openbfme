@@ -4,6 +4,11 @@
 
 using namespace OpenBFME;
 
+/* Because MSVC. */
+#ifdef OPENBFME_COMPILER_MSVC
+#define snprintf _snprintf
+#endif
+
 /* Compares string produced by our format() function to output of snprintf(). */
 int runFormatTest(const string& formatString, const Printable& arg, const integer& number) {
     string result = format(formatString, arg);
