@@ -24,8 +24,32 @@ Application::~Application(){
     /* Close log file and reset the static pointer when Application instance is destroyed. */
     if(app == this){
         Log::info("Shutting down.");
-        Log::shutdown();
+
+        for(Log::Output output : logOutputs)
+            if(output.fp != stdout && output.fp != stderr)
+                fclose(output.fp);
+
+        logOutputs.clear();
+
         app = nullptr;
+    }
+}
+
+void Application::initLog(const string &filename, bool verbose, bool silent){
+#ifndef NDEBUG
+    /* Debug output is always on in debug builds. */
+    verbose = true;
+#endif
+
+    logOutputs.push_back(Log::Output(Log::Error, stderr));
+
+    if(!silent){
+        logOutputs.push_back(Log::Output(Log::OutputLevel(Log::Info | Log::Warning | (verbose ? Log::Debug : 0)), stdout));
+    }
+
+    FILE* file = fopen(filename.c_str(), "w");
+    if(file != nullptr){
+        logOutputs.push_back(Log::Output(silent ? Log::Error : Log::OutputLevel(Log::All & (verbose ? ~0 : ~Log::Debug)), file));
     }
 }
 
@@ -85,7 +109,7 @@ void Application::parseArguments(){
     if(!fs::exists(logDir))
         fs::create_directories(logDir);
 
-    Log::init((logDir / logName).string(), verbose->valid ? verbose->boolResult : false, silent->valid ? silent->boolResult : false);
+    initLog((logDir / logName).string(), verbose->valid ? verbose->boolResult : false, silent->valid ? silent->boolResult : false);
 
     Log::info("Starting \"%s\"", executablePath);
 
