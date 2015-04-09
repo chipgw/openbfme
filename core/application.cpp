@@ -36,11 +36,6 @@ Application::~Application(){
 }
 
 void Application::initLog(const string &filename, bool verbose, bool silent){
-#ifndef NDEBUG
-    /* Debug output is always on in debug builds. */
-    verbose = true;
-#endif
-
     logOutputs.push_back(Log::Output(Log::Error, stderr));
 
     if(!silent){
@@ -109,7 +104,14 @@ void Application::parseArguments(){
     if(!fs::exists(logDir))
         fs::create_directories(logDir);
 
-    initLog((logDir / logName).string(), verbose->valid ? verbose->boolResult : false, silent->valid ? silent->boolResult : false);
+     /* Debug output is on by default in debug builds. */
+#ifndef NDEBUG
+    #define VERBOSE_DEFAULT true
+#else
+    #define VERBOSE_DEFAULT false
+#endif
+
+    initLog((logDir / logName).string(), verbose->valid ? verbose->boolResult : VERBOSE_DEFAULT, silent->valid ? silent->boolResult : false);
 
     Log::info("Starting \"%s\"", executablePath);
 
