@@ -308,6 +308,8 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
 
                 c = std::tolower(std::getchar());
 
+                if(c == '\n') continue;
+
                 /* Only take one letter input. */
                 if(std::getchar() != '\n'){
                     c = 0;
