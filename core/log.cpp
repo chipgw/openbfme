@@ -55,15 +55,15 @@ void Log::print(const string& str, OutputLevel level){
         for(Output output : app->getLogOutputs()){
             if(output.fp != nullptr && output.level & level){
 #ifdef OPENBFME_PLATFORM_WINDOWS
-                if(output.fp == stderr){
+                if(output.fp == stderr)
                     SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), color);
-                }else if(output.fp == stdout){
+                else if(output.fp == stdout)
                     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-                }
 #else
                 if(output.fp == stderr || output.fp == stdout)
                     fputs(color, output.fp);
 #endif
+
                 fputs(timestamp.c_str(), output.fp);
                 fputs(str.c_str(), output.fp);
                 fputc('\n', output.fp);

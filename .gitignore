@@ -52,3 +52,8 @@ build/*
 
 # Allow putting glm in local include folder #
 include/glm
+
+# Git patch files #
+###################
+*.patch
+*.diff
