@@ -1,5 +1,6 @@
 #include "log.hpp"
 #include "application.hpp"
+
 #ifdef OPENBFME_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
@@ -7,41 +8,41 @@
 namespace OpenBFME {
 
 void Log::print(const string& str, OutputLevel level){
-    const char* type;
+    Application* app = Application::getApplication();
+
+    if(app != nullptr){
+        const char* type;
 
 #ifdef OPENBFME_PLATFORM_WINDOWS
-    WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
 #define RED FOREGROUND_RED | FOREGROUND_INTENSITY
 #define YELLOW FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY
 #else
-    const char* color = "\033[0m";
+        const char* color = "\033[0m";
 #define RED "\033[22;31m"
 #define YELLOW "\033[01;33m"
 #endif
 
-    switch (level) {
-    case Error:
-        type = "ERROR";
-        color = RED;
-        break;
-    case Warning:
-        type = "WARNING";
-        color = YELLOW;
-        break;
-    case Debug:
-        type = "DEBUG";
-        break;
-    case Info:
-    default:
-        type = "INFO";
-        break;
-    }
+        switch (level) {
+        case Error:
+            type = "ERROR";
+            color = RED;
+            break;
+        case Warning:
+            type = "WARNING";
+            color = YELLOW;
+            break;
+        case Debug:
+            type = "DEBUG";
+            break;
+        case Info:
+        default:
+            type = "INFO";
+            break;
+        }
 
-    using namespace std::chrono;
+        using namespace std::chrono;
 
-    Application* app = Application::getApplication();
-
-    if(app != nullptr){
         /* Make the timestamp string. */
         auto current = app->getRunningTime<microseconds>();
 
