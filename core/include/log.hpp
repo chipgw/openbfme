@@ -8,11 +8,10 @@ namespace OpenBFME {
 class Log{
 public:
     enum OutputLevel{
-        Error   = 0x01,
-        Warning = 0x02,
-        Info    = 0x04,
-        Debug   = 0x08,
-        All     = 0xff
+        Error,
+        Warning,
+        Info,
+        Debug
     };
     struct Output{
         OutputLevel level;

@@ -14,23 +14,25 @@ void Log::print(const string& str, OutputLevel level){
         const char* type;
 
 #ifdef OPENBFME_PLATFORM_WINDOWS
-        WORD color = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
-#define RED FOREGROUND_RED | FOREGROUND_INTENSITY
-#define YELLOW FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY
+#define SET_COLOR(color) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+        const WORD BLANK  = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        const WORD RED    = FOREGROUND_RED | FOREGROUND_INTENSITY;
+        const WORD YELLOW = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY;
 #else
-        const char* color = "\033[0m";
-#define RED "\033[22;31m"
-#define YELLOW "\033[01;33m"
+#define SET_COLOR(color) fputs(color, stdout)
+        const char* BLANK   = "\033[0m";
+        const char* RED     = "\033[22;31m";
+        const char* YELLOW  = "\033[01;33m";
 #endif
 
         switch (level) {
         case Error:
             type = "ERROR";
-            color = RED;
+            SET_COLOR(RED);
             break;
         case Warning:
             type = "WARNING";
-            color = YELLOW;
+            SET_COLOR(YELLOW);
             break;
         case Debug:
             type = "DEBUG";
@@ -54,23 +56,15 @@ void Log::print(const string& str, OutputLevel level){
 
         /* Write the string to every relevant output. */
         for(Output output : app->getLogOutputs()){
-            if(output.fp != nullptr && output.level & level){
-#ifdef OPENBFME_PLATFORM_WINDOWS
-                if(output.fp == stderr)
-                    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), color);
-                else if(output.fp == stdout)
-                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-#else
-                if(output.fp == stderr || output.fp == stdout)
-                    fputs(color, output.fp);
-#endif
-
+            if(output.fp != nullptr && output.level >= level){
                 fputs(timestamp.c_str(), output.fp);
                 fputs(str.c_str(), output.fp);
                 fputc('\n', output.fp);
                 fflush(output.fp);
             }
         }
+
+        SET_COLOR(BLANK);
     }
 }
 

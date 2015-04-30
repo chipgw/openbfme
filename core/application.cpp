@@ -36,15 +36,13 @@ Application::~Application(){
 }
 
 void Application::initLog(const string &filename, bool verbose, bool silent){
-    logOutputs.push_back(Log::Output(Log::Error, stderr));
+    Log::OutputLevel maxLevel = silent ? Log::Error : verbose ? Log::Debug : Log::Info;
 
-    if(!silent){
-        logOutputs.push_back(Log::Output(Log::OutputLevel(Log::Info | Log::Warning | (verbose ? Log::Debug : 0)), stdout));
-    }
+    logOutputs.push_back(Log::Output(maxLevel, stdout));
 
     FILE* file = fopen(filename.c_str(), "w");
     if(file != nullptr){
-        logOutputs.push_back(Log::Output(silent ? Log::Error : Log::OutputLevel(Log::All & (verbose ? ~0 : ~Log::Debug)), file));
+        logOutputs.push_back(Log::Output(maxLevel, file));
     }
 }
 
