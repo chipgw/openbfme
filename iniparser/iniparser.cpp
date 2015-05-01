@@ -24,24 +24,25 @@ void IniParser::parse(const BigEntry &file, IniObject &object){
         }else if(object.type.breaks && word == object.type.breakWord){
             break;
         }else if(object.type.subTypes.count(word)){
-            object.subObjects.emplace(word, object.type.subTypes.at(word));
+            auto obj = object.subObjects.emplace(word, object.type.subTypes.at(word));
 
             string arg;
             while(arg != "\n"){
                 if(!arg.empty()){
-                    object.subObjects.at(word).args.push_back(arg);
+                    obj->second.args.push_back(arg);
                 }
                 arg = file.getWord();
             }
 
             Log::debug("Created object of type: \"%s\"", word);
 
-            parse(file, object.subObjects.at(word));
+            parse(file, obj->second);
         }else if(object.type.variableTypes.count(word)){
-            IniVariable &var = object.variables[word];
-            var.type = object.type.variableTypes.at(word);
+            auto var = object.variables.emplace(word, object.type.variableTypes.at(word));
 
-            parseVariable(file, var, word);
+            /* If there was an error parsing remove item. */
+            if(!parseVariable(file, var->second, word))
+                object.variables.erase(var);
         }
     }
 }

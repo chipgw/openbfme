@@ -21,7 +21,7 @@ struct IniVariable{
         Line    /* Put the rest of the line in s, use when built in parsing doesn't do what you need. */
     };
 
-    VariableType type;
+    const VariableType type;
 
     union{
         bool b;
@@ -30,6 +30,8 @@ struct IniVariable{
     };
     vec4 v;
     string s;
+
+    IniVariable(const VariableType& t) : type(t) {}
 };
 
 class IniType{
@@ -51,8 +53,8 @@ struct IniObject{
     const IniType &type;
     std::vector<string> args;
 
-    std::map<string, IniObject> subObjects;
-    std::map<string, IniVariable> variables;
+    std::multimap<string, IniObject> subObjects;
+    std::multimap<string, IniVariable> variables;
 
     IniObject(const IniType &baseType) : type(baseType) { }
 };
