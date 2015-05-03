@@ -18,4 +18,8 @@ typedef std::basic_string<character> string;
 typedef glm::vec3 vec3;
 typedef glm::vec4 vec4;
 
+class BigEntry;
+class BigArchive;
+class BigFilesystem;
+
 }

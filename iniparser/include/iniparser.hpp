@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bigreader.hpp"
+#include "types.hpp"
 #include <memory>
 #include <map>
 #include <vector>
@@ -8,6 +8,8 @@
 class TiXmlElement;
 
 namespace OpenBFME{
+
+struct IniObject;
 
 struct IniVariable{
     enum VariableType{

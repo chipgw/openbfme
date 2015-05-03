@@ -1,6 +1,5 @@
 #include "application.hpp"
 #include "bigreader.hpp"
-#include "log.hpp"
 
 using namespace OpenBFME;
 

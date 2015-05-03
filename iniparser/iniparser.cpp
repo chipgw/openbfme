@@ -1,4 +1,6 @@
 #include "iniparser.hpp"
+#include "bigentry.hpp"
+#include "bigfilesystem.hpp"
 #include "log.hpp"
 #include <algorithm>
 #include <locale>

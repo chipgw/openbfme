@@ -1,6 +1,5 @@
 #include "application.hpp"
 #include "argumentsystem.hpp"
-#include "log.hpp"
 
 using namespace OpenBFME;
 

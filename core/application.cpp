@@ -1,5 +1,4 @@
 #include "application.hpp"
-#include "log.hpp"
 #include "argumentsystem.hpp"
 #include <algorithm>
 

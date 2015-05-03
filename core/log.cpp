@@ -1,4 +1,3 @@
-#include "log.hpp"
 #include "application.hpp"
 
 #ifdef OPENBFME_PLATFORM_WINDOWS

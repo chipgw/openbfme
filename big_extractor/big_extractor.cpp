@@ -1,8 +1,7 @@
-#include "log.hpp"
 #include "application.hpp"
 #include "argumentsystem.hpp"
-#include "bigreader.hpp"
-#include <vector>
+#include "bigarchive.hpp"
+#include "bigfilesystem.hpp"
 
 #include FILESYSTEM_HEADER
 namespace fs = FILESYSTEM_NAMESPACE;

@@ -1,6 +1,6 @@
 #include "application.hpp"
 #include "iniparser.hpp"
-#include "log.hpp"
+#include "bigfilesystem.hpp"
 
 using namespace OpenBFME;
 

@@ -1,4 +1,5 @@
-#include "bigreader.hpp"
+#include "bigarchive.hpp"
+#include "bigfilesystem.hpp"
 #include "log.hpp"
 #include <algorithm>
 
