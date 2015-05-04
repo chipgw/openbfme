@@ -127,7 +127,7 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
         /* TODO - IDK if this should trim quotes or not... */
         var.s = file.getWord();
         Log::debug("Added variable: \"%s\" of type: \"String\" value: %s", name, var.s);
-        break;
+        return true;
     case IniVariable::Color:
         return parseVector(file, var, name, 1.f / 255.f);
     case IniVariable::Vector:
