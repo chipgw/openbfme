@@ -1,4 +1,6 @@
 #include "application.hpp"
+#include "initype.hpp"
+#include "iniobject.hpp"
 #include "iniparser.hpp"
 #include "bigfilesystem.hpp"
 

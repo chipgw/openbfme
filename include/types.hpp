@@ -22,4 +22,9 @@ class BigEntry;
 class BigArchive;
 class BigFilesystem;
 
+struct IniVariable;
+class IniType;
+struct IniObject;
+class Parser;
+
 }

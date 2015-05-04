@@ -1,5 +1,5 @@
 #include "log.hpp"
-#include "iniparser.hpp"
+#include "initype.hpp"
 #include <tinyxml.h>
 #include <algorithm>
 
