@@ -17,10 +17,15 @@ public:
     string breakWord = "End";
 
     IniType() = default;
-    IniType(const string& filename) { loadFromXML(filename); }
+    EXPORT IniType(const string& filename);
+    EXPORT IniType(const string& filename, BigFilesystem &big);
+    IniType(const IniObject& object);
 
     EXPORT bool loadFromXML(const string& filename);
     bool loadFromXML(TiXmlElement* element, const string &filename);
+
+    EXPORT bool loadFromIni(const string& filename, BigFilesystem &big);
+    bool loadFromIni(const IniObject& object);
 };
 
 }

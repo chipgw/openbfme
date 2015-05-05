@@ -25,6 +25,6 @@ class BigFilesystem;
 struct IniVariable;
 class IniType;
 struct IniObject;
-class Parser;
+class IniParser;
 
 }
