@@ -50,10 +50,10 @@ bool IniType::loadFromIni(const string& filename, BigFilesystem& big) {
         IniObject root(IniDefinitionType);
         ini.parse(*file, root);
 
-        loadFromIni(root);
-    }else{
-        Log::warning("Unable to open file!");
+        return loadFromIni(root);
     }
+    Log::warning("Unable to open file!");
+    return false;
 }
 
 bool IniType::loadFromIni(const IniObject &object) {
@@ -84,6 +84,8 @@ bool IniType::loadFromIni(const IniObject &object) {
             subTypes.emplace(sub.second.args[0], sub.second);
         }
     }
+    /* TODO - Errors are possible. They should be handled. */
+    return true;
 }
 
 bool IniType::loadFromXML(TiXmlElement* element, const string& filename) {
