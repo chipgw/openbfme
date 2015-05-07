@@ -74,8 +74,7 @@ int main(int argc, const char* argv[]){
     /* For the "iniparser_test_root.ini" file. */
     BigArchive* currentDir = big.mount("./", true);
 
-    IniType rootTypeXML("iniparser_test_root.xml");
-    IniType rootTypeIni("iniparser_test_root.ini", big);
+    IniType rootType("iniparser_test_root.ini", big);
 
     /* Don't need it anymore. */
     big.unmount(currentDir);
@@ -85,20 +84,16 @@ int main(int argc, const char* argv[]){
     /* Parse from a .big file. */
     big.mount("test.big", true);
 
-    Log::info("Testing from .big archive, XML definition file.");
-    runTest(ini, big, rootTypeXML);
-    Log::info("Testing from .big archive, INI definition file.");
-    runTest(ini, big, rootTypeIni);
+    Log::info("Testing from .big archive.");
+    runTest(ini, big, rootType);
 
     big.unmount("test.big");
 
     /* Parse from a folder. */
     big.mount("test", true);
 
-    Log::info("Testing from folder, XML definition file.");
-    runTest(ini, big, rootTypeXML);
-    Log::info("Testing from folder, INI definition file.");
-    runTest(ini, big, rootTypeIni);
+    Log::info("Testing from folder.");
+    runTest(ini, big, rootType);
 
     big.unmount("test");
 

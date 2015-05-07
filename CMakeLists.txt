@@ -19,10 +19,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
-find_package(TinyXML REQUIRED)
-include_directories(${TINYXML_INCLUDE_DIR})
-add_definitions(-DTIXML_USE_STL)
-
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
 
 # Files not needed in build, but included so they show up in IDE.
@@ -33,7 +29,7 @@ add_custom_target(IDE_FILES SOURCES ${HEADERS})
 include(OpenBFMEMacros)
 
 add_custom_target(test_files SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test/test.big ${CMAKE_CURRENT_SOURCE_DIR}/test/iniparser_test_root.xml)
-add_test_files(test.big iniparser_test_root.xml iniparser_test_root.ini)
+add_test_files(test.big iniparser_test_root.ini)
 add_custom_command(TARGET test_files COMMAND big_extractor -o -d -s test.big WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR})
 
 option(BUILD_ALL "Enables building all binaries" OFF)
@@ -41,7 +37,7 @@ option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 
 add_project_lib(core ${FS_LIBRARY})
 add_project_lib(bigreader core ${FS_LIBRARY})
-add_project_lib(iniparser bigreader ${TINYXML_LIBRARIES})
+add_project_lib(iniparser bigreader)
 
 add_project_exe(big_extractor bigreader)
 add_project_exe(openbfme_server iniparser)
