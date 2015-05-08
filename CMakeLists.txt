@@ -28,7 +28,7 @@ add_custom_target(IDE_FILES SOURCES ${HEADERS})
 # Where the add_project_lib() and add_project_exe() macros are defined.
 include(OpenBFMEMacros)
 
-add_custom_target(test_files SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test/test.big ${CMAKE_CURRENT_SOURCE_DIR}/test/iniparser_test_root.xml)
+add_custom_target(test_files SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test/test.big ${CMAKE_CURRENT_SOURCE_DIR}/test/iniparser_test_root.ini)
 add_test_files(test.big iniparser_test_root.ini)
 add_custom_command(TARGET test_files COMMAND big_extractor -o -d -s test.big WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR})
 
