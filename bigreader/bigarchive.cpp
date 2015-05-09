@@ -27,7 +27,7 @@ string readString(FILE* file, uint32_t limit, char terminator = '\0'){
     return data;
 }
 
-BigArchive::BigArchive(const string &filename, BigFilesystem &fs) : archiveFilename(filename), file(nullptr), filesystem(fs) {
+BigArchive::BigArchive(const string &filename) : archiveFilename(filename), file(nullptr) {
     std::replace(archiveFilename.begin(), archiveFilename.end(), '\\', '/');
 }
 

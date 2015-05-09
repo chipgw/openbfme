@@ -1,19 +1,17 @@
 #pragma once
 
-#include "bigarchive.hpp"
-#include <list>
+#include "types.hpp"
 
 namespace OpenBFME {
 
-class BigFilesystem{
-    std::list<BigArchive> archives;
+namespace BigFilesystem {
 
-public:
-    EXPORT BigArchive* mount(const string &filename, bool append);
-    EXPORT bool unmount(const string &filename);
-    EXPORT bool unmount(BigArchive* archive);
+EXPORT BigArchive* mount(const string &filename, bool append);
+EXPORT bool unmount(const string &filename);
+EXPORT bool unmount(BigArchive* archive);
 
-    EXPORT const BigEntry *openFile(const string &filename, const string &relativeTo = "");
-};
+EXPORT const BigEntry *openFile(const string &filename, const string &relativeTo = "");
+
+}
 
 }

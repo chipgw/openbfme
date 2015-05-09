@@ -18,7 +18,6 @@ private:
     const BigEntry* currentEntry;
     FILE* file;
     string archiveFilename;
-    BigFilesystem &filesystem;
 
     Backend backend;
 
@@ -31,7 +30,7 @@ private:
     bool openEntry(const BigEntry& entry);
 
 public:
-    EXPORT BigArchive(const string &filename, BigFilesystem &fs);
+    EXPORT BigArchive(const string &filename);
     EXPORT ~BigArchive();
 
     bool readHeader();

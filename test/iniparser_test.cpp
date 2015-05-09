@@ -53,8 +53,8 @@ void dumpObject(const IniObject& object, string indentation){
     }
 }
 
-void runTest(IniParser& ini, BigFilesystem& big, IniType& rootType) {
-    if(const BigEntry* file = big.openFile("folder/inifile.ini")){
+void runTest(IniParser& ini, IniType& rootType) {
+    if(const BigEntry* file = BigFilesystem::openFile("folder/inifile.ini")){
         IniObject root(rootType);
         ini.parse(*file, root);
 
@@ -69,33 +69,31 @@ int main(int argc, const char* argv[]){
 
     app.parseArguments();
 
-    BigFilesystem big;
-
     /* For the "iniparser_test_root.ini" file. */
-    BigArchive* currentDir = big.mount("./", true);
+    BigArchive* currentDir = BigFilesystem::mount("./", true);
 
-    IniType rootType("iniparser_test_root.ini", big);
+    IniType rootType("iniparser_test_root.ini");
 
     /* Don't need it anymore. */
-    big.unmount(currentDir);
+    BigFilesystem::unmount(currentDir);
 
-    IniParser ini(big);
+    IniParser ini;
 
     /* Parse from a .big file. */
-    big.mount("test.big", true);
+    BigFilesystem::mount("test.big", true);
 
     Log::info("Testing from .big archive.");
-    runTest(ini, big, rootType);
+    runTest(ini, rootType);
 
-    big.unmount("test.big");
+    BigFilesystem::unmount("test.big");
 
     /* Parse from a folder. */
-    big.mount("test", true);
+    BigFilesystem::mount("test", true);
 
     Log::info("Testing from folder.");
-    runTest(ini, big, rootType);
+    runTest(ini, rootType);
 
-    big.unmount("test");
+    BigFilesystem::unmount("test");
 
     return 0;
 }

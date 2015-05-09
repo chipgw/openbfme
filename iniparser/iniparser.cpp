@@ -9,8 +9,6 @@
 
 namespace OpenBFME {
 
-IniParser::IniParser(BigFilesystem &filesys) : filesystem(filesys) {}
-
 void IniParser::parse(const BigEntry &file, IniObject &object){
     while(!file.eof()){
         string word = file.getWord();
@@ -66,7 +64,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 
         uint32_t pos = file.tell();
 
-        const BigEntry* includeFile = filesystem.openFile(word, file.filename);
+        const BigEntry* includeFile = BigFilesystem::openFile(word, file.filename);
 
         if(includeFile != nullptr){
             parse(*includeFile, object);

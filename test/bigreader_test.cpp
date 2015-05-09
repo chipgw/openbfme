@@ -30,27 +30,25 @@ int main(int argc, const char* argv[]){
         {"..\\NewFile.inc",     "folder/inifile.ini"},
     };
 
-    BigFilesystem big;
-
-    big.mount("test.big", true);
+    BigFilesystem::mount("test.big", true);
 
     for(integer i = 0; i < tests.size(); ++i){
         Log::info("Test #%d:", i);
-        if(!testFile(big.openFile(tests[i].first, tests[i].second)))
+        if(!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
             failed++;
     }
 
-    big.unmount("test.big");
+    BigFilesystem::unmount("test.big");
 
-    big.mount("test", true);
+    BigFilesystem::mount("test", true);
 
     for(integer i = 0; i < tests.size(); ++i){
         Log::info("Test #%d:", i + integer(tests.size()));
-        if(!testFile(big.openFile(tests[i].first, tests[i].second)))
+        if(!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
             failed++;
     }
 
-    big.unmount("test");
+    BigFilesystem::unmount("test");
 
     if(failed == 0)
         Log::info("All %i tests successful!", integer(tests.size()) * 2);

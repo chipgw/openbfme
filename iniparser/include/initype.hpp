@@ -15,10 +15,10 @@ public:
     string breakWord = "End";
 
     IniType() = default;
-    EXPORT IniType(const string& filename, BigFilesystem &big);
+    EXPORT IniType(const string& filename);
     IniType(const IniObject& object);
 
-    EXPORT bool loadFromIni(const string& filename, BigFilesystem &big);
+    EXPORT bool loadFromIni(const string& filename);
     bool loadFromIni(const IniObject& object);
 };
 

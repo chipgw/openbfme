@@ -20,7 +20,6 @@ typedef glm::vec4 vec4;
 
 class BigEntry;
 class BigArchive;
-class BigFilesystem;
 
 struct IniVariable;
 class IniType;

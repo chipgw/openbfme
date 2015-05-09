@@ -31,17 +31,17 @@ const IniType IniDefinitionType = makeDefinitionType(16);
 
 }
 
-IniType::IniType(const string& filename, BigFilesystem &big) {
-    loadFromIni(filename, big);
+IniType::IniType(const string& filename) {
+    loadFromIni(filename);
 }
 
 IniType::IniType(const IniObject& object) {
     loadFromIni(object);
 }
 
-bool IniType::loadFromIni(const string& filename, BigFilesystem& big) {
-    IniParser ini(big);
-    if(const BigEntry* file = big.openFile(filename)){
+bool IniType::loadFromIni(const string& filename) {
+    IniParser ini;
+    if(const BigEntry* file = BigFilesystem::openFile(filename)){
         IniObject root(IniDefinitionType);
         ini.parse(*file, root);
 

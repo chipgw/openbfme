@@ -6,12 +6,9 @@
 namespace OpenBFME{
 
 class IniParser{
-    BigFilesystem &filesystem;
     std::map<string, string> macros;
 
 public:
-    EXPORT IniParser(BigFilesystem &filesys);
-
     EXPORT void parse(const BigEntry &file, IniObject &object);
 
 private:

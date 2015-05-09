@@ -39,10 +39,9 @@ int main(int argc, const char* argv[]){
         }
     }
 
-    BigFilesystem big;
 
     for(std::string &arg : args){
-        BigArchive* archive = big.mount(arg, true);
+        BigArchive* archive = BigFilesystem::mount(arg, true);
 
         if(archive != nullptr){
             if(archive->getBackend() != BigArchive::Folder){
@@ -60,7 +59,7 @@ int main(int argc, const char* argv[]){
                 Log::warning("Cannot extract from a folder. Why would you want to anyway?");
             }
 
-            big.unmount(archive);
+            BigFilesystem::unmount(archive);
         }
     }
 

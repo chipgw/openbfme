@@ -2,14 +2,21 @@
 #include "bigfilesystem.hpp"
 #include "log.hpp"
 #include <algorithm>
+#include <list>
 
 namespace OpenBFME {
 
-BigArchive *BigFilesystem::mount(const string &filename, bool append){
+namespace BigFilesystem {
+
+namespace {
+std::list<BigArchive> archives;
+}
+
+BigArchive *mount(const string &filename, bool append){
     Log::info("Attempting to mount \"%s\" in %s mode", filename, append ? "append" : "prepend");
 
     if(append){
-        archives.emplace_front(filename, *this);
+        archives.emplace_front(filename);
 
         BigArchive &newArchive = archives.front();
 
@@ -19,7 +26,7 @@ BigArchive *BigFilesystem::mount(const string &filename, bool append){
 
         archives.pop_front();
     }else{
-        archives.emplace_back(filename, *this);
+        archives.emplace_back(filename);
 
         BigArchive &newArchive = archives.back();
 
@@ -33,7 +40,7 @@ BigArchive *BigFilesystem::mount(const string &filename, bool append){
     return nullptr;
 }
 
-bool BigFilesystem::unmount(const string &filename){
+bool unmount(const string &filename){
     Log::info("Unmounting \"%s\"", filename);
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
@@ -45,7 +52,7 @@ bool BigFilesystem::unmount(const string &filename){
     return false;
 }
 
-bool BigFilesystem::unmount(BigArchive* archive){
+bool unmount(BigArchive* archive){
     Log::info("Unmounting \"%s\"", archive->getArchiveFilename());
 
     for(auto i = archives.begin(); i != archives.end(); ++i){
@@ -57,7 +64,7 @@ bool BigFilesystem::unmount(BigArchive* archive){
     return false;
 }
 
-const BigEntry* BigFilesystem::openFile(const string &filename, const string &relativeTo){
+const BigEntry* openFile(const string &filename, const string &relativeTo){
     string fullPath = filename;
     /* Everything uses '/' as the folder delimiter. */
     std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
@@ -92,6 +99,8 @@ const BigEntry* BigFilesystem::openFile(const string &filename, const string &re
         }
     }
     return nullptr;
+}
+
 }
 
 }

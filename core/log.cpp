@@ -6,7 +6,9 @@
 
 namespace OpenBFME {
 
-void Log::print(const string& str, OutputLevel level){
+namespace Log {
+
+void print(const string& str, OutputLevel level){
     Application* app = Application::getApplication();
 
     if(app != nullptr){
@@ -65,6 +67,8 @@ void Log::print(const string& str, OutputLevel level){
 
         SET_COLOR(BLANK);
     }
+}
+
 }
 
 }
