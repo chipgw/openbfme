@@ -7,6 +7,11 @@ namespace fs = FILESYSTEM_NAMESPACE;
 
 namespace OpenBFME {
 
+namespace {
+/* Only one instance of this class is allowed, to be created in main and provided with the command line arguments. */
+Application* app = nullptr;
+}
+
 Application::Application(int argc, const char *argv[]) : fullArguments(argv + 1, argv + argc),
     startTime(std::chrono::duration_cast<TimePoint>(Clock::now().time_since_epoch())) {
     if(app == nullptr){
@@ -119,6 +124,10 @@ void Application::parseArguments(){
     }
 }
 
+Application* Application::getApplication(){
+    return app;
+}
+
 std::shared_ptr<const BoolArgument> Application::registerBoolArgument(const std::initializer_list<string>& names, const string& desc) {
     std::shared_ptr<BoolArgument> pointer(new BoolArgument(names, desc));
     parsedArguments.emplace_back(pointer);
@@ -146,8 +155,5 @@ std::shared_ptr<const StringArgument> Application::registerStringArgument(const 
 
     return pointer;
 }
-
-
-Application* Application::app = nullptr;
 
 }

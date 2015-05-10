@@ -19,12 +19,12 @@ struct Printable{
 
     template<typename T> Printable(T n, typename std::enable_if<std::is_integral<T>::value>::type* = 0) : type(Integer), num(n) {}
     template<typename T> Printable(T d, typename std::enable_if<std::is_floating_point<T>::value>::type* = 0) : type(Decimal), dec(d) {}
-    inline Printable(char c) : type(Character), ch(c) {}
+    inline Printable(character c) : type(Character), ch(c) {}
     inline Printable(const string& s) : type(String), str(s.c_str()) {}
     inline Printable(cstring s) : type(String), str(s) {}
 };
 
-EXPORT string to_base(unsigned int value, unsigned int base, char start = 'a');
+EXPORT string to_base(uint32_t value, uint8_t base, character start = 'a');
 
 EXPORT string format(const string& fmt, std::initializer_list<Printable> args);
 

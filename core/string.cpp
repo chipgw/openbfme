@@ -7,7 +7,7 @@
 
 namespace OpenBFME {
 
-string to_base(unsigned int value, unsigned int base, char start) {
+string to_base(uint32_t value, uint8_t base, character start) {
     if (value == 0) return "0";
 
     string result;

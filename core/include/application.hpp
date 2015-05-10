@@ -14,16 +14,14 @@ class DecimalArgument;
 
 /* This class parses commandline and initializes the Log. */
 class Application{
-private:
+public:
     /* Define the standard clock and time point size. */
     typedef std::chrono::steady_clock Clock;
     typedef std::chrono::nanoseconds TimePoint;
 
     typedef std::vector<string> ArgumentList;
 
-    /* Only one instance of this class is allowed, to be created in main and provided with the command line arguments. */
-    static Application* app;
-
+private:
     /* All the arguments passed to the application, minus the executable path itself. */
     const ArgumentList fullArguments;
 
@@ -51,7 +49,7 @@ public:
     const ArgumentList& getRemainingArgs() { return remainingArguments; }
 
     /* Get the Application instance. */
-    static Application* getApplication() { return app; }
+    EXPORT static Application* getApplication();
 
     EXPORT std::shared_ptr<const BoolArgument> registerBoolArgument(const std::initializer_list<string>& names, const string& desc);
     EXPORT std::shared_ptr<const IntegerArgument> registerIntegerArgument(const std::initializer_list<string>& names, const string& desc);
