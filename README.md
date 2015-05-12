@@ -7,7 +7,6 @@ Dependencies:
 -------------
 * [CMake]
 * [GLM]
-* [TinyXML]
 
 On Linux:
 * [Boost] filesystem library.
@@ -32,7 +31,6 @@ License
 
 [CMake]:http://www.cmake.org
 [GLM]:http://glm.g-truc.net/
-[TinyXml]:http://www.grinninglizard.com/tinyxml/
 [Boost]:http://boost.org
 [Visual Studio 2013]:http://www.visualstudio.com/
 [MinGW]:http://www.mingw.org/
