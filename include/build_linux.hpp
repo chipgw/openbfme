@@ -6,7 +6,7 @@
 /* If this header is included we define Linux related stuff. */
 #define OPENBFME_PLATFORM_LINUX
 
-#define EXPORT
+#define EXPORT __attribute__((__visibility__("default")))
 
 /* TODO - Once the std filesystem is out use that. */
 #define FILESYSTEM_HEADER <boost/filesystem.hpp>

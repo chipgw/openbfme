@@ -12,6 +12,8 @@ if(NOT MSVC)
     find_package(Boost 1.57 COMPONENTS system filesystem REQUIRED)
     include_directories(${Boost_INCLUDE_DIR})
     set(FS_LIBRARY ${Boost_LIBRARIES})
+
+    list(APPEND CMAKE_CXX_FLAGS "-fvisibility=hidden")
 endif()
 
 # Enable any C++11 compiler flags if possible/nessecary.

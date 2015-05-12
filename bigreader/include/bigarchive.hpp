@@ -30,8 +30,8 @@ private:
     bool openEntry(const BigEntry& entry);
 
 public:
-    EXPORT BigArchive(const string &filename);
-    EXPORT ~BigArchive();
+    BigArchive(const string &filename);
+    ~BigArchive();
 
     bool readHeader();
     const BigEntry* openFile(const string &filename);
