@@ -13,10 +13,6 @@ void IniParser::parse(const BigEntry &file, IniObject &object){
     while(!file.eof()){
         string word = file.getWord();
 
-        if((word.size() > 1 && word[0] == '/' && word[1] == '/') || word[0] == ';'){
-            file.getLine(true);
-            continue;
-        }
         if(word == "\n"){
             continue;
         }
@@ -55,13 +51,16 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
     if(word == "include"){
         word = file.getWord();
 
-        if(word[0] != '"'){
+        /* Sure, the size probably should be a lot longer than 2, but 2 is all that matters here. */
+        if(word.size() < 2 || word.front() != '"' || word.back() != '"'){
             Log::error("%s:%d: expected a string after #include!", file.filename, file.line);
             return false;
         }
+        /* Trim the quotes. */
         word.erase(0, 1);
-        word.erase(word.length() - 1, 1);
+        word.pop_back();
 
+        /* So we know where to resume this file from when we're done with the other one. */
         uint32_t pos = file.tell();
 
         const BigEntry* includeFile = BigFilesystem::openFile(word, file.filename);
@@ -72,18 +71,19 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
             Log::error("%s:%d: Unable to open included file \"%s\"", file.filename, file.line, word);
         }
 
+        /* Go back to where we were in this file. */
         file.seek(pos);
 
         word = file.getWord();
         if(word != "\n"){
-            Log::warning("%s:%d: expected newline after #include!", file.filename, file.line);
+            Log::warning("%s:%d: Expected newline after #include, got %s!", file.filename, file.line, word);
         }
         return true;
     }else if(word == "define"){
         auto macroName = file.getWord();
 
         if(macroName == "\n"){
-            Log::error("%s:%d: expected macro name after #define!", file.filename, file.line);
+            Log::error("%s:%d: Expected macro name after #define!", file.filename, file.line);
             return false;
         }
 

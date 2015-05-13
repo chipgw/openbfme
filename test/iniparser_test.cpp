@@ -6,7 +6,8 @@
 
 using namespace OpenBFME;
 
-void dumpObject(const IniObject& object, string indentation){
+/* Print a bunch of information about the object, recursively printing subobjects with a higher indentation. */
+void dumpObject(const IniObject& object, string indentation = ""){
     if(object.args.size() > 0){
         Log::info("%sArguments:", indentation);
         for(const string& arg : object.args){
@@ -58,7 +59,7 @@ void runTest(IniParser& ini, IniType& rootType) {
         IniObject root(rootType);
         ini.parse(*file, root);
 
-        dumpObject(root, "");
+        dumpObject(root);
     }else{
         Log::warning("Unable to open file!");
     }
