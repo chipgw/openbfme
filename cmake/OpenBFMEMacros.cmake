@@ -25,10 +25,11 @@ endmacro()
 # Use to create libraries.
 macro(ADD_PROJECT_LIB)
     file(GLOB SOURCES "${ARGV0}/*.cpp")
+    file(GLOB HEADERS "${ARGV0}/include/*.hpp")
 
     include_directories("${ARGV0}/include")
 
-    add_library(${ARGV0} SHARED ${SOURCES})
+    add_library(${ARGV0} SHARED ${SOURCES} ${HEADERS})
     target_link_libraries(${ARGN})
 
     add_test_exe(${ARGV0})
@@ -49,8 +50,9 @@ macro(ADD_PROJECT_EXE)
         include_directories("./include")
 
         file(GLOB SOURCES "${ARGV0}/*.cpp")
+        file(GLOB HEADERS "${ARGV0}/include/*.hpp")
 
-        add_executable(${ARGV0} ${SOURCES})
+        add_executable(${ARGV0} ${SOURCES} ${HEADERS})
         target_link_libraries(${ARGN} core)
     endif()
 endmacro()

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "types.hpp"
-#include "inivariable.hpp"
 #include <map>
 
 namespace OpenBFME{
+
+enum IniVariable::VariableType;
 
 class IniType{
 public:

@@ -23,10 +23,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
 
 include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
 
-# Files not needed in build, but included so they show up in IDE.
-file(GLOB_RECURSE HEADERS "*.hpp")
-add_custom_target(IDE_FILES SOURCES ${HEADERS})
-
 # Where the add_project_lib() and add_project_exe() macros are defined.
 include(OpenBFMEMacros)
 
