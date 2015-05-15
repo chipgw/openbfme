@@ -1,4 +1,3 @@
-#include "inivariable.hpp"
 #include "initype.hpp"
 #include "iniobject.hpp"
 #include "iniparser.hpp"
