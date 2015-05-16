@@ -114,7 +114,7 @@ void BigArchive::close(){
 }
 
 bool BigArchive::openEntry(const BigEntry& entry) {
-    entry.line = 0;
+    entry.resetLineNumber();
 
     switch (backend) {
     case BigFile:
@@ -162,7 +162,7 @@ string BigArchive::getLine(const BigEntry &entry, bool checkComments){
             str.erase(comment);
     }
 
-    entry.line++;
+    entry.incrementLineNumber();
 
     return str;
 }
@@ -188,7 +188,7 @@ string BigArchive::getWord(const BigEntry &entry){
         if(data.empty()){
             if(c == '\n'){
                 /* return a newline character if it's the first non-space we run into. */
-                entry.line++;
+                entry.incrementLineNumber();
                 return "\n";
             }
             if(std::isspace(c)){
@@ -249,10 +249,31 @@ string BigArchive::getWord(const BigEntry &entry){
     return data;
 }
 
+character BigArchive::getChar(const BigEntry &entry){
+    if (!open() || eof(entry)){
+        return 0;
+    }
+
+    character ch = fgetc(file);
+
+    if (eof(entry)){
+        return 0;
+    }
+
+    if (ch == '\n'){
+        entry.incrementLineNumber();
+    }
+
+    return ch;
+}
+
 bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
     if(&entry != currentEntry){
         openEntry(entry);
     }
+
+    /* Invalidate the stored current line number. */
+    entry.invalidateLineNumber();
 
     pos += entry.start;
     if(pos < entry.end){

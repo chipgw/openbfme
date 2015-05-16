@@ -53,7 +53,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 
         /* Sure, the size probably should be a lot longer than 2, but 2 is all that matters here. */
         if(word.size() < 2 || word.front() != '"' || word.back() != '"'){
-            Log::error("%s:%d: expected a string after #include!", file.filename, file.line);
+            Log::error("%s:%d: expected a string after #include!", file.filename, file.getLineNumber());
             return false;
         }
         /* Trim the quotes. */
@@ -68,7 +68,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
         if(includeFile != nullptr){
             parse(*includeFile, object);
         }else{
-            Log::error("%s:%d: Unable to open included file \"%s\"", file.filename, file.line, word);
+            Log::error("%s:%d: Unable to open included file \"%s\"", file.filename, file.getLineNumber(), word);
         }
 
         /* Go back to where we were in this file. */
@@ -76,14 +76,14 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 
         word = file.getWord();
         if(word != "\n"){
-            Log::warning("%s:%d: Expected newline after #include, got %s!", file.filename, file.line, word);
+            Log::warning("%s:%d: Expected newline after #include, got %s!", file.filename, file.getLineNumber(), word);
         }
         return true;
     }else if(word == "define"){
         auto macroName = file.getWord();
 
         if(macroName == "\n"){
-            Log::error("%s:%d: Expected macro name after #define!", file.filename, file.line);
+            Log::error("%s:%d: Expected macro name after #define!", file.filename, file.getLineNumber());
             return false;
         }
 
@@ -94,7 +94,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
              * but with emplace() it happens anyway, so this makes it clear what's going on.
              * If this turns out to be wrong I'll fix it. */
             Log::warning("%s:%d: Macro with name \"%s\" already exists! Using original value of \"%s\".",
-                         file.filename, file.line, macroName, macros[macroName]);
+                         file.filename, file.getLineNumber(), macroName, macros[macroName]);
         }else if(macroValue == "\n"){
             macros.emplace(macroName, "");
             Log::debug("Added macro: %s", macroName);
@@ -151,7 +151,7 @@ bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::str
     }else if(value == "No"){
         var.b = false;
     }else{
-        Log::error("%s:%d: Expected \"Yes\" or \"No\" value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.line, name, value);
+        Log::error("%s:%d: Expected \"Yes\" or \"No\" value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
         return false;
     }
     Log::debug("Added variable: \"%s\" of type: \"Bool\" value: %s", name, value);
@@ -169,7 +169,7 @@ bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::
     try{
         var.i = std::stoi(value) * mult;
     }catch(...){
-        Log::error("%s:%d: Expected integer value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.line, name, value);
+        Log::error("%s:%d: Expected integer value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
         return false;
     }
 
@@ -188,7 +188,7 @@ bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::
     try{
         var.d = std::stof(value) * mult;
     }catch(...){
-        Log::error("%s:%d: Expected decimal value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.line, name, value);
+        Log::error("%s:%d: Expected decimal value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
         return false;
     }
 
@@ -212,7 +212,7 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
             /* multiply by either 1 or -1 based on whether or not there was a negative symbol beforehand. */
             val *= std::stof(valStr) * mult;
         }catch(...){
-            Log::error("%s:%d: Expected decimal value after vector component, got \"%s\"!", file.filename.c_str(), file.line, valStr);
+            Log::error("%s:%d: Expected decimal value after vector component, got \"%s\"!", file.filename.c_str(), file.getLineNumber(), valStr);
             return false;
         }
 
@@ -223,7 +223,7 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
         }else if(component == "Z" || component == "B"){
             var.v.z = val;
         }else{
-            Log::error("%s:%d: Expected a vector component letter, got \"%s\"!", file.filename.c_str(), file.line, component);
+            Log::error("%s:%d: Expected a vector component letter, got \"%s\"!", file.filename.c_str(), file.getLineNumber(), component);
             return false;
         }
     }

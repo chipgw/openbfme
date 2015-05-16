@@ -42,6 +42,9 @@ public:
     /* Get a */
     EXPORT string getWord(const BigEntry &entry);
 
+    /* Get a single character from a text file. */
+    EXPORT character getChar(const BigEntry &entry);
+
     /* Seek to a position inside the entry. */
     EXPORT bool seek(const BigEntry &entry, uint32_t pos);
     /* Return the current position inside the entry. */
