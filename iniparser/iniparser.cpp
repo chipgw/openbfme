@@ -51,11 +51,18 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
     if(word == "include"){
         word = file.getWord();
 
-        /* Sure, the size probably should be a lot longer than 2, but 2 is all that matters here. */
-        if(word.size() < 2 || word.front() != '"' || word.back() != '"'){
-            Log::error("%s:%d: expected a string after #include!", file.filename, file.getLineNumber());
+        if(word == "\n"){
+            Log::error("%s:%d: No file passed to #include!", file.filename, file.getLineNumber());
             return false;
         }
+
+        /* Sure, the size probably should be a lot longer than 2, but 2 is all that matters here. */
+        if(word.size() < 2 || word.front() != '"' || word.back() != '"'){
+            /* Because the line number is 0 indexed and the newline character hasn't been read yet, add one to it. */
+            Log::error("%s:%d: expected a string after #include, got \"%s\"!", file.filename, file.getLineNumber() + 1, word);
+            return false;
+        }
+
         /* Trim the quotes. */
         word.erase(0, 1);
         word.pop_back();

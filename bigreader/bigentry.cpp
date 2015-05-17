@@ -7,7 +7,7 @@ integer BigEntry::getLineNumber() const {
         /* Go back and count lines in the file. */
         uint32_t pos = tell();
         seek(0);
-        line = 0;
+        resetLineNumber();
 
         for (uint32_t i = 0; i < pos; ++i){
             getChar();
