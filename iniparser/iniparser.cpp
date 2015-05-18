@@ -229,13 +229,15 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
             var.v.y = val;
         }else if(component == "Z" || component == "B"){
             var.v.z = val;
+        }else if(component == "A"){
+            var.v.a = val;
         }else{
             Log::error("%s:%d: Expected a vector component letter, got \"%s\"!", file.filename.c_str(), file.getLineNumber(), component);
             return false;
         }
     }
 
-    Log::debug("Added variable: \"%s\" of type: \"Vector\" %f %f %f", name, var.v.x, var.v.y, var.v.z);
+    Log::debug("Added variable: \"%s\" of type: \"Vector\" %f %f %f %f", name, var.v.x, var.v.y, var.v.z, var.v.w);
     return true;
 }
 
