@@ -256,10 +256,6 @@ character BigArchive::getChar(const BigEntry &entry){
 
     character ch = fgetc(file);
 
-    if (eof(entry)){
-        return 0;
-    }
-
     if (ch == '\n'){
         entry.incrementLineNumber();
     }
@@ -311,7 +307,7 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
 
     fs::path path = entry.filename;
 
-    path = fs::canonical(fs::path(directory) / (fullPath ? path : path.filename()));
+    path = fs::canonical(fs::path(directory)) / (fullPath ? path : path.filename());
 
     fs::create_directories(path.parent_path());
 

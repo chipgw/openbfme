@@ -40,7 +40,7 @@ int main(int argc, const char* argv[]){
 
     BigFilesystem::unmount("test.big");
 
-    BigFilesystem::mount("test", true);
+    auto archive = BigFilesystem::mount("test", true);
 
     for(integer i = 0; i < tests.size(); ++i){
         Log::info("Test #%d:", i + integer(tests.size()));
@@ -48,7 +48,7 @@ int main(int argc, const char* argv[]){
             failed++;
     }
 
-    BigFilesystem::unmount("test");
+    BigFilesystem::unmount(archive);
 
     if(failed == 0)
         Log::info("All %i tests successful!", integer(tests.size()) * 2);
