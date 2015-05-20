@@ -39,11 +39,10 @@ public:
     /* Get a line from a text file, does not include newline character. */
     EXPORT string getLine(const BigEntry &entry, bool checkComments);
 
-    /* Get a */
-    EXPORT string getWord(const BigEntry &entry);
-
     /* Get a single character from a text file. */
     EXPORT character getChar(const BigEntry &entry);
+    /* Put a single character back into a text file. */
+    EXPORT void ungetChar(const BigEntry &entry, character c);
 
     /* Seek to a position inside the entry. */
     EXPORT bool seek(const BigEntry &entry, uint32_t pos);

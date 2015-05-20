@@ -21,7 +21,7 @@ public:
 
     /* Wrap IO functions from BigArchive for easy access. */
     inline string getLine(bool checkComments) const { return archive.getLine(*this, checkComments); }
-    inline string getWord() const { return archive.getWord(*this); }
+    EXPORT string getWord() const;
     inline character getChar() const { return archive.getChar(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }
@@ -32,6 +32,7 @@ public:
 
     /* For use by BigArchive. */
     integer incrementLineNumber() const;
+    integer decrementLineNumber() const;
     inline void resetLineNumber() const { line = 0; }
     inline void invalidateLineNumber() const { line = -1; }
 };

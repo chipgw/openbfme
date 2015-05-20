@@ -167,88 +167,6 @@ string BigArchive::getLine(const BigEntry &entry, bool checkComments){
     return str;
 }
 
-string BigArchive::getWord(const BigEntry &entry){
-    if(!open() || eof(entry)){
-        return "";
-    }
-
-    bool isWrd = false;
-    bool isStr = false;
-    bool isNmb = false;
-    bool isSym = false;
-
-    string data;
-    while(!eof(entry)){
-        character c = fgetc(file);
-
-        if(ferror(file) || feof(file)){
-            break;
-        }
-
-        if(data.empty()){
-            if(c == '\n'){
-                /* return a newline character if it's the first non-space we run into. */
-                entry.incrementLineNumber();
-                return "\n";
-            }
-            if(std::isspace(c)){
-                /* Ignore a space. */
-                continue;
-            }
-            if(std::isalpha(c)){
-                /* we have a word! */
-                isWrd = true;
-            }else if(std::isdigit(c)){
-                /* we have a number! */
-                isNmb = true;
-            }else if(c == '"'){
-                /* we have a string! */
-                isStr = true;
-            }else if(c == ';'){
-                /* We have a comment! */
-                getLine(entry, false);
-                return "\n";
-            }else{
-                isSym = true;
-            }
-        }else{
-            if(!isStr){
-                if(c == ';'){
-                    /* We have a comment! */
-                    getLine(entry, false);
-                    break;
-                }else if(c == '/' && data.back() == '/'){
-                    /* We have a comment! */
-                    getLine(entry, false);
-
-                    /* Is the comment all that was in the string? */
-                    if(data.size() == 1)
-                        return "\n";
-
-                    /* Remove the other '/' character. */
-                    data.pop_back();
-                    break;
-                }else if((std::isspace(c) || /* A space ends anything. */
-                        /* Words break on non alpha-numeric characters other than underscores. */
-                        (isWrd && !std::isalnum(c) && c != '_') ||
-                        /* Numbers break on anything that isn't a digit or a period. */
-                        (isNmb && !std::isdigit(c) && c != '.') ||
-                        /* Symbols break on anything alpha-numeric. */
-                        (isSym && std::isalnum(c)))){
-                    ungetc(c, file);
-                    break;
-                }
-            }else if(c == '"'){
-                data += c;
-                break;
-            }
-        }
-        data += c;
-    }
-
-    return data;
-}
-
 character BigArchive::getChar(const BigEntry &entry){
     if (!open() || eof(entry)){
         return 0;
@@ -261,6 +179,16 @@ character BigArchive::getChar(const BigEntry &entry){
     }
 
     return ch;
+}
+
+void BigArchive::ungetChar(const BigEntry &entry, character c) {
+    if (tell(entry) > 0) {
+        ungetc(c, file);
+
+        if (c == '\n') {
+            entry.decrementLineNumber();
+        }
+    }
 }
 
 bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
