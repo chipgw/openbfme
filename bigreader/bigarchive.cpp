@@ -15,6 +15,11 @@ uint32_t readUInt32(FILE* file){
     return val[0] << 24 | val[1] << 16 | val[2] << 8 | val[3];
 }
 
+void writeUInt32(FILE* file, uint32_t value){
+    uint8_t val[] { uint8_t(value >> 24), uint8_t(value >> 16), uint8_t(value >> 8), uint8_t(value) };
+    fwrite(val, 1, 4, file);
+}
+
 string readString(FILE* file, uint32_t limit, char terminator = '\0'){
     string data;
     while(uint32_t(ftell(file)) < limit){
@@ -301,6 +306,85 @@ bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite
         }
     }
     return true;
+}
+
+bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filename) {
+    Log::info("Preparing to write %d files to \"%s\"", entries.size(), filename);
+
+    /* 8 bytes for every entry + 24 at the start and end. */
+    uint32_t headerLength = (entries.size() * 8) + 24;
+
+    /* Add the length of the filenames to headerLength. */
+    for(auto &entry : entries){
+        headerLength += entry.filename.size() + 1;
+    }
+
+    Log::debug("Calculated header length: %#08x", headerLength);
+
+    FILE* file = fopen(filename.c_str(), "wb");
+
+    if (file == nullptr) {
+        Log::error("Unable to open %s for writing!", filename);
+        return false;
+    }
+
+    /* Either that or "BIG4". I'm not sure which... */
+    fwrite("BIGF", 1, 4, file);
+
+    writeUInt32(file, 0);
+
+    /* General info about the file. */
+    writeUInt32(file, entries.size());
+    writeUInt32(file, headerLength);
+
+    /* Put the first file one byte after the end of the header. */
+    uint32_t lastEnd = headerLength + 1;
+
+    /* Write all the file information. */
+    for(auto &entry : entries){
+        uint32_t fileLength = entry.end - entry.start;
+        writeUInt32(file, lastEnd);
+        writeUInt32(file, fileLength);
+
+        /* Write the filename and terminating null character. */
+        fputs(entry.filename.c_str(), file);
+        fputc('\0', file);
+
+        /* So we know where the next file will be written. */
+        lastEnd += fileLength;
+    }
+
+    /* What exactly is this? */
+    fputs("L253", file);
+
+    /* Empty space... */
+    writeUInt32(file, 0);
+
+    if(ftell(file) > headerLength){
+        Log::error("Calculated header length too short!");
+    }
+
+    /* One more byte until where we start the first file... */
+    fputc('\0', file);
+
+    /* Write all the files. */
+    for(auto &entry : entries){
+        entry.seek(0);
+
+        for(character c; !entry.eof();){
+            c = entry.getChar();
+            fwrite(&c, sizeof(character), 1, file);
+        }
+    }
+    fclose(file);
+}
+
+bool BigArchive::writeBig(const string& filename) {
+    /* We only do this on a folder backend, because why would you do it on a .big? */
+    if (backend == Folder) {
+        return writeBig(entries, filename);
+    }
+    return false;
 }
 
 }

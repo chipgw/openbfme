@@ -55,6 +55,10 @@ public:
     EXPORT bool extract(const BigEntry &entry, const string &directory, bool fullPath, bool ignore, bool overwrite);
     /* Extract all entries into given directory. */
     EXPORT bool extractAll(const string &directory, bool ignore, bool overwrite);
+    /* Make a .big file out of a set of entries. */
+    EXPORT static bool writeBig(const std::set<BigEntry>& entries, const string& filename);
+    /* Make a .big file out of a folder. */
+    EXPORT bool writeBig(const string& filename);
 
     inline const string &getArchiveFilename() { return archiveFilename; }
     inline const Backend &getBackend() { return backend; }
