@@ -309,14 +309,14 @@ bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite
 }
 
 bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filename) {
-    Log::info("Preparing to write %d files to \"%s\"", entries.size(), filename);
+    Log::info("Preparing to write %d files to \"%s\"", integer(entries.size()), filename);
 
     /* 8 bytes for every entry + 24 at the start and end. */
-    uint32_t headerLength = (entries.size() * 8) + 24;
+    uint32_t headerLength = uint32_t(entries.size() * 8) + 24;
 
     /* Add the length of the filenames to headerLength. */
     for(auto &entry : entries){
-        headerLength += entry.filename.size() + 1;
+        headerLength += uint32_t(entry.filename.size()) + 1;
     }
 
     Log::debug("Calculated header length: %#08x", headerLength);
@@ -334,7 +334,7 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
     writeUInt32(file, 0);
 
     /* General info about the file. */
-    writeUInt32(file, entries.size());
+    writeUInt32(file, uint32_t(entries.size()));
     writeUInt32(file, headerLength);
 
     /* Put the first file one byte after the end of the header. */
@@ -360,7 +360,7 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
     /* Empty space... */
     writeUInt32(file, 0);
 
-    if(ftell(file) > headerLength){
+    if(uint32_t(ftell(file)) > headerLength){
         Log::error("Calculated header length too short!");
     }
 
@@ -376,7 +376,10 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
             fwrite(&c, sizeof(character), 1, file);
         }
     }
+
     fclose(file);
+
+    return true;
 }
 
 bool BigArchive::writeBig(const string& filename) {

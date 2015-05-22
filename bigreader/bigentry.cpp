@@ -1,4 +1,5 @@
 #include "bigentry.hpp"
+#include <cctype>
 
 namespace OpenBFME {
 
