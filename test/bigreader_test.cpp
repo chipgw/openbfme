@@ -55,7 +55,7 @@ int main(int argc, const char* argv[]){
     BigFilesystem::mount("writetest.big", true);
 
     for(integer i = 0; i < tests.size(); ++i){
-        Log::info("Test #%d:", i + integer(tests.size()));
+        Log::info("Test #%d:", i + integer(tests.size()) * 2);
         if(!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
             failed++;
     }

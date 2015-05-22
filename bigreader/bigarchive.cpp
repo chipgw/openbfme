@@ -379,6 +379,8 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
 
     fclose(file);
 
+    Log::info("Finished writing to \"%s\".", filename);
+
     return true;
 }
 
