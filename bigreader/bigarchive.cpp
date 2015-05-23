@@ -312,7 +312,7 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
     Log::info("Preparing to write %d files to \"%s\"", integer(entries.size()), filename);
 
     /* 8 bytes for every entry + 24 at the start and end. */
-    uint32_t headerLength = uint32_t(entries.size() * 8) + 24;
+    uint32_t headerLength = uint32_t(entries.size() * 8) + 20;
 
     /* Add the length of the filenames to headerLength. */
     for(auto &entry : entries){
@@ -356,9 +356,6 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
 
     /* What exactly is this? */
     fputs("L253", file);
-
-    /* Empty space... */
-    writeUInt32(file, 0);
 
     if(uint32_t(ftell(file)) > headerLength){
         Log::error("Calculated header length too short!");
