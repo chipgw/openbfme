@@ -38,5 +38,6 @@ add_project_lib(bigreader core ${FS_LIBRARY})
 add_project_lib(iniparser bigreader)
 
 add_project_exe(big_extractor bigreader)
+add_project_exe(make_big bigreader)
 add_project_exe(openbfme_server iniparser)
 add_project_exe(openbfme_client iniparser)
