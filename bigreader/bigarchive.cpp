@@ -32,9 +32,7 @@ string readString(FILE* file, uint32_t limit, char terminator = '\0'){
     return data;
 }
 
-BigArchive::BigArchive(const string &filename) : archiveFilename(filename), file(nullptr) {
-    std::replace(archiveFilename.begin(), archiveFilename.end(), '\\', '/');
-}
+BigArchive::BigArchive(const string &filename) : archiveFilename(fs::path(filename).generic_string()), file(nullptr) { }
 
 BigArchive::~BigArchive(){
     close();
@@ -43,12 +41,23 @@ BigArchive::~BigArchive(){
 bool BigArchive::readHeader(){
     if (fs::is_directory(fs::path(archiveFilename))) {
         backend = Folder;
+        
+        /* Make sure the archiveFilename ends with a '/' */
+        if (archiveFilename.back() != '/')
+            archiveFilename += '/';
 
         for (fs::recursive_directory_iterator dir(archiveFilename), end; dir != end; ++dir) {
             const fs::path& currentPath = dir->path();
             if (fs::is_regular_file(currentPath)) {
                 string filename = currentPath.generic_string();
-                filename.erase(0, filename.find_first_of('/') + 1);
+
+                /* Check to see if the filename contains the parent path, and if so remove it. */
+                if (filename.compare(0, archiveFilename.size(), archiveFilename, 0, archiveFilename.size()) == 0)
+                    filename.erase(0, archiveFilename.size());
+                else
+                    /* Otherwise fall back to removing the first element in the path. */
+                    filename.erase(0, filename.find_first_of('/') + 1);
+
                 uint32_t filesize = uint32_t(fs::file_size(currentPath));
 
                 entries.emplace(*this, 0, filesize, filename);
@@ -61,14 +70,14 @@ bool BigArchive::readHeader(){
 
     backend = BigFile;
 
-    if(!open()){
+    if (!open())
         return false;
-    }
 
+    /* The first 4 bytes shoule be either "BIG4" or "BIGF", quit if they aren't. */
     character id[4] = {0};
     fread(id, 1, 4, file);
 
-    if (id[0] != 'B' || id[1] != 'I' || id[2] != 'G' || (id[3] != '4' && id[3] != 'F')){
+    if (id[0] != 'B' || id[1] != 'I' || id[2] != 'G' || (id[3] != '4' && id[3] != 'F')) {
         close();
         return false;
     }
@@ -80,7 +89,8 @@ bool BigArchive::readHeader(){
 
     Log::info("File Count: %u Header End: %#08x", fileCount, headerEnd);
 
-    for(uint32_t f = 0; f < fileCount; ++f){
+    /* Read the individual file information into entries. */
+    for (uint32_t f = 0; f < fileCount; ++f) {
         uint32_t start = readUInt32(file);
         uint32_t end   = start + readUInt32(file);
         string path = readString(file, headerEnd);
@@ -91,9 +101,8 @@ bool BigArchive::readHeader(){
         Log::debug("File #%04d start: %#08x end: %#08x path: \"%s\"", f + 1, start, end, path);
     }
 
-    if(uint32_t(ftell(file)) > headerEnd){
+    if (uint32_t(ftell(file)) > headerEnd)
         Log::warning("Reading of file info passed through end of header.");
-    }
 
     return true;
 }
@@ -366,6 +375,7 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
 
     /* Write all the files. */
     for(auto &entry : entries){
+        Log::info("Writing file \"%s\".", entry.filename);
         entry.seek(0);
 
         for(character c; !entry.eof();){
