@@ -78,6 +78,7 @@ bool BigArchive::readHeader(){
     fread(id, 1, 4, file);
 
     if (id[0] != 'B' || id[1] != 'I' || id[2] != 'G' || (id[3] != '4' && id[3] != 'F')) {
+        Log::error("File \"%s\" is not a valid big file!");
         close();
         return false;
     }
@@ -206,9 +207,8 @@ void BigArchive::ungetChar(const BigEntry &entry, character c) {
 }
 
 bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
-    if(&entry != currentEntry){
-        openEntry(entry);
-    }
+    if(&entry != currentEntry && !openEntry(entry))
+        return false;
 
     /* Invalidate the stored current line number. */
     entry.invalidateLineNumber();
@@ -222,17 +222,16 @@ bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
 }
 
 uint32_t BigArchive::tell(const BigEntry &entry){
-    if(&entry != currentEntry){
-        openEntry(entry);
-    }
+    if (&entry != currentEntry && !openEntry(entry))
+        return 0;
 
     uint32_t pos = ftell(file);
-    if(pos < entry.start){
+    if(pos < entry.start)
         return 0;
-    }
-    if(pos > entry.end){
+
+    if(pos > entry.end)
         return entry.end - entry.start;
-    }
+
     return pos - entry.start;
 }
 
@@ -262,7 +261,7 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
         }else if(!overwrite){
             character c = 0;
 
-            do{
+            while(c != 'n' && c != 'y'){
                 Log::info("Overwrite existing file \"%s\"? [Y/N]:", path.generic_string());
 
                 c = std::tolower(std::getchar());
@@ -274,7 +273,7 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
                     c = 0;
                     while(std::getchar() != '\n') continue;
                 }
-            }while(c != 'n' && c != 'y');
+            }
 
             if(c == 'n'){
                 Log::info("Skipping \"%s\".", entry.filename);
