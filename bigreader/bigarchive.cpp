@@ -161,27 +161,6 @@ const BigEntry* BigArchive::openFile(const string &filename){
     return nullptr;
 }
 
-string BigArchive::getLine(const BigEntry &entry, bool checkComments){
-    if(!open() || eof(entry)){
-        return "";
-    }
-    string str = readString(file, entry.end, '\n');
-
-    if(str.back() == '\r'){
-        str.pop_back();
-    }
-
-    if(checkComments){
-        string::size_type comment = std::min(str.find(';'), str.find("//"));
-        if(comment != string::npos)
-            str.erase(comment);
-    }
-
-    entry.incrementLineNumber();
-
-    return str;
-}
-
 character BigArchive::getChar(const BigEntry &entry){
     if (!open() || eof(entry)){
         return 0;

@@ -35,10 +35,7 @@ public:
 
     bool readHeader();
     const BigEntry* openFile(const string &filename);
-
-    /* Get a line from a text file, does not include newline character. */
-    EXPORT string getLine(const BigEntry &entry, bool checkComments);
-
+    
     /* Get a single character from a text file. */
     EXPORT character getChar(const BigEntry &entry);
     /* Put a single character back into a text file. */

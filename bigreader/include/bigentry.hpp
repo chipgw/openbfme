@@ -19,9 +19,11 @@ public:
     BigArchive &archive;
     BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file) : archive(arch), start(start), end(end), filename(file) {}
 
-    /* Wrap IO functions from BigArchive for easy access. */
-    inline string getLine(bool checkComments) const { return archive.getLine(*this, checkComments); }
+    /* Get a line from a text file, does not include newline character. */
+    EXPORT string getLine(bool checkComments) const;
     EXPORT string getWord() const;
+
+    /* Wrap IO functions from BigArchive for easy access. */
     inline character getChar() const { return archive.getChar(*this); }
     inline bool seek(uint32_t pos) const { return archive.seek(*this, pos); }
     inline uint32_t tell() const { return archive.tell(*this); }

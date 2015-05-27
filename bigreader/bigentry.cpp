@@ -1,7 +1,29 @@
 #include "bigentry.hpp"
 #include <cctype>
+#include <algorithm>
 
 namespace OpenBFME {
+
+string BigEntry::getLine(bool checkComments) const {
+    string line;
+    character c = getChar();
+
+    while (c != 0 && c != '\n') {
+        line += c;
+        c = getChar();
+    }
+
+    if (line.back() == '\r')
+        line.pop_back();
+
+    if (checkComments){
+        string::size_type comment = std::min(line.find(';'), line.find("//"));
+        if (comment != string::npos)
+            line.erase(comment);
+    }
+
+    return line;
+}
 
 string BigEntry::getWord() const {
     if (eof()) return "";
