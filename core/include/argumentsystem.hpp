@@ -65,4 +65,13 @@ public:
     DecimalArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) {}
 };
 
+/* Like a string argument but can be passed more than once. */
+class MultiStringArgument : public StringArgument {
+public:
+    std::unordered_set<string> results;
+    virtual void parse(const string& usedName);
+
+    MultiStringArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) {}
+};
+
 }

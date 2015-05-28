@@ -11,6 +11,7 @@ class StringArgument;
 class BoolArgument;
 class IntegerArgument;
 class DecimalArgument;
+class MultiStringArgument;
 
 /* This class parses commandline and initializes the Log. */
 class Application{
@@ -55,6 +56,7 @@ public:
     EXPORT std::shared_ptr<const IntegerArgument> registerIntegerArgument(const std::initializer_list<string>& names, const string& desc);
     EXPORT std::shared_ptr<const DecimalArgument> registerDecimalArgument(const std::initializer_list<string>& names, const string& desc);
     EXPORT std::shared_ptr<const StringArgument> registerStringArgument(const std::initializer_list<string>& names, const string& desc);
+    EXPORT std::shared_ptr<const MultiStringArgument> registerMultiStringArgument(const std::initializer_list<string>& names, const string& desc);
 
     /* Get how long the application has been running. */
     template<typename T> T getRunningTime() {

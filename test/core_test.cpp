@@ -51,6 +51,7 @@ int main(int argc, const char* argv[]) {
     auto intArg = app.registerIntegerArgument({"intarg","int","i"}, "Test argument");
     auto decArg = app.registerDecimalArgument({"decarg","d"}, "Test argument");
     auto strArg = app.registerStringArgument({"strarg","str"}, "Test argument");
+    auto multArg = app.registerMultiStringArgument({"multarg","m"}, "Test argument");
 
     app.parseArguments();
 
@@ -73,6 +74,12 @@ int main(int argc, const char* argv[]) {
         Log::info("strarg value is \"%s\"", strArg->result);
     else
         Log::info("No valid strarg was passed.");
+
+    if(multArg->valid)
+        for(const string& result : multArg->results)
+            Log::info("multarg value is \"%s\"", result);
+    else
+        Log::info("No valid multarg was passed.");
 
     auto& args = app.getRemainingArgs();
 

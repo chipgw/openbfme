@@ -156,4 +156,11 @@ std::shared_ptr<const StringArgument> Application::registerStringArgument(const 
     return pointer;
 }
 
+std::shared_ptr<const MultiStringArgument> Application::registerMultiStringArgument(const std::initializer_list<string>& names, const string& desc) {
+    std::shared_ptr<MultiStringArgument> pointer(new MultiStringArgument(names, desc));
+    parsedArguments.emplace_back(pointer);
+
+    return pointer;
+}
+
 }
