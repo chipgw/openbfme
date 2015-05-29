@@ -1,6 +1,6 @@
 #pragma once
 
-#include "log.hpp"
+#include "types.hpp"
 #include <vector>
 #include <memory>
 #include <chrono>
@@ -37,10 +37,6 @@ private:
 
     const TimePoint startTime;
 
-    std::vector<Log::Output> logOutputs;
-
-    void initLog(const string& filename, bool verbose, bool silent);
-
 public:
     EXPORT Application(int argc, const char *argv[]);
     EXPORT ~Application();
@@ -62,8 +58,6 @@ public:
     template<typename T> T getRunningTime() {
         return  std::chrono::duration_cast<T>(Clock::now().time_since_epoch()) - std::chrono::duration_cast<T>(startTime);
     }
-
-    const std::vector<Log::Output>& getLogOutputs() { return logOutputs; }
 };
 
 }

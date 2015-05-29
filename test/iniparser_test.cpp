@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "application.hpp"
 #include "initype.hpp"
 #include "iniobject.hpp"

@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "application.hpp"
 #include "argumentsystem.hpp"
 #include <algorithm>
@@ -29,24 +30,9 @@ Application::~Application(){
     if(app == this){
         Log::info("Shutting down.");
 
-        for(Log::Output output : logOutputs)
-            if(output.fp != stdout && output.fp != stderr)
-                fclose(output.fp);
-
-        logOutputs.clear();
+        Log::shutdownLog();
 
         app = nullptr;
-    }
-}
-
-void Application::initLog(const string &filename, bool verbose, bool silent){
-    Log::OutputLevel maxLevel = silent ? Log::Error : verbose ? Log::Debug : Log::Info;
-
-    logOutputs.push_back(Log::Output(maxLevel, stdout));
-
-    FILE* file = fopen(filename.c_str(), "w");
-    if(file != nullptr){
-        logOutputs.push_back(Log::Output(maxLevel, file));
     }
 }
 
@@ -113,7 +99,7 @@ void Application::parseArguments(){
     #define VERBOSE_DEFAULT false
 #endif
 
-    initLog((logDir / logName).string(), verbose->valid ? verbose->boolResult : VERBOSE_DEFAULT, silent->valid ? silent->boolResult : false);
+    Log::initLog((logDir / logName).string(), verbose->valid ? verbose->boolResult : VERBOSE_DEFAULT, silent->valid ? silent->boolResult : false);
 
     Log::info("Starting \"%s\"", executablePath);
 

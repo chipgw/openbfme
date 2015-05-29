@@ -13,12 +13,10 @@ enum OutputLevel{
     Info,
     Debug
 };
-struct Output{
-    OutputLevel level;
-    FILE* fp;
 
-    Output(OutputLevel l, FILE* f) : level(l), fp(f) {}
-};
+void initLog(const string& filename, bool verbose, bool silent);
+
+void shutdownLog();
 
 EXPORT void print(const string& output, OutputLevel level);
 

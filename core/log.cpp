@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "application.hpp"
 
 #ifdef OPENBFME_PLATFORM_WINDOWS
@@ -7,6 +8,36 @@
 namespace OpenBFME {
 
 namespace Log {
+
+namespace {
+struct Output{
+    OutputLevel level;
+    FILE* fp;
+
+    Output(OutputLevel l, FILE* f) : level(l), fp(f) {}
+};
+
+std::vector<Log::Output> logOutputs;
+}
+
+void initLog(const string &filename, bool verbose, bool silent){
+    Log::OutputLevel maxLevel = silent ? Log::Error : verbose ? Log::Debug : Log::Info;
+
+    logOutputs.push_back(Log::Output(maxLevel, stdout));
+
+    FILE* file = fopen(filename.c_str(), "w");
+    if(file != nullptr){
+        logOutputs.push_back(Log::Output(maxLevel, file));
+    }
+}
+
+void shutdownLog() {
+    for(Log::Output output : logOutputs)
+        if(output.fp != stdout && output.fp != stderr)
+            fclose(output.fp);
+
+    logOutputs.clear();
+}
 
 void print(const string& str, OutputLevel level){
     Application* app = Application::getApplication();
@@ -56,7 +87,7 @@ void print(const string& str, OutputLevel level){
                                   type);
 
         /* Write the string to every relevant output. */
-        for(Output output : app->getLogOutputs()){
+        for(Output output : logOutputs){
             if(output.fp != nullptr && output.level >= level){
                 fputs(timestamp.c_str(), output.fp);
                 fputs(str.c_str(), output.fp);

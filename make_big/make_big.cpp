@@ -1,3 +1,4 @@
+#include "log.hpp"
 #include "application.hpp"
 #include "argumentsystem.hpp"
 #include "bigarchive.hpp"
