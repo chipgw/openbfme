@@ -17,7 +17,7 @@ struct Output{
     Output(OutputLevel l, FILE* f) : level(l), fp(f) {}
 };
 
-std::vector<Log::Output> logOutputs;
+std::vector<Output> logOutputs;
 }
 
 void initLog(const string &filename, bool verbose, bool silent){
