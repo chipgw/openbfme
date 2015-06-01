@@ -17,8 +17,8 @@ struct Printable{
         cstring str;
     };
 
-    template<typename T> Printable(T n, typename std::enable_if<std::is_integral<T>::value>::type* = 0) : type(Integer), num(n) {}
-    template<typename T> Printable(T d, typename std::enable_if<std::is_floating_point<T>::value>::type* = 0) : type(Decimal), dec(d) {}
+    template<typename T> Printable(T n, typename std::enable_if<std::is_integral<T>::value>::type* = 0) : type(Integer), num(integer(n)) {}
+    template<typename T> Printable(T d, typename std::enable_if<std::is_floating_point<T>::value>::type* = 0) : type(Decimal), dec(decimal(d)) {}
     inline Printable(character c) : type(Character), ch(c) {}
     inline Printable(const string& s) : type(String), str(s.c_str()) {}
     inline Printable(cstring s) : type(String), str(s) {}
