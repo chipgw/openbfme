@@ -21,18 +21,18 @@ std::vector<Output> logOutputs;
 }
 
 void initLog(const string &filename, bool verbose, bool silent){
-    Log::OutputLevel maxLevel = silent ? Log::Error : verbose ? Log::Debug : Log::Info;
+    OutputLevel maxLevel = silent ? Error : verbose ? Debug : Info;
 
-    logOutputs.push_back(Log::Output(maxLevel, stdout));
+    logOutputs.push_back(Output(maxLevel, stdout));
 
     FILE* file = fopen(filename.c_str(), "w");
     if(file != nullptr){
-        logOutputs.push_back(Log::Output(maxLevel, file));
+        logOutputs.push_back(Output(maxLevel, file));
     }
 }
 
 void shutdownLog() {
-    for(Log::Output output : logOutputs)
+    for(Output& output : logOutputs)
         if(output.fp != stdout && output.fp != stderr)
             fclose(output.fp);
 
@@ -87,7 +87,7 @@ void print(const string& str, OutputLevel level){
                                   type);
 
         /* Write the string to every relevant output. */
-        for(Output output : logOutputs){
+        for(Output& output : logOutputs){
             if(output.fp != nullptr && output.level >= level){
                 fputs(timestamp.c_str(), output.fp);
                 fputs(str.c_str(), output.fp);
