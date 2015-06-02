@@ -64,9 +64,9 @@ int main(int argc, const char* argv[]){
     BigFilesystem::unmount("writetest.big");
 
     if(failed == 0)
-        Log::info("All %i tests successful!", integer(tests.size()) * 3);
+        Log::info("All %i tests successful!", tests.size() * 3);
     else
-        Log::error("%i/%i test(s) failed!", failed, integer(tests.size()) * 3);
+        Log::error("%i/%i test(s) failed!", failed, tests.size() * 3);
 
     return 0;
 }

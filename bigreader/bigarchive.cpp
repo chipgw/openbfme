@@ -296,7 +296,7 @@ bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite
 }
 
 bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filename) {
-    Log::info("Preparing to write %d files to \"%s\"", integer(entries.size()), filename);
+    Log::info("Preparing to write %d files to \"%s\"", entries.size(), filename);
 
     /* 8 bytes for every entry + 24 at the start and end. */
     uint32_t headerLength = uint32_t(entries.size() * 8) + 20;

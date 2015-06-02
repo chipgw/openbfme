@@ -33,7 +33,7 @@ int runFormatTest(const string& formatString, const Printable& arg, const intege
     /* It's possible that the buffer was too short. */
     if(correctNum != result.size()) {
         Log::error("Test #%2d result is too short! Expected length: %i Result length: %i Result: \"%s\"",
-                   number, correctNum, integer(result.size()), result);
+                   number, correctNum, result.size(), result);
         return 1;
     }
 
@@ -111,9 +111,9 @@ int main(int argc, const char* argv[]) {
         failed += runFormatTest(formatTests.at(i).first, formatTests.at(i).second, i);
 
     if(failed == 0)
-        Log::info("All %i tests successful!", integer(formatTests.size()));
+        Log::info("All %i tests successful!", formatTests.size());
     else
-        Log::error("%i/%i test(s) failed!", failed, integer(formatTests.size()));
+        Log::error("%i/%i test(s) failed!", failed, formatTests.size());
 
     /* Check the error message. */
     Log::info("Now creating a second instance of Application, you should see an error message as that's against the rules.");
