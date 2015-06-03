@@ -203,38 +203,55 @@ bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::
     return true;
 }
 
-bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
-    for(string component = file.getWord(); component != "\n"; component = file.getWord()){
-        float val = 1.0f;
+bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult) {
+    string line = file.getLine(true);
 
-        file.getWord(); /* <- This should be a colon, just ignore it. */
-        string valStr = file.getWord();
+    /* Trim whitespace on the front and end of the string. */
+    line.erase(line.begin(), std::find_if_not(line.begin(), line.end(), ::isspace));
+    line.erase(std::find_if_not(line.rbegin(), line.rend(), ::isspace).base(), line.end());
 
-        if(valStr == "-"){
-            valStr = file.getWord();
-            val = -1.0f;
-        }
+    Log::debug("\"%s\"", line);
 
-        try{
-            /* multiply by either 1 or -1 based on whether or not there was a negative symbol beforehand. */
-            val *= std::stof(valStr) * mult;
-        }catch(...){
+    /* If there are no spaces check to see if it's a macro. (This is why we needed the whitespace trimmed...) */
+    if (std::none_of(line.begin(), line.end(), ::isspace) && macros.count(line) > 0)
+        line = macros[line];
+
+    for (string::size_type i = line.find_first_of("XRYGZBA"); i < line.size();) {
+        character component = line[i++];
+        float val;
+
+        string::size_type nextComponent = line.find_first_of("XRYGZBA", i);
+        string valStr = line.substr(++i, nextComponent - i);
+
+        try {
+            val = std::stof(valStr) * mult;
+        } catch(...) {
             Log::error("%s:%d: Expected decimal value after vector component, got \"%s\"!", file.filename.c_str(), file.getLineNumber(), valStr);
             return false;
         }
 
-        if(component == "X" || component == "R"){
+        switch (component) {
+        case 'X':
+        case 'R':
             var.v.x = val;
-        }else if(component == "Y" || component == "G"){
+            break;
+        case 'Y':
+        case 'G':
             var.v.y = val;
-        }else if(component == "Z" || component == "B"){
+            break;
+        case 'Z':
+        case 'B':
             var.v.z = val;
-        }else if(component == "A"){
+            break;
+        case 'A':
             var.v.a = val;
-        }else{
+            break;
+        default:
             Log::error("%s:%d: Expected a vector component letter, got \"%s\"!", file.filename.c_str(), file.getLineNumber(), component);
             return false;
         }
+
+        i = nextComponent;
     }
 
     Log::debug("Added variable: \"%s\" of type: \"Vector\" %f %f %f %f", name, var.v.x, var.v.y, var.v.z, var.v.w);
