@@ -210,8 +210,6 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
     line.erase(line.begin(), std::find_if_not(line.begin(), line.end(), ::isspace));
     line.erase(std::find_if_not(line.rbegin(), line.rend(), ::isspace).base(), line.end());
 
-    Log::debug("\"%s\"", line);
-
     /* If there are no spaces check to see if it's a macro. (This is why we needed the whitespace trimmed...) */
     if (std::none_of(line.begin(), line.end(), ::isspace) && macros.count(line) > 0)
         line = macros[line];
