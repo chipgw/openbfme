@@ -153,11 +153,13 @@ string IniParser::getVariableWord(const BigEntry &file){
 
 bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::string &name){
     string value = getVariableWord(file);
-    if(value == "Yes"){
+
+    /* TODO - are these the only acceptable values? Is it really case sensitive? */
+    if(value == "Yes")
         var.b = true;
-    }else if(value == "No"){
+    else if(value == "No")
         var.b = false;
-    }else{
+    else {
         Log::error("%s:%d: Expected \"Yes\" or \"No\" value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
         return false;
     }
@@ -168,6 +170,7 @@ bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::str
 bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult){
     string value = getVariableWord(file);
 
+    /* Because a negative sign is it's own word. */
     if(value == "-"){
         value = getVariableWord(file);
         mult *= -1;
@@ -187,6 +190,7 @@ bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::
 bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
     string value = getVariableWord(file);
 
+    /* Because a negative sign is it's own word. */
     if(value == "-"){
         value = getVariableWord(file);
         mult *= -1.0f;
@@ -204,6 +208,10 @@ bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::
 }
 
 bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult) {
+    /* The characters to search for when looking for the next component. */
+    cstring componentChars = "XRYGZBA";
+
+    /* Unlike all other variables vectors get parsed from a line. */
     string line = file.getLine(true);
 
     /* Trim whitespace on the front and end of the string. */
@@ -214,12 +222,15 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
     if (std::none_of(line.begin(), line.end(), ::isspace) && macros.count(line) > 0)
         line = macros[line];
 
-    for (string::size_type i = line.find_first_of("XRYGZBA"); i < line.size();) {
+    /* Go through all the components in the line. */
+    for (string::size_type i = line.find_first_of(componentChars); i < line.size();) {
         character component = line[i++];
         float val;
 
-        string::size_type nextComponent = line.find_first_of("XRYGZBA", i);
-        string valStr = line.substr(++i, nextComponent - i);
+        string::size_type nextComponent = line.find_first_of(componentChars, ++i);
+
+        /* This string will contain anything between the colon and the next component, which should only be the value and some whitespace. */
+        string valStr = line.substr(i, nextComponent - i);
 
         try {
             val = std::stof(valStr) * mult;
