@@ -24,8 +24,6 @@ struct Printable{
     inline Printable(cstring s) : type(String), str(s) {}
 };
 
-EXPORT string to_base(uint32_t value, uint8_t base, character start = 'a');
-
 EXPORT string format(const string& fmt, std::initializer_list<Printable> args);
 
 /*!

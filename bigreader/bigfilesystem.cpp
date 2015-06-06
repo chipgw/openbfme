@@ -71,20 +71,18 @@ const BigEntry* openFile(const string &filename, const string &relativeTo){
 
     if(!relativeTo.empty()){
         /* Put the relativeTo path at the start of the string, minus anything after the last delimiter. */
-        fullPath.insert(0, relativeTo.substr(0, relativeTo.find_last_of("\\/")) + '/');
+        fullPath.insert(0, relativeTo.substr(0, relativeTo.find_last_of("\\/") + 1));
         std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
         /* If there are any instances of "../" in the path remove the previous folder name. */
         for(string::size_type p, folder; (p = fullPath.find("../")) != string::npos;){
-            if(p == 0){
+            if(p == 0)
                 folder = 0;
-            }else{
+            else
                 folder = fullPath.find_last_of('/', p - 2);
-            }
 
-            if(folder == string::npos){
+            if(folder == string::npos)
                 folder = 0;
-            }
 
             /* Erase from the start of the folder to 3 characters after the end of it (the "../"). */
             fullPath.erase(folder, p - folder + 3);
@@ -92,11 +90,14 @@ const BigEntry* openFile(const string &filename, const string &relativeTo){
     }
 
     Log::info("Attempting to open file \"%s\", expanded to \"%s\"", filename, fullPath);
+
+    /* Go through the archives in order and open the first file found with the correct filename. */
     for(BigArchive &archive : archives){
         const BigEntry* entry = archive.openFile(fullPath);
-        if(entry != nullptr){
+
+        /* Don't return immediately if the file couldn't be opened, try the other archives. */
+        if(entry != nullptr)
             return entry;
-        }
     }
     return nullptr;
 }

@@ -26,9 +26,8 @@ void initLog(const string &filename, bool verbose, bool silent){
     logOutputs.push_back(Output(maxLevel, stdout));
 
     FILE* file = fopen(filename.c_str(), "w");
-    if(file != nullptr){
+    if(file != nullptr)
         logOutputs.push_back(Output(maxLevel, file));
-    }
 }
 
 void shutdownLog() {

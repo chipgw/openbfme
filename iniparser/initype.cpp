@@ -9,6 +9,7 @@ namespace OpenBFME {
 
 namespace {
 
+/* Creates the IniType used to parse IniType definitions. Recursivly creates identical subtypes recursion layers deep. */
 IniType makeDefinitionType(integer recursion){
     IniType type;
 
@@ -27,6 +28,7 @@ IniType makeDefinitionType(integer recursion){
     return type;
 }
 
+/* Create an IniType to parse with, using 16 layers of recursion. */
 const IniType IniDefinitionType = makeDefinitionType(16);
 
 }

@@ -72,19 +72,18 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 
         const BigEntry* includeFile = BigFilesystem::openFile(word, file.filename);
 
-        if(includeFile != nullptr){
+        if(includeFile != nullptr)
             parse(*includeFile, object);
-        }else{
+        else
             Log::error("%s:%d: Unable to open included file \"%s\"", file.filename, file.getLineNumber(), word);
-        }
 
         /* Go back to where we were in this file. */
         file.seek(pos);
 
         word = file.getWord();
-        if(word != "\n"){
+        if(word != "\n")
             Log::warning("%s:%d: Expected newline after #include, got %s!", file.filename, file.getLineNumber(), word);
-        }
+
         return true;
     }else if(word == "define"){
         auto macroName = file.getWord();

@@ -7,14 +7,18 @@
 
 namespace OpenBFME {
 
-string to_base(uint32_t value, uint8_t base, character start) {
+/* Convert an unsigned integer to the specified base, with start being the character used after 9. */
+string to_base(uint32_t value, uint8_t base, character start = 'a') {
     if (value == 0) return "0";
+
+    /* So that d + start is the original value when d is 10. */
+    start -= 10;
 
     string result;
 
     while (value != 0) {
         uint8_t d = value % base;
-        result += (d < 10 ? d + '0' : start + d - 10);
+        result += d + (d < 10 ? '0' : start);
         value /= base;
     }
 
@@ -54,12 +58,14 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 ++i;
             }
 
+            /* Digits following the flags are used for the width. */
             while(std::isdigit(fmt[i])){
                 width *= 10;
                 width += fmt[i] - '0';
                 ++i;
             }
 
+            /* Digits after a '.' are used for precision. */
             if(fmt[i] == '.'){
                 precision = 0;
                 while(std::isdigit(fmt[++i])){
@@ -68,6 +74,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 }
             }
 
+            /* We use a ostringstream for float values to allow specifying precision. */
             std::ostringstream floatStr;
             string prefix;
             string out;

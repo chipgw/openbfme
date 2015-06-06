@@ -13,6 +13,7 @@ string BigEntry::getLine(bool checkComments) const {
         c = getChar();
     }
 
+    /* We don't want the carriage return that might have been before the newline. */
     if (line.back() == '\r')
         line.pop_back();
 
@@ -102,7 +103,7 @@ string BigEntry::getWord() const {
 
 integer BigEntry::getLineNumber() const {
     if (line < 0) {
-        /* Go back and count lines in the file. */
+        /* Line number is invalid. Go back and count lines in the file. */
         uint32_t pos = tell();
         seek(0);
         resetLineNumber();
