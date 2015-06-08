@@ -11,17 +11,18 @@ namespace OpenBFME {
 string to_base(uint32_t value, uint8_t base, character start = 'a') {
     if (value == 0) return "0";
 
-    /* So that d + start is the original value when d is 10. */
+    /* So that digit + start is the original value when the digit is 10. */
     start -= 10;
 
     string result;
 
     while (value != 0) {
-        uint8_t d = value % base;
-        result += d + (d < 10 ? '0' : start);
+        uint8_t digit = value % base;
+        result += digit + (digit < 10 ? '0' : start);
         value /= base;
     }
 
+    /* The string is constructed backwards, so we fix it. */
     std::reverse(result.begin(), result.end());
     return result;
 }
@@ -31,7 +32,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
     auto arg = args.begin();
 
     for(string::size_type i = 0; i < fmt.length(); ++i){
-        if(fmt[i] == '%'){
+        if(fmt[i] == '%' && fmt[++i] != '%'){
             integer width = 0;
             integer precision = -1;
 
@@ -40,21 +41,24 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             bool showSign = false;
             bool leftJustify = false;
 
-            if(fmt[++i] == '%'){
-                result += fmt[i];
-                continue;
-            }
-
             /* Check for flags, stop on a letter, number (excluding 0), or '.' */
             while((!std::isalnum(fmt[i]) || fmt[i] == '0') && fmt[i] != '.'){
-                if(fmt[i] == '#')
+                switch (fmt[i]) {
+                case '#':
                     usePrefix = true;
-                else if(fmt[i] == '0')
+                    break;
+                case '0':
                     zeroForPadding = true;
-                else if(fmt[i] == '+')
+                    break;
+                case '+':
                     showSign = true;
-                else if(fmt[i] == '-')
+                    break;
+                case '-':
                     leftJustify = true;
+                    break;
+                default:
+                    break;
+                }
                 ++i;
             }
 
@@ -153,8 +157,11 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                 break;
             }
 
+            /* Add the prefix string to the start of the output.
+             * This is used for +/- signs as well as "0x", so usePrefix is checked when setting the prefix string. */
             out.insert(0, prefix);
 
+            /* If the string is too short, add to it. */
             if(width > out.size()){
                 if(zeroForPadding)
                     out.insert(prefix.size(), width - out.size(), '0');
@@ -162,9 +169,11 @@ string format(const string& fmt, std::initializer_list<Printable> args){
                     out.insert(leftJustify ? out.size() : 0, width - out.size(), ' ');
             }
 
+            /* This argument is done, continue to the next one... */
             result += out;
             ++arg;
         }else{
+            /* Just a plain character... */
             result += fmt[i];
         }
     }

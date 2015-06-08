@@ -15,10 +15,18 @@ public:
 
 private:
     std::set<BigEntry> entries;
+
+    /* Only one entry can be open at a time per archive, this remembers which one it is. */
     const BigEntry* currentEntry;
+
+    /* For BigFile backend this is the archive file.
+     * For Folder backends it is the file for the currentEntry. */
     FILE* file;
+
+    /* File or folder path of the archive. */
     string archiveFilename;
 
+    /* The current Backend of the file. Almost should be const, but isn't calculated in the constructor. */
     Backend backend;
 
     /* Open the archive file in a BigFile backend.
@@ -33,7 +41,10 @@ public:
     BigArchive(const string &filename);
     ~BigArchive();
 
+    /* Find out what type of Backend to use and fills entries. Returns false on error. */
     bool readHeader();
+
+    /* Search for and open an entry, nullptr if not found. */
     const BigEntry* openFile(const string &filename);
     
     /* Get a single character from a text file. */
