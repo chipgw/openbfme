@@ -27,6 +27,12 @@ string to_base(uint32_t value, uint8_t base, character start = 'a') {
     return result;
 }
 
+bool stringCaseInsensitiveEquals(const string& a, const string& b) {
+    return a.size() == b.size() ? std::equal(a.cbegin(), a.cend(), b.cbegin(), [](character a, character b){
+        return tolower(a) == tolower(b); 
+    }) : false;
+}
+
 string format(const string& fmt, std::initializer_list<Printable> args){
     string result;
     auto arg = args.begin();

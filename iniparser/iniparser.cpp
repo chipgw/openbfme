@@ -19,7 +19,7 @@ void IniParser::parse(const BigEntry &file, IniObject &object){
 
         if(word == "#"){
             parseMacro(file, object);
-        }else if(object.type.breaks && word == object.type.breakWord){
+        }else if(object.type.breaks && stringCaseInsensitiveEquals(word, object.type.breakWord)){
             break;
         }else if(object.type.subTypes.count(word)){
             auto obj = object.subObjects.emplace(word, object.type.subTypes.at(word));
