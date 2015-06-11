@@ -298,7 +298,7 @@ bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite
 bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filename) {
     Log::info("Preparing to write %d files to \"%s\"", entries.size(), filename);
 
-    /* 8 bytes for every entry + 24 at the start and end. */
+    /* 8 bytes for every entry + 20 at the start and end. */
     uint32_t headerLength = uint32_t(entries.size() * 8) + 20;
 
     /* Add the length of the filenames to headerLength. */
@@ -306,12 +306,12 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
         headerLength += uint32_t(entry.filename.size()) + 1;
     }
 
-    Log::debug("Calculated header length: %#08x", headerLength);
+    Log::info("Calculated header length: %#08x", headerLength);
 
     FILE* file = fopen(filename.c_str(), "wb");
 
     if (file == nullptr) {
-        Log::error("Unable to open %s for writing!", filename);
+        Log::error("Unable to open \"%s\" for writing!", filename);
         return false;
     }
 
@@ -333,6 +333,8 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
         writeUInt32(file, lastEnd);
         writeUInt32(file, fileLength);
 
+        Log::info("Writing header for \"%s\". Start: %#08x Length: %#08x", entry.filename, lastEnd, fileLength);
+
         /* Write the filename and terminating null character. */
         fputs(entry.filename.c_str(), file);
         fputc('\0', file);
@@ -344,8 +346,9 @@ bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filen
     /* What exactly is this? */
     fputs("L253", file);
 
-    if(uint32_t(ftell(file)) > headerLength){
-        Log::error("Calculated header length too short!");
+    if(uint32_t(ftell(file)) != headerLength){
+        Log::error("Calculated header length was incorrect! Calculated: %#08x Got: %#08x", headerLength, ftell(file));
+        return false;
     }
 
     /* One more byte until where we start the first file... */
