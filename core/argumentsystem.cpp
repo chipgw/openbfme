@@ -9,21 +9,23 @@ StringArgument::StringArgument(const std::initializer_list<string> &n, const str
 }
 
 void StringArgument::parse(const string &usedName){
+    /* All we care about for string arguments is that it isn't empty. */
     valid = result.size() != 0;
 }
 
 void StringArgument::printHelp(){
     string nameStr;
 
-    for(const string& name : names){
+    for(const string& name : names) {
+        /* Write a single dash for single letters and two otherwise, even though it doesn't really matter. */
         nameStr += ((name.size() == 1) ? "-" : "--") + name + ", ";
     }
 
-    nameStr.erase(nameStr.size() - 2);
-    nameStr += ':';
+    /* Replace the last comma in the string with a colon. */
+    nameStr[nameStr.size() - 2] = ':';
 
     /* Help messages are console only, with no timestamp. */
-    puts(format("  %-20s\t%s", nameStr, description).c_str());
+    puts(format("  %-24s\t%s", nameStr, description).c_str());
 }
 
 bool StringArgument::containsName(const string &name) const{
@@ -31,31 +33,32 @@ bool StringArgument::containsName(const string &name) const{
 }
 
 void BoolArgument::parse(const string &usedName) {
-    if(result.size() == 0 || result == "yes" || result == "1"){
+    /* No argument passed = true. */
+    if(result.size() == 0 || stringCaseInsensitiveEquals(result, "yes") || result == "1") {
         boolResult = true;
         valid = true;
-    }else if(result == "no" || result == "0"){
+    } else if(stringCaseInsensitiveEquals(result, "no") || result == "0") {
         boolResult = false;
         valid = true;
-    }else{
+    } else {
         errorMessage = format("Invalid command-line! expected \"yes\", \"no\", \"1\", or \"0\", after %s, got \"%s\"", usedName, result);
     }
 }
 
 void IntegerArgument::parse(const string& usedName) {
-    try{
+    try {
         intResult = std::stoi(result);
         valid = true;
-    }catch(...){
+    } catch(...) {
         errorMessage = format("Invalid command-line! expected an integer value after %s, got \"%s\"", usedName, result);
     }
 }
 
 void DecimalArgument::parse(const string& usedName) {
-    try{
+    try {
         decResult = std::stof(result);
         valid = true;
-    }catch(...){
+    } catch(...) {
         errorMessage = format("Invalid command-line! expected a decimal value after %s, got \"%s\"", usedName, result);
     }
 }
@@ -66,6 +69,5 @@ void MultiStringArgument::parse(const string& usedName) {
     }
     valid = !results.empty();
 }
-
 
 }
