@@ -36,6 +36,7 @@ option(BUILD_ALL_TESTS "Enables building all test binaries" OFF)
 add_project_lib(core ${FS_LIBRARY})
 add_project_lib(bigreader core ${FS_LIBRARY})
 add_project_lib(iniparser bigreader)
+add_project_lib(engine core)
 
 add_project_exe(big_extractor bigreader)
 add_project_exe(make_big bigreader)
