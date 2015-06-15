@@ -5,9 +5,11 @@
 namespace OpenBFME {
 
 class GameObject {
-    GameObject();
+    GameWorld& world;
+public:
+    GameObject(GameWorld& w);
 
-    EXPORT void tick(decimal delta);
+    void tick(decimal delta);
 };
 
 }

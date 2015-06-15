@@ -26,4 +26,7 @@ class IniType;
 struct IniObject;
 class IniParser;
 
+class GameObject;
+class GameWorld;
+
 }
