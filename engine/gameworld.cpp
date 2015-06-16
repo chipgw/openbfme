@@ -1,5 +1,5 @@
-#include "world.hpp"
-#include "object.hpp"
+#include "gameworld.hpp"
+#include "gameobject.hpp"
 #include "log.hpp"
 #include "iniobject.hpp"
 #include <algorithm>

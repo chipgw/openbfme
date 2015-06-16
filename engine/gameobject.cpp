@@ -1,4 +1,4 @@
-#include "object.hpp"
+#include "gameobject.hpp"
 #include "log.hpp"
 
 namespace OpenBFME {

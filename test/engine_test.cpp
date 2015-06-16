@@ -1,5 +1,5 @@
 #include "application.hpp"
-#include "world.hpp"
+#include "gameworld.hpp"
 #include "iniobject.hpp"
 #include "initype.hpp"
 #include "iniparser.hpp"
