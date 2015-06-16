@@ -3,6 +3,7 @@
 #include "build_platform.hpp"
 #include <string>
 #include <cstdint>
+#include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
 namespace OpenBFME {

@@ -3,12 +3,13 @@
 
 namespace OpenBFME {
 
-GameObject::GameObject(GameWorld& w) : world(w) {
-
+GameObject::GameObject(GameWorld& owner, const IniObject& objTemplate, const string& objName) 
+    : world(owner), objectTemplate(objTemplate), name(objName) {
+    /* TODO - init stuff. */
 }
 
 void GameObject::tick(decimal delta) {
-    Log::debug("Object ticked. Delta: %f", delta);
+    Log::debug("Object ticked. Object Name: \"%s\" Delta: %f", name, delta);
 }
 
 }

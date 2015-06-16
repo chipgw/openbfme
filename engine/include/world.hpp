@@ -9,14 +9,18 @@ namespace OpenBFME {
 class GameWorld {
     std::list<std::shared_ptr<GameObject>> objects;
 
+    /* The root IniObject that containe object definitions and such. */
+    const IniObject& iniRoot;
+
 public:
     /* TODO - Make it only creatable by specific means. */
-    EXPORT GameWorld();
+    EXPORT GameWorld(const IniObject& root);
 
     EXPORT void tick(decimal delta);
 
-    /* TODO - Arguments. */
-    EXPORT std::weak_ptr<GameObject> createObject();
+    /* Create an object and add it to the world. */
+    /* TODO - More arguments. */
+    EXPORT std::weak_ptr<GameObject> createObject(const string& templateName, const string& objectName = "");
 };
 
 }

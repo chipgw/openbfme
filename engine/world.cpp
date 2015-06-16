@@ -1,11 +1,13 @@
 #include "world.hpp"
 #include "object.hpp"
 #include "log.hpp"
+#include "iniobject.hpp"
+#include <algorithm>
 
 namespace OpenBFME {
 
-GameWorld::GameWorld() {
-
+GameWorld::GameWorld(const IniObject& root): iniRoot(root) {
+    /* TODO - Put stuff here. */
 }
 
 void GameWorld::tick(decimal delta) {
@@ -16,9 +18,15 @@ void GameWorld::tick(decimal delta) {
     }
 }
 
-std::weak_ptr<GameObject> GameWorld::createObject() {
-    objects.emplace_back(new GameObject(*this));
-    return objects.back();
+std::weak_ptr<GameObject> GameWorld::createObject(const string& templateName, const string& objectName) {
+    auto objTemplate = std::find_if(iniRoot.subObjects.cbegin(), iniRoot.subObjects.cend(), [&](const std::pair<string, IniObject> def) {
+        return def.first == "Object" && !def.second.args.empty() && def.second.args[0] == templateName;
+    });
+    if (objTemplate != iniRoot.subObjects.cend()) {
+        objects.emplace_back(new GameObject(*this, objTemplate->second));
+        return objects.back();
+    }
+    return std::weak_ptr<GameObject>();
 }
 
 }

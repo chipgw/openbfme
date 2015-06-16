@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.hpp"
+#include "inivariable.hpp"
 #include <map>
 #include <vector>
 
