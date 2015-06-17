@@ -12,9 +12,10 @@ public:
         BigFile,
         Folder
     };
+    typedef std::set<BigEntry> EntryList;
 
 private:
-    std::set<BigEntry> entries;
+    EntryList entries;
 
     /* Only one entry can be open at a time per archive, this remembers which one it is. */
     const BigEntry* currentEntry;
@@ -64,12 +65,16 @@ public:
     /* Extract all entries into given directory. */
     EXPORT bool extractAll(const string &directory, bool ignore, bool overwrite);
     /* Make a .big file out of a set of entries. */
-    EXPORT static bool writeBig(const std::set<BigEntry>& entries, const string& filename);
+    EXPORT static bool writeBig(const EntryList& entries, const string& filename);
     /* Make a .big file out of a folder. */
     EXPORT bool writeBig(const string& filename);
 
     inline const string &getArchiveFilename() { return archiveFilename; }
     inline const Backend &getBackend() { return backend; }
+
+    /* Only used inside the library, not exported. */
+    EntryList::const_iterator begin();
+    EntryList::const_iterator end();
 };
 
 }

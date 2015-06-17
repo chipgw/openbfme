@@ -151,26 +151,23 @@ bool BigArchive::openEntry(const BigEntry& entry) {
     return false;
 }
 
-const BigEntry* BigArchive::openFile(const string &filename){
-    auto entry = std::find_if(entries.begin(), entries.end(), [&](const BigEntry& it){ return it.filename == filename; });
+const BigEntry* BigArchive::openFile(const string &filename) {
+    auto entry = std::find_if(begin(), end(), [&](const BigEntry& it){ return it.filename == filename; });
 
-    if(entry != entries.end() && openEntry(*entry)){
+    if(entry != end() && openEntry(*entry))
         return &(*entry);
-    }
 
     return nullptr;
 }
 
-character BigArchive::getChar(const BigEntry &entry){
-    if (!open() || eof(entry)){
+character BigArchive::getChar(const BigEntry &entry) {
+    if (!open() || eof(entry))
         return 0;
-    }
 
     character ch = fgetc(file);
 
-    if (ch == '\n'){
+    if (ch == '\n')
         entry.incrementLineNumber();
-    }
 
     return ch;
 }
@@ -295,7 +292,7 @@ bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite
     return true;
 }
 
-bool BigArchive::writeBig(const std::set<BigEntry>& entries, const string& filename) {
+bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     Log::info("Preparing to write %d files to \"%s\"", entries.size(), filename);
 
     /* 8 bytes for every entry + 20 at the start and end. */
@@ -378,6 +375,14 @@ bool BigArchive::writeBig(const string& filename) {
         return writeBig(entries, filename);
     }
     return false;
+}
+
+BigArchive::EntryList::const_iterator BigArchive::begin() {
+    return entries.cbegin();
+}
+
+BigArchive::EntryList::const_iterator BigArchive::end() {
+    return entries.cend();
 }
 
 }
