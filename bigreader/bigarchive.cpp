@@ -34,11 +34,11 @@ string readString(FILE* file, uint32_t limit, char terminator = '\0'){
 
 BigArchive::BigArchive(const string &filename) : archiveFilename(fs::path(filename).generic_string()), file(nullptr) { }
 
-BigArchive::~BigArchive(){
+BigArchive::~BigArchive() {
     close();
 }
 
-bool BigArchive::readHeader(){
+bool BigArchive::readHeader() {
     if (fs::is_directory(fs::path(archiveFilename))) {
         backend = Folder;
         
@@ -108,20 +108,20 @@ bool BigArchive::readHeader(){
     return true;
 }
 
-bool BigArchive::open(){
-    if(file != nullptr){
+bool BigArchive::open() {
+    /* File is already open. */
+    if (file != nullptr)
         return true;
-    }
 
-    if(backend == BigFile){
+    /* If it's a .big archive we can try to open the file here. */
+    if (backend == BigFile)
         file = fopen(archiveFilename.c_str(), "rb");
-    }
 
     return file != nullptr;
 }
 
-void BigArchive::close(){
-    if(file != nullptr){
+void BigArchive::close() {
+    if (file != nullptr) {
         fclose(file);
         file = nullptr;
     }
@@ -152,20 +152,25 @@ bool BigArchive::openEntry(const BigEntry& entry) {
 }
 
 const BigEntry* BigArchive::openFile(const string &filename) {
+    /* Find an entry with the filename. */
     auto entry = std::find_if(begin(), end(), [&](const BigEntry& it){ return it.filename == filename; });
 
-    if(entry != end() && openEntry(*entry))
+    /* If one was found, open it and return it's address. */
+    if (entry != end() && openEntry(*entry))
         return &(*entry);
 
+    /* Nothing was found, or it failed to open. */
     return nullptr;
 }
 
 character BigArchive::getChar(const BigEntry &entry) {
+    /* The archive needs to be open, and we need to be inside the correct file. */
     if (!open() || eof(entry))
         return 0;
 
     character ch = fgetc(file);
 
+    /* Tell the entry we have a newline. */
     if (ch == '\n')
         entry.incrementLineNumber();
 
@@ -176,48 +181,55 @@ void BigArchive::ungetChar(const BigEntry &entry, character c) {
     if (tell(entry) > 0) {
         ungetc(c, file);
 
-        if (c == '\n') {
+        /* If it was a newline we need the line number to go back to how it was before getting the character. */
+        if (c == '\n')
             entry.decrementLineNumber();
-        }
     }
 }
 
-bool BigArchive::seek(const BigEntry &entry, uint32_t pos){
-    if(&entry != currentEntry && !openEntry(entry))
+bool BigArchive::seek(const BigEntry &entry, uint32_t pos) {
+    /* If the entry isn't the current one try opening it. */
+    if (&entry != currentEntry && !openEntry(entry))
         return false;
 
     /* Invalidate the stored current line number. */
     entry.invalidateLineNumber();
 
     pos += entry.start;
-    if(pos < entry.end){
+
+    /* Make sure it's inside the file before seeking. */
+    if (pos < entry.end) {
         fseek(file, pos, SEEK_SET);
         return true;
     }
     return false;
 }
 
-uint32_t BigArchive::tell(const BigEntry &entry){
-    if (&entry != currentEntry && !openEntry(entry))
+uint32_t BigArchive::tell(const BigEntry &entry) {
+    /* This only works if the file is already current. */
+    if (&entry != currentEntry)
         return 0;
 
     uint32_t pos = ftell(file);
-    if(pos < entry.start)
+    if (pos <= entry.start)
         return 0;
 
-    if(pos > entry.end)
+    if (pos > entry.end)
         return entry.end - entry.start;
 
     return pos - entry.start;
 }
 
-bool BigArchive::eof(const BigEntry &entry){
+bool BigArchive::eof(const BigEntry &entry) {
+    if (&entry != currentEntry)
+        return true;
+
     uint32_t cpos = ftell(file);
     return cpos < entry.start || cpos >= entry.end;
 }
 
-bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fullPath, bool ignore, bool overwrite){
-    if(!openEntry(entry)){
+bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fullPath, bool ignore, bool overwrite) {
+    if (!openEntry(entry)) {
         Log::error("Error opening entry \"%s\"!", entry.filename);
         return false;
     }
@@ -228,43 +240,43 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
 
     fs::create_directories(path.parent_path());
 
-    if(fs::exists(path)){
+    if (fs::exists(path)) {
         /* The option to ignore existing files takes precedence over overwriting them. */
-        if(ignore){
+        if (ignore) {
             Log::info("Skipping existing file: \"%s\".", entry.filename);
 
             return true;
-        }else if(!overwrite){
+        } else if (!overwrite) {
             character c = 0;
 
-            while(c != 'n' && c != 'y'){
+            while (c != 'n' && c != 'y') {
                 Log::info("Overwrite existing file \"%s\"? [Y/N]:", path.generic_string());
 
                 c = std::tolower(std::getchar());
 
-                if(c == '\n') continue;
+                if (c == '\n') continue;
 
                 /* Only take one letter input. */
-                if(std::getchar() != '\n'){
+                if (std::getchar() != '\n') {
                     c = 0;
                     while(std::getchar() != '\n') continue;
                 }
             }
 
-            if(c == 'n'){
+            if (c == 'n') {
                 Log::info("Skipping \"%s\".", entry.filename);
 
                 return true;
             }
         }
         Log::info("Overwriting \"%s\"...", entry.filename);
-    }else{
+    } else {
         Log::info("Extracting to \"%s\"...", path.generic_string());
     }
 
     FILE* out = fopen(path.generic_string().c_str(), "wb");
 
-    if(out == nullptr){
+    if (out == nullptr) {
         Log::error("Unable to create file \"%s\"!", path.generic_string());
         return false;
     }
@@ -282,13 +294,13 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
     return true;
 }
 
-bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite){
+bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite) {
     fs::create_directories(fs::path(directory));
-    for(auto &entry : entries){
-        if(!extract(entry, directory, true, ignore, overwrite)){
+
+    for (auto &entry : entries)
+        if (!extract(entry, directory, true, ignore, overwrite))
             return false;
-        }
-    }
+
     return true;
 }
 
@@ -299,9 +311,8 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     uint32_t headerLength = uint32_t(entries.size() * 8) + 20;
 
     /* Add the length of the filenames to headerLength. */
-    for(auto &entry : entries){
+    for (auto &entry : entries)
         headerLength += uint32_t(entry.filename.size()) + 1;
-    }
 
     Log::info("Calculated header length: %#08x", headerLength);
 
@@ -325,7 +336,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     uint32_t lastEnd = headerLength + 1;
 
     /* Write all the file information. */
-    for(auto &entry : entries){
+    for (auto &entry : entries) {
         uint32_t fileLength = entry.end - entry.start;
         writeUInt32(file, lastEnd);
         writeUInt32(file, fileLength);
@@ -343,7 +354,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     /* What exactly is this? */
     fputs("L253", file);
 
-    if(uint32_t(ftell(file)) != headerLength){
+    if (uint32_t(ftell(file)) != headerLength) {
         Log::error("Calculated header length was incorrect! Calculated: %#08x Got: %#08x", headerLength, ftell(file));
         return false;
     }
@@ -352,11 +363,11 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     fputc('\0', file);
 
     /* Write all the files. */
-    for(auto &entry : entries){
+    for (auto &entry : entries) {
         Log::info("Writing file \"%s\".", entry.filename);
         entry.seek(0);
 
-        for(character c; !entry.eof();){
+        for (character c; !entry.eof();) {
             c = entry.getChar();
             fwrite(&c, sizeof(character), 1, file);
         }
