@@ -1,7 +1,7 @@
 OpenBFME
 =========
 Currently in very early prototype/groundwork stages, OpenBFME seeks to be an open source RTS engine, capable of playing games made with EA's SAGE engine, such as the Battle for Middle Earth series and some of the Command and Conquer games. (First target is to get it working with BFME 2) This will allow for playing said games on Linux (I'd say OSX as well, but I don't have one to develop on) and online without LAN emulation tools.
-It is currently *nowhere* near playable, with only a small amount of groundwork done on a filesystem abstraction layer for .BIG archives and a parser for INI files. I'm putting it on GitHub early mostly because I tend to neglect it otherwise, but I'm open to getting help from anyone interested as well.
+It is currently *nowhere* near playable, with only a small amount of groundwork done on a filesystem abstraction layer for .BIG archives, a parser for INI files, and the core game logic. I'm putting it on GitHub early mostly because I tend to neglect it otherwise, but I'm open to getting help from anyone interested as well.
 
 Dependencies:
 -------------
@@ -13,8 +13,8 @@ On Linux:
 * Compiler with C++11 support.
 
 On Windows:
-* [Visual Studio 2013]
-* OR [MinGW] 4.8 or greater. (Also requires [Boost] filesystem.)
+* [Visual Studio] 2013 or 2015.
+* OR [MinGW] 4.8 or greater & [Boost] filesystem.
 
 Building
 --------
@@ -32,6 +32,6 @@ License
 [CMake]:http://www.cmake.org
 [GLM]:http://glm.g-truc.net/
 [Boost]:http://boost.org
-[Visual Studio 2013]:http://www.visualstudio.com/
+[Visual Studio]:http://www.visualstudio.com/
 [MinGW]:http://www.mingw.org/
 [MIT License]:LICENSE
