@@ -221,7 +221,7 @@ uint32_t BigArchive::tell(const BigEntry &entry) {
 }
 
 bool BigArchive::eof(const BigEntry &entry) {
-    if (&entry != currentEntry)
+    if (&entry != currentEntry || feof(file))
         return true;
 
     uint32_t cpos = ftell(file);
