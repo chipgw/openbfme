@@ -9,55 +9,54 @@
 
 namespace OpenBFME {
 
-void IniParser::parse(const BigEntry &file, IniObject &object){
-    while(!file.eof()){
+void IniParser::parse(const BigEntry &file, IniObject &object) {
+    while (!file.eof()) {
         string word = file.getWord();
 
-        if(word == "\n"){
+        if (word == "\n")
             continue;
-        }
 
-        if(word == "#"){
+        if (word == "#") {
             parseMacro(file, object);
-        }else if(object.type.breaks && stringCaseInsensitiveEquals(word, object.type.breakWord)){
+        } else if (object.type.breaks && stringCaseInsensitiveEquals(word, object.type.breakWord)) {
             break;
-        }else if(object.type.subTypes.count(word)){
+        } else if (object.type.subTypes.count(word)) {
             auto obj = object.subObjects.emplace(word, object.type.subTypes.at(word));
 
-            string arg;
-            while(arg != "\n"){
-                if(!arg.empty()){
+            /* SubObject args are any words after the SubObject name. */
+            /* TODO - Perhaps symbols such as an '=' should be ignored? */
+
+            for (string arg; arg != "\n"; arg = file.getWord()) {
+                if (!arg.empty())
                     obj->second.args.push_back(arg);
-                }
-                arg = file.getWord();
             }
 
             Log::debug("Created object of type: \"%s\"", word);
 
             parse(file, obj->second);
-        }else if(object.type.variableTypes.count(word)){
+        } else if(object.type.variableTypes.count(word)) {
             auto var = object.variables.emplace(word, object.type.variableTypes.at(word));
 
             /* If there was an error parsing remove item. */
-            if(!parseVariable(file, var->second, word))
+            if (!parseVariable(file, var->second, word))
                 object.variables.erase(var);
         }
     }
 }
 
-bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
+bool IniParser::parseMacro(const BigEntry &file, IniObject &object) {
     string word = file.getWord();
 
-    if(word == "include"){
+    if (word == "include") {
         word = file.getWord();
 
-        if(word == "\n"){
+        if (word == "\n") {
             Log::error("%s:%d: No file passed to #include!", file.filename, file.getLineNumber());
             return false;
         }
 
         /* Sure, the size probably should be a lot longer than 2, but 2 is all that matters here. */
-        if(word.size() < 2 || word.front() != '"' || word.back() != '"'){
+        if (word.size() < 2 || word.front() != '"' || word.back() != '"') {
             /* Because the line number is 0 indexed and the newline character hasn't been read yet, add one to it. */
             Log::error("%s:%d: expected a string after #include, got \"%s\"!", file.filename, file.getLineNumber() + 1, word);
             return false;
@@ -72,7 +71,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
 
         const BigEntry* includeFile = BigFilesystem::openFile(word, file.filename);
 
-        if(includeFile != nullptr)
+        if (includeFile != nullptr)
             parse(*includeFile, object);
         else
             Log::error("%s:%d: Unable to open included file \"%s\"", file.filename, file.getLineNumber(), word);
@@ -81,30 +80,31 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
         file.seek(pos);
 
         word = file.getWord();
-        if(word != "\n")
+        if (word != "\n")
             Log::warning("%s:%d: Expected newline after #include, got %s!", file.filename, file.getLineNumber(), word);
 
         return true;
-    }else if(word == "define"){
-        auto macroName = file.getWord();
+    } else if (word == "define") {
+        string macroName = file.getWord();
 
-        if(macroName == "\n"){
+        if (macroName == "\n") {
             Log::error("%s:%d: Expected macro name after #define!", file.filename, file.getLineNumber());
             return false;
         }
 
-        auto macroValue = file.getLine(true);
+        /* Macro value is the whole line, minus any comments. */
+        string macroValue = file.getLine(true);
 
-        if(macros.count(macroName) > 0){
+        if (macros.count(macroName) > 0) {
             /* TODO - I'm not sure if using the original value is the correct behavior,
              * but with emplace() it happens anyway, so this makes it clear what's going on.
              * If this turns out to be wrong I'll fix it. */
             Log::warning("%s:%d: Macro with name \"%s\" already exists! Using original value of \"%s\".",
                          file.filename, file.getLineNumber(), macroName, macros[macroName]);
-        }else if(macroValue == "\n"){
+        } else if (macroValue == "\n") {
             macros.emplace(macroName, "");
             Log::debug("Added macro: %s", macroName);
-        }else{
+        } else {
             macros.emplace(macroName, macroValue);
             Log::debug("Added macro: %s value: %s", macroName, macroValue);
         }
@@ -114,11 +114,11 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object){
     return false;
 }
 
-bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std::string& name){
+bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std::string& name) {
     /* This should be "=" most of the time, but IDK if it always is. Ignore it for now... */
     file.getWord();
 
-    switch(var.type){
+    switch (var.type) {
     case IniVariable::Bool:
         return parseBool(file, var, name);
     case IniVariable::Integer:
@@ -145,18 +145,18 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
     return false;
 }
 
-string IniParser::getVariableWord(const BigEntry &file){
+string IniParser::getVariableWord(const BigEntry &file) {
     string word = file.getWord();
     return (macros.count(word) > 0) ? macros[word] : word;
 }
 
-bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::string &name){
+bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::string &name) {
     string value = getVariableWord(file);
 
     /* TODO - are these the only acceptable values? Is it really case sensitive? */
-    if(value == "Yes")
+    if (value == "Yes")
         var.b = true;
-    else if(value == "No")
+    else if (value == "No")
         var.b = false;
     else {
         Log::error("%s:%d: Expected \"Yes\" or \"No\" value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
@@ -166,18 +166,18 @@ bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::str
     return true;
 }
 
-bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult){
+bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult) {
     string value = getVariableWord(file);
 
     /* Because a negative sign is it's own word. */
-    if(value == "-"){
+    if (value == "-") {
         value = getVariableWord(file);
         mult *= -1;
     }
 
-    try{
+    try {
         var.i = std::stoi(value) * mult;
-    }catch(...){
+    } catch (...) {
         Log::error("%s:%d: Expected integer value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
         return false;
     }
@@ -186,18 +186,18 @@ bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::
     return true;
 }
 
-bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult){
+bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult) {
     string value = getVariableWord(file);
 
     /* Because a negative sign is it's own word. */
-    if(value == "-"){
+    if(value == "-") {
         value = getVariableWord(file);
         mult *= -1.0f;
     }
 
-    try{
+    try {
         var.d = std::stof(value) * mult;
-    }catch(...){
+    } catch (...) {
         Log::error("%s:%d: Expected decimal value after variable \"%s\", got \"%s\"!", file.filename.c_str(), file.getLineNumber(), name, value);
         return false;
     }
@@ -233,7 +233,7 @@ bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::s
 
         try {
             val = std::stof(valStr) * mult;
-        } catch(...) {
+        } catch (...) {
             Log::error("%s:%d: Expected decimal value after vector component, got \"%s\"!", file.filename.c_str(), file.getLineNumber(), valStr);
             return false;
         }
