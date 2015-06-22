@@ -9,27 +9,17 @@ namespace fs = FILESYSTEM_NAMESPACE;
 
 namespace OpenBFME {
 
+/* Read a 32 bit big-endian unsigned integer from the file. */
 uint32_t readUInt32(FILE* file){
     uint8_t val[4];
     fread(val, 1, 4, file);
     return val[0] << 24 | val[1] << 16 | val[2] << 8 | val[3];
 }
 
-void writeUInt32(FILE* file, uint32_t value){
+/* Write a 32 bit unsigned integer to the file in big-endian. */
+void writeUInt32(FILE* file, uint32_t value) {
     uint8_t val[] { uint8_t(value >> 24), uint8_t(value >> 16), uint8_t(value >> 8), uint8_t(value) };
     fwrite(val, 1, 4, file);
-}
-
-string readString(FILE* file, uint32_t limit, char terminator = '\0'){
-    string data;
-    while(uint32_t(ftell(file)) < limit){
-        character c = fgetc(file);
-        if(c == '\0' || c == terminator || ferror(file) || feof(file)){
-            break;
-        }
-        data += c;
-    }
-    return data;
 }
 
 BigArchive::BigArchive(const string &filename) : archiveFilename(fs::path(filename).generic_string()), file(nullptr) { }
@@ -94,8 +84,10 @@ bool BigArchive::readHeader() {
     for (uint32_t f = 0; f < fileCount; ++f) {
         uint32_t start = readUInt32(file);
         uint32_t end   = start + readUInt32(file);
-        string path = readString(file, headerEnd);
-        std::replace(path.begin(), path.end(), '\\', '/');
+
+        string path;
+        for (character c = fgetc(file); c != '\0' && !feof(file); c = fgetc(file))
+            path += (c == '\\') ? '/' : c;
 
         entries.emplace(*this, start, end, path);
 
