@@ -4,6 +4,7 @@
 #include "initype.hpp"
 #include "iniparser.hpp"
 #include "bigfilesystem.hpp"
+#include "log.hpp"
 
 using namespace OpenBFME;
 
@@ -12,19 +13,29 @@ int main(int argc, const char* argv[]) {
 
     app.parseArguments();
 
-    /* For the "iniparser_test_root.ini" file. */
-    BigArchive* currentDir = BigFilesystem::mount("./", true);
+    BigFilesystem::mount("test.big", true);
 
-    /* TODO - Make a seperate IniType definition file. */
-    IniObject root(IniType("iniparser_test_root.ini"));
+    IniType rootType("engine_test_root.ini");
+    IniObject root(rootType);
 
-    /* TODO - Parse objects. */
+    IniParser ini;
+
+    auto files = BigFilesystem::findFiles("data/ini/objects/.*\\.ini");
+
+    for (const string& file : files){
+        Log::debug("Loading .ini found in data/ini/objects/: \"%s\"", file);
+
+        if (const BigEntry* entry = BigFilesystem::openFile(file))
+            ini.parse(*entry, root);
+    }
 
     GameWorld world(root);
 
     for (integer i = 0; i < 20; ++i) {
         world.tick(0.1f);
-        world.createObject("foo");
+
+        if (i % 2 == 0)
+            world.createObject("Foo");
     }
 
     return 0;

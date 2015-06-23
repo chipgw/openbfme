@@ -71,18 +71,13 @@ int main(int argc, const char* argv[]){
 
     app.parseArguments();
 
-    /* For the "iniparser_test_root.ini" file. */
-    BigArchive* currentDir = BigFilesystem::mount("./", true);
-
-    IniType rootType("iniparser_test_root.ini");
-
-    /* Don't need it anymore. */
-    BigFilesystem::unmount(currentDir);
-
     IniParser ini;
 
     /* Parse from a .big file. */
     BigFilesystem::mount("test.big", true);
+
+    /* This is now in the test.big archive. */
+    IniType rootType("iniparser_test_root.ini");
 
     Log::info("Testing from .big archive.");
     runTest(ini, rootType);
