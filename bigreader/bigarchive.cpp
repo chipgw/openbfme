@@ -125,6 +125,7 @@ bool BigArchive::openEntry(const BigEntry& entry) {
 
     switch (backend) {
     case BigFile:
+        /* Make sure the archive is open and seek to the start address. */
         if (open()) {
             fseek(file, entry.start, SEEK_SET);
             currentEntry = &entry;
@@ -132,8 +133,9 @@ bool BigArchive::openEntry(const BigEntry& entry) {
         }
         break;
     case Folder:
+        /* Close any already opened file. */
         close();
-        file = fopen((archiveFilename + '/' + entry.filename).c_str(), "rb");
+        file = fopen((archiveFilename + entry.filename).c_str(), "rb");
         if (file != nullptr) {
             currentEntry = &entry;
             return true;
@@ -170,6 +172,7 @@ character BigArchive::getChar(const BigEntry &entry) {
 }
 
 void BigArchive::ungetChar(const BigEntry &entry, character c) {
+    /* Can't ungetChar at the start of the file. */
     if (tell(entry) > 0) {
         ungetc(c, file);
 
@@ -213,9 +216,14 @@ uint32_t BigArchive::tell(const BigEntry &entry) {
 }
 
 bool BigArchive::eof(const BigEntry &entry) {
+    /* If entry isn't current or the archive file itself is at eof return true automatically. */
     if (&entry != currentEntry || feof(file))
         return true;
+    /* If we have a folder backend the above checks are all we need. */
+    else if (backend == Folder)
+        return false;
 
+    /* Otherwise check that the current position is inside the file bounds. */
     uint32_t cpos = ftell(file);
     return cpos < entry.start || cpos >= entry.end;
 }
