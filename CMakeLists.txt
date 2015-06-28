@@ -1,3 +1,5 @@
+set(CMAKE_BUILD_TYPE_INIT "Debug")
+
 project(openbfme)
 cmake_minimum_required(VERSION 3.1)
 
