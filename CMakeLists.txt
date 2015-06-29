@@ -18,12 +18,13 @@ if(NOT MSVC)
     list(APPEND CMAKE_CXX_FLAGS "-fvisibility=hidden")
 endif()
 
+find_package(GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIR})
+
 # Enable any C++11 compiler flags if possible/nessecary.
 set(CMAKE_CXX_STANDARD 11)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
-
-include_directories("${CMAKE_SOURCE_DIR}/include") # generic header-only includes.
 
 # Where the add_project_lib() and add_project_exe() macros are defined.
 include(OpenBFMEMacros)
