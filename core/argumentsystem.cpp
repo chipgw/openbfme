@@ -65,7 +65,7 @@ void DecimalArgument::parse(const string& usedName) {
 
 void MultiStringArgument::parse(const string& usedName) {
     if (!result.empty()) {
-        results.emplace(result);
+        results.push_back(result);
     }
     valid = !results.empty();
 }

@@ -2,6 +2,7 @@
 
 #include "types.hpp"
 #include <unordered_set>
+#include <vector>
 
 namespace OpenBFME {
 
@@ -68,7 +69,7 @@ public:
 /* Like a string argument but can be passed more than once. */
 class MultiStringArgument : public StringArgument {
 public:
-    std::unordered_set<string> results;
+    std::vector<string> results;
     virtual void parse(const string& usedName);
 
     MultiStringArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) {}
