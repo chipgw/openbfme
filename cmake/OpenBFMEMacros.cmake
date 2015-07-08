@@ -40,8 +40,6 @@ macro(ADD_PROJECT_EXE)
     endif()
 
     if(${OPTION_NAME} OR BUILD_ALL)
-        include_directories("./include")
-
         file(GLOB SOURCES "${ARGV0}/*.cpp")
         file(GLOB HEADERS "${ARGV0}/include/*.hpp")
 
