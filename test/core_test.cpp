@@ -13,9 +13,9 @@ using namespace OpenBFME;
 int runFormatTest(const string& formatString, const Printable& arg, const integer& number) {
     string result = format(formatString, arg);
     string correct = result;
-    int correctNum = 0;
+    integer correctNum = 0;
 
-    switch (arg.type){
+    switch (arg.type) {
     case Printable::Character:
         correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.ch);
         break;
@@ -31,7 +31,7 @@ int runFormatTest(const string& formatString, const Printable& arg, const intege
     }
 
     /* It's possible that the buffer was too short. */
-    if(correctNum != result.size()) {
+    if (correctNum != result.size()) {
         Log::error("Test #%2d result is too short! Expected length: %i Result length: %i Result: \"%s\"",
                    number, correctNum, result.size(), result);
         return 1;
@@ -41,6 +41,7 @@ int runFormatTest(const string& formatString, const Printable& arg, const intege
         Log::error("Test #%2d result not as expected! Expected: \"%s\" Result: \"%s\"", number, correct, result);
         return 1;
     }
+
     Log::debug("Test #%2d result: \"%s\"", number, result);
     return 0;
 }
@@ -48,51 +49,53 @@ int runFormatTest(const string& formatString, const Printable& arg, const intege
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
-    auto boolArg = app.registerBoolArgument({"boolarg","b"}, "Test argument");
-    auto intArg = app.registerIntegerArgument({"intarg","int","i"}, "Test argument");
-    auto decArg = app.registerDecimalArgument({"decarg","d"}, "Test argument");
-    auto strArg = app.registerStringArgument({"strarg","str"}, "Test argument");
-    auto multArg = app.registerMultiStringArgument({"multarg","m"}, "Test argument");
+    /* Test one of each type of argument. */
+    auto boolArg =  app.registerBoolArgument        ({"boolarg","b"},        "Test argument");
+    auto intArg =   app.registerIntegerArgument     ({"intarg","int","i"},   "Test argument");
+    auto decArg =   app.registerDecimalArgument     ({"decarg","d"},         "Test argument");
+    auto strArg =   app.registerStringArgument      ({"strarg","str"},       "Test argument");
+    auto multArg =  app.registerMultiStringArgument ({"multarg","m"},        "Test argument");
 
     app.parseArguments();
 
-    if(boolArg->valid)
+    /* Output information on passed arguments. */
+    if (boolArg->valid)
         Log::info("boolarg value is \"%s\"", boolArg->boolResult ? "true" : "false");
     else
         Log::info("No valid boolarg was passed.");
 
-    if(intArg->valid)
+    if (intArg->valid)
         Log::info("intarg value is \"%i\"", intArg->intResult);
     else
         Log::info("No valid intarg was passed.");
 
-    if(decArg->valid)
+    if (decArg->valid)
         Log::info("decarg value is \"%f\"", decArg->decResult);
     else
         Log::info("No valid decarg was passed.");
 
-    if(strArg->valid)
+    if (strArg->valid)
         Log::info("strarg value is \"%s\"", strArg->result);
     else
         Log::info("No valid strarg was passed.");
 
-    if(multArg->valid)
+    if (multArg->valid)
         for(const string& result : multArg->results)
             Log::info("multarg value is \"%s\"", result);
     else
         Log::info("No valid multarg was passed.");
 
+    /* List all plain arguments. */
     auto& args = app.getRemainingArgs();
 
-    if(args.size() > 0){
+    if (args.size() > 0) {
         Log::info("Arguments:");
 
-        for(const string& arg : args){
+        for (const string& arg : args)
             Log::info(arg);
-        }
     }
 
-    int failed = 0;
+    integer failed = 0;
 
     const static std::vector<std::pair<string, Printable>> formatTests {
         {"%s",    "Hello"}, {"%.s",   "Hello"}, {"%.2s",  "Hello"}, {"%d",    1234},
@@ -108,10 +111,10 @@ int main(int argc, const char* argv[]) {
         {"%%",    0}
     };
 
-    for (int i = 0;  i < formatTests.size(); ++i)
+    for (integer i = 0;  i < formatTests.size(); ++i)
         failed += runFormatTest(formatTests.at(i).first, formatTests.at(i).second, i);
 
-    if(failed == 0)
+    if (failed == 0)
         Log::info("All %i tests successful!", formatTests.size());
     else
         Log::error("%i/%i test(s) failed!", failed, formatTests.size());
