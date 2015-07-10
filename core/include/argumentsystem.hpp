@@ -6,7 +6,7 @@
 
 namespace OpenBFME {
 
-class StringArgument{
+class StringArgument {
 private:
     const std::unordered_set<string> names;
 
@@ -47,7 +47,7 @@ public:
     bool boolResult;
     virtual void parse(const string& usedName);
 
-    BoolArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, false) {}
+    BoolArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, false) { }
 };
 
 class IntegerArgument : public StringArgument {
@@ -55,7 +55,7 @@ public:
     integer intResult;
     virtual void parse(const string& usedName);
 
-    IntegerArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) {}
+    IntegerArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) { }
 };
 
 class DecimalArgument : public StringArgument {
@@ -63,7 +63,7 @@ public:
     decimal decResult;
     virtual void parse(const string& usedName);
 
-    DecimalArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) {}
+    DecimalArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) { }
 };
 
 /* Like a string argument but can be passed more than once. */
@@ -72,7 +72,7 @@ public:
     std::vector<string> results;
     virtual void parse(const string& usedName);
 
-    MultiStringArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) {}
+    MultiStringArgument(const std::initializer_list<string>& n, const string& d) : StringArgument(n, d, true) { }
 };
 
 }

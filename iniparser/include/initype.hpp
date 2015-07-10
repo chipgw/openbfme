@@ -5,7 +5,7 @@
 
 namespace OpenBFME{
 
-class IniType{
+class IniType {
 public:
     std::map<string, IniVariable::VariableType> variableTypes;
     std::map<string, IniType> subTypes;

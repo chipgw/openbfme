@@ -22,7 +22,7 @@ int main(int argc, const char* argv[]) {
 
     auto files = BigFilesystem::findFiles("data/ini/objects/.*\\.ini");
 
-    for (const string& file : files){
+    for (const string& file : files) {
         Log::debug("Loading .ini found in data/ini/objects/: \"%s\"", file);
 
         if (const BigEntry* entry = BigFilesystem::openFile(file))

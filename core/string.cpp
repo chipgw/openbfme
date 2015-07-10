@@ -33,12 +33,12 @@ bool stringCaseInsensitiveEquals(const string& a, const string& b) {
     }) : false;
 }
 
-string format(const string& fmt, std::initializer_list<Printable> args){
+string format(const string& fmt, std::initializer_list<Printable> args) {
     string result;
     auto arg = args.begin();
 
-    for(string::size_type i = 0; i < fmt.length(); ++i){
-        if(fmt[i] == '%' && fmt[++i] != '%'){
+    for (string::size_type i = 0; i < fmt.length(); ++i) {
+        if (fmt[i] == '%' && fmt[++i] != '%') {
             integer width = 0;
             integer precision = -1;
 
@@ -48,7 +48,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             bool leftJustify = false;
 
             /* Check for flags, stop on a letter, number (excluding 0), or '.' */
-            while((!std::isalnum(fmt[i]) || fmt[i] == '0') && fmt[i] != '.'){
+            while ((!std::isalnum(fmt[i]) || fmt[i] == '0') && fmt[i] != '.') {
                 switch (fmt[i]) {
                 case '#':
                     usePrefix = true;
@@ -69,16 +69,16 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             }
 
             /* Digits following the flags are used for the width. */
-            while(std::isdigit(fmt[i])){
+            while (std::isdigit(fmt[i])) {
                 width *= 10;
                 width += fmt[i] - '0';
                 ++i;
             }
 
             /* Digits after a '.' are used for precision. */
-            if(fmt[i] == '.'){
+            if (fmt[i] == '.') {
                 precision = 0;
-                while(std::isdigit(fmt[++i])){
+                while (std::isdigit(fmt[++i])) {
                     precision *= 10;
                     precision += fmt[i] - '0';
                 }
@@ -89,58 +89,58 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             string prefix;
             string out;
 
-            switch(fmt[i]){
+            switch (fmt[i]) {
             case 's':
-                if(arg->type == Printable::String){
+                if (arg->type == Printable::String) {
                     out = arg->str;
                     /* With a string precision sets the maximum output length. */
-                    if(precision > -1 && out.size() > precision)
+                    if (precision > -1 && out.size() > precision)
                         out.erase(precision, string::npos);
                 }
                 break;
             case 'd':
             case 'i':
             case 'u':
-                if(arg->type == Printable::Integer){
+                if (arg->type == Printable::Integer) {
                     /* We use the absolute value and handle the sign using the prefix string,
                      * because otherwise it ends up between the number and padding zeroes. */
                     out = std::to_string(abs(arg->num));
-                    if(arg->num < 0)
+                    if (arg->num < 0)
                         prefix = "-";
-                    else if(showSign)
+                    else if (showSign)
                         prefix = "+";
                 }
                 break;
             case 'o':
-                if(arg->type == Printable::Integer){
-                    if(usePrefix)
+                if (arg->type == Printable::Integer) {
+                    if (usePrefix)
                         prefix = "0";
                     out = to_base(arg->num, 8);
                 }
                 break;
             case 'x':
-                if(arg->type == Printable::Integer){
-                    if(usePrefix)
+                if (arg->type == Printable::Integer) {
+                    if (usePrefix)
                         prefix = "0x";
                     out = to_base(arg->num, 16);
                 }
                 break;
             case 'X':
-                if(arg->type == Printable::Integer){
-                    if(usePrefix)
+                if (arg->type == Printable::Integer) {
+                    if (usePrefix)
                         prefix = "0X";
                     out = to_base(arg->num, 16, 'A');
                 }
                 break;
             case 'c':
-                if(arg->type == Printable::Character)
+                if (arg->type == Printable::Character)
                     out = arg->ch;
                 break;
             case 'F':
                 /* I honestly have no clue if this actually makes any difference... */
                 floatStr << std::uppercase;
             case 'f':
-                if(arg->type == Printable::Decimal){
+                if (arg->type == Printable::Decimal) {
                     floatStr << std::fixed << std::setprecision(precision) << arg->dec;
                     out = floatStr.str();
                 }
@@ -148,7 +148,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             case 'E':
                 floatStr << std::uppercase;
             case 'e':
-                if(arg->type == Printable::Decimal){
+                if (arg->type == Printable::Decimal) {
                     floatStr << std::fixed << std::scientific << std::setprecision(precision) << arg->dec;
                     out = floatStr.str();
                 }
@@ -156,7 +156,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             case 'G':
                 floatStr << std::uppercase;
             case 'g':
-                if(arg->type == Printable::Decimal){
+                if (arg->type == Printable::Decimal) {
                     floatStr << std::setprecision(precision) << arg->dec;
                     out = floatStr.str();
                 }
@@ -168,8 +168,8 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             out.insert(0, prefix);
 
             /* If the string is too short, add to it. */
-            if(width > out.size()){
-                if(zeroForPadding)
+            if (width > out.size()) {
+                if (zeroForPadding)
                     out.insert(prefix.size(), width - out.size(), '0');
                 else
                     out.insert(leftJustify ? out.size() : 0, width - out.size(), ' ');
@@ -178,7 +178,7 @@ string format(const string& fmt, std::initializer_list<Printable> args){
             /* This argument is done, continue to the next one... */
             result += out;
             ++arg;
-        }else{
+        } else {
             /* Just a plain character... */
             result += fmt[i];
         }

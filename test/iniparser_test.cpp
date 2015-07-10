@@ -8,17 +8,16 @@
 using namespace OpenBFME;
 
 /* Print a bunch of information about the object, recursively printing subobjects with a higher indentation. */
-void dumpObject(const IniObject& object, string indentation = ""){
-    if(object.args.size() > 0){
+void dumpObject(const IniObject& object, string indentation = "") {
+    if (object.args.size() > 0) {
         Log::info("%sArguments:", indentation);
-        for(const string& arg : object.args){
+        for (const string& arg : object.args)
             Log::info("%s  Argument \"%s\":", indentation, arg);
-        }
     }
 
-    if(object.variables.size() > 0){
+    if (object.variables.size() > 0){
         Log::info("%sVariables:", indentation);
-        for(auto& var : object.variables){
+        for (auto& var : object.variables) {
             string value;
 
             switch(var.second.type){
@@ -46,9 +45,9 @@ void dumpObject(const IniObject& object, string indentation = ""){
         }
     }
 
-    if(object.subObjects.size() > 0){
+    if (object.subObjects.size() > 0) {
         Log::info("%sSubobjects:", indentation);
-        for(auto& sub : object.subObjects){
+        for (auto& sub : object.subObjects) {
             Log::info("%s  Subobject \"%s\":", indentation, sub.first);
             dumpObject(sub.second, indentation + "    ");
         }
@@ -56,17 +55,17 @@ void dumpObject(const IniObject& object, string indentation = ""){
 }
 
 void runTest(IniParser& ini, IniType& rootType) {
-    if(const BigEntry* file = BigFilesystem::openFile("folder/inifile.ini")){
+    if (const BigEntry* file = BigFilesystem::openFile("folder/inifile.ini")) {
         IniObject root(rootType);
         ini.parse(*file, root);
 
         dumpObject(root);
-    }else{
+    } else {
         Log::warning("Unable to open file!");
     }
 }
 
-int main(int argc, const char* argv[]){
+int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
     app.parseArguments();

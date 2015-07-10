@@ -14,7 +14,7 @@ class DecimalArgument;
 class MultiStringArgument;
 
 /* This class parses commandline and initializes the Log. */
-class Application{
+class Application {
 public:
     /* Define the standard clock and time point size. */
     typedef std::chrono::steady_clock Clock;

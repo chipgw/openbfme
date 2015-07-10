@@ -17,7 +17,7 @@ string BigEntry::getLine(bool checkComments) const {
     if (line.back() == '\r')
         line.pop_back();
 
-    if (checkComments){
+    if (checkComments) {
         string::size_type comment = std::min(line.find(';'), line.find("//"));
         if (comment != string::npos)
             line.erase(comment);
@@ -108,26 +108,25 @@ integer BigEntry::getLineNumber() const {
         seek(0);
         resetLineNumber();
 
-        for (uint32_t i = 0; i < pos; ++i){
+        for (uint32_t i = 0; i < pos; ++i)
             getChar();
-        }
     }
 
     return line;
 }
 
 integer BigEntry::incrementLineNumber() const {
-    if (line >= 0) {
+    if (line >= 0)
         return ++line;
-    }
+
     /* Delegate to getLineNumber to calculate the current line. */
     return getLineNumber();
 }
 
 integer BigEntry::decrementLineNumber() const {
-    if (line >= 1) {
+    if (line >= 1)
         return --line;
-    }
+
     /* Delegate to getLineNumber to calculate the current line. */
     return getLineNumber();
 }

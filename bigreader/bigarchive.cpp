@@ -10,7 +10,7 @@ namespace fs = FILESYSTEM_NAMESPACE;
 namespace OpenBFME {
 
 /* Read a 32 bit big-endian unsigned integer from the file. */
-uint32_t readUInt32(FILE* file){
+uint32_t readUInt32(FILE* file) {
     uint8_t val[4];
     fread(val, 1, 4, file);
     return val[0] << 24 | val[1] << 16 | val[2] << 8 | val[3];

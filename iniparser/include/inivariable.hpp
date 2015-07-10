@@ -4,8 +4,8 @@
 
 namespace OpenBFME{
 
-struct IniVariable{
-    enum VariableType{
+struct IniVariable {
+    enum VariableType {
         Bool,   /* Put a true/false value in b. */
         Integer,/* Put an integer in i. */
         Decimal,/* Put a decimal number in d. */
@@ -18,7 +18,7 @@ struct IniVariable{
 
     const VariableType type;
 
-    union{
+    union {
         bool b;
         integer i;
         decimal d;
@@ -26,7 +26,7 @@ struct IniVariable{
     vec4 v;
     string s;
 
-    IniVariable(const VariableType& t) : type(t) {}
+    IniVariable(const VariableType& t) : type(t) { }
 };
 
 }

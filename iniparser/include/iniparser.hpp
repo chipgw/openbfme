@@ -3,9 +3,9 @@
 #include "types.hpp"
 #include <map>
 
-namespace OpenBFME{
+namespace OpenBFME {
 
-class IniParser{
+class IniParser {
     std::map<string, string> macros;
 
     bool parseMacro(const BigEntry &file, IniObject &object);

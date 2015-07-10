@@ -10,17 +10,17 @@ namespace OpenBFME {
 namespace Log {
 
 namespace {
-struct Output{
+struct Output {
     OutputLevel level;
     FILE* fp;
 
-    Output(OutputLevel l, FILE* f) : level(l), fp(f) {}
+    Output(OutputLevel l, FILE* f) : level(l), fp(f) { }
 };
 
 std::vector<Output> logOutputs;
 }
 
-void initLog(const string &filename, bool verbose, bool silent){
+void initLog(const string &filename, bool verbose, bool silent) {
     OutputLevel maxLevel = silent ? Error : verbose ? Debug : Info;
 
     logOutputs.push_back(Output(maxLevel, stdout));
@@ -38,10 +38,10 @@ void shutdownLog() {
     logOutputs.clear();
 }
 
-void print(const string& str, OutputLevel level){
+void print(const string& str, OutputLevel level) {
     Application* app = Application::getApplication();
 
-    if(app != nullptr){
+    if(app != nullptr) {
         const char* type;
 
 #ifdef OPENBFME_PLATFORM_WINDOWS
@@ -86,8 +86,8 @@ void print(const string& str, OutputLevel level){
                                   type);
 
         /* Write the string to every relevant output. */
-        for(Output& output : logOutputs){
-            if(output.fp != nullptr && output.level >= level){
+        for (Output& output : logOutputs) {
+            if (output.fp != nullptr && output.level >= level) {
                 fputs(timestamp.c_str(), output.fp);
                 fputs(str.c_str(), output.fp);
                 fputc('\n', output.fp);

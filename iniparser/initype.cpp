@@ -10,7 +10,7 @@ namespace OpenBFME {
 namespace {
 
 /* Creates the IniType used to parse IniType definitions. Recursivly creates identical subtypes recursion layers deep. */
-IniType makeDefinitionType(integer recursion){
+IniType makeDefinitionType(integer recursion) {
     IniType type;
 
     type.variableTypes.emplace("BoolVariable",       IniVariable::String);
@@ -75,8 +75,8 @@ bool IniType::loadFromIni(const IniObject &object) {
         Log::debug("Variable type \"%s\" for variable \"%s\".", var.first, var.second.s);
     }
 
-    for(auto& sub : object.subObjects){
-        if(sub.second.args.size() > 0){
+    for (auto& sub : object.subObjects) {
+        if (sub.second.args.size() > 0) {
             Log::debug("SubObject name: \"%s\"", sub.second.args[0]);
             subTypes.emplace(sub.second.args[0], sub.second);
         }

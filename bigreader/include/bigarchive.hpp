@@ -6,9 +6,9 @@
 
 namespace OpenBFME {
 
-class BigArchive{
+class BigArchive {
 public:
-    enum Backend{
+    enum Backend {
         BigFile,
         Folder
     };

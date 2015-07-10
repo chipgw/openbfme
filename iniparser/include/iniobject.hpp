@@ -5,9 +5,9 @@
 #include <map>
 #include <vector>
 
-namespace OpenBFME{
+namespace OpenBFME {
 
-struct IniObject{
+struct IniObject {
     const IniType &type;
     std::vector<string> args;
 

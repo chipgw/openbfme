@@ -5,14 +5,15 @@
 
 using namespace OpenBFME;
 
-bool testFile(const BigEntry* file){
-    if(file == nullptr){
+bool testFile(const BigEntry* file) {
+    if (file == nullptr) {
         Log::error("Unable to open file!");
         return false;
     }
-    while (!file->eof()) {
+
+    while (!file->eof())
         Log::debug("Line #%04d: \"%s\"", file->getLineNumber(), file->getLine(false));
-    }
+
     Log::info("Test successful.");
     return true;
 }
@@ -20,12 +21,11 @@ bool testFile(const BigEntry* file){
 void testWildcard() {
     auto files = BigFilesystem::findFiles("folder/.*\\.ini");
 
-    for (const string& file : files){
+    for (const string& file : files)
         Log::info("Found file matching wildcard: \"%s\"", file);
-    }
 }
 
-int main(int argc, const char* argv[]){
+int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
     app.parseArguments();
@@ -43,7 +43,7 @@ int main(int argc, const char* argv[]){
 
     BigFilesystem::mount("test.big", true);
 
-    for(integer i = 0; i < tests.size(); ++i){
+    for (integer i = 0; i < tests.size(); ++i) {
         Log::info("Test #%d:", totaltests++);
         if(!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
             ++failed;
@@ -55,9 +55,9 @@ int main(int argc, const char* argv[]){
 
     auto archive = BigFilesystem::mount("test", true);
 
-    for(integer i = 0; i < tests.size(); ++i){
+    for (integer i = 0; i < tests.size(); ++i) {
         Log::info("Test #%d:", totaltests++);
-        if(!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
+        if (!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
             ++failed;
     }
 
@@ -73,9 +73,9 @@ int main(int argc, const char* argv[]){
 
     BigFilesystem::mount("writetest.big", true);
 
-    for(integer i = 0; i < tests.size(); ++i){
+    for (integer i = 0; i < tests.size(); ++i) {
         Log::info("Test #%d:", totaltests++);
-        if(!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
+        if (!testFile(BigFilesystem::openFile(tests[i].first, tests[i].second)))
             ++failed;
     }
 

@@ -15,11 +15,11 @@ Application* app = nullptr;
 
 Application::Application(int argc, const char *argv[]) : fullArguments(argv + 1, argv + argc),
     startTime(std::chrono::duration_cast<TimePoint>(Clock::now().time_since_epoch())) {
-    if(app == nullptr){
+    if (app == nullptr) {
         app = this;
 
         executablePath = fs::canonical(fs::path(argv[0])).string();
-    }else{
+    } else {
         /* TODO - This may be cause for aborting. Just remember not to create an instance of this class anywhere but in main. */
         Log::error("A second instance of Application class was created!");
     }
@@ -27,7 +27,7 @@ Application::Application(int argc, const char *argv[]) : fullArguments(argv + 1,
 
 Application::~Application(){
     /* Close log file and reset the static pointer when Application instance is destroyed. */
-    if(app == this){
+    if (app == this) {
         Log::info("Shutting down.");
 
         Log::shutdownLog();
@@ -41,11 +41,11 @@ void Application::parseArguments(){
     auto silent =   registerBoolArgument({"silent","s"},    "Only write \"ERROR\" level messages to the log.");
     auto help =     registerBoolArgument({"help","h"},      "Show this help message and quit.");
 
-    for(auto i = fullArguments.begin(); i != fullArguments.end(); ++i){
+    for (auto i = fullArguments.begin(); i != fullArguments.end(); ++i) {
         const string& arg = *i;
 
         /* Any argument that starts with a '-' is handled by the parser. */
-        if(arg.size() > 1 && arg[0] == '-'){
+        if (arg.size() > 1 && arg[0] == '-') {
             /* It doesn't matter whether one or two dashes start the argument. */
             string::size_type start = (arg[1] == '-') ? 2 : 1;
             string::size_type equals = arg.find('=');
@@ -55,28 +55,28 @@ void Application::parseArguments(){
             auto iter = std::find_if(parsedArguments.begin(), parsedArguments.end(), [&](std::shared_ptr<StringArgument> def){
                 return def->containsName(name);
             });
-            if(iter != parsedArguments.end()){
+            if (iter != parsedArguments.end()) {
                 auto& def = *iter;
-                if(equals != string::npos)
+                if (equals != string::npos)
                     def->result = arg.substr(equals + 1);
-                else if(def->expectsValue && (i+1) != fullArguments.end() && (i+1)->front() != '-')
+                else if (def->expectsValue && (i+1) != fullArguments.end() && (i+1)->front() != '-')
                     def->result = *++i;
                 else
                     def->result.clear();
 
                 def->parse(name);
             }
-        }else{
+        } else {
             remainingArguments.push_back(arg);
         }
     }
 
-    if(help->valid && help->boolResult){
+    if (help->valid && help->boolResult) {
         /* Help messages are console only, with no timestamp.
          * TODO - make a way to customize this message. */
         puts(format("Usage: %s [OPTIONS]\n\nOptions:", executablePath.substr(executablePath.find_last_of("/\\") + 1)).c_str());
 
-        for(auto argdef : parsedArguments){
+        for (auto argdef : parsedArguments) {
             argdef->printHelp();
         }
 
@@ -89,7 +89,7 @@ void Application::parseArguments(){
     fs::path logName = logDir.replace_extension(string(".log")).filename();
     logDir = logDir.parent_path() / fs::path("logs");
 
-    if(!fs::exists(logDir))
+    if (!fs::exists(logDir))
         fs::create_directories(logDir);
 
      /* Debug output is on by default in debug builds. */
@@ -103,8 +103,8 @@ void Application::parseArguments(){
 
     Log::info("Starting \"%s\"", executablePath);
 
-    for(auto& argDef : parsedArguments){
-        if(argDef->errorMessage.size() != 0)
+    for (auto& argDef : parsedArguments) {
+        if (argDef->errorMessage.size() != 0)
             /* TODO - Does this warrant quiting? Probably... */
             Log::error(argDef->errorMessage);
     }
