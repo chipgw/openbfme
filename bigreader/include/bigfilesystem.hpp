@@ -13,8 +13,8 @@ EXPORT bool unmount(BigArchive* archive);
 
 EXPORT const BigEntry* openFile(const string& filename, const string& relativeTo = "");
 
-/* Fills output with all filenames matching the regular expression. */
-EXPORT std::set<string> findFiles(const string& regexStr);
+/* Find all files matching string with wildcard or regular expression. */
+EXPORT std::set<string> findFiles(string str, bool useRegex = false);
 
 }
 

@@ -19,7 +19,7 @@ bool testFile(const BigEntry* file) {
 }
 
 void testWildcard() {
-    auto files = BigFilesystem::findFiles("folder/.*\\.ini");
+    auto files = BigFilesystem::findFiles("data/ini/*.ini");
 
     for (const string& file : files)
         Log::info("Found file matching wildcard: \"%s\"", file);

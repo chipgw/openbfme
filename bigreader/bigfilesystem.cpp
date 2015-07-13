@@ -102,16 +102,28 @@ const BigEntry* openFile(const string& filename, const string& relativeTo) {
     return nullptr;
 }
 
-/* TODO - Make a seperate version of the function that takes just basic wildcards. */
-std::set<string> findFiles(const string &regexStr) {
+std::set<string> findFiles(string str, bool useRegex) {
+    if (!useRegex) {
+        for (auto i = str.begin(); i != str.end(); ++i) {
+            /* Escape all regex special characters except '*'. */
+            if (*i == '.' || *i == '\\' || *i == '/' || *i == '^' || *i == '$' || *i == '|' ||
+                *i == '(' || *i == ')' || *i == '[' || *i == ']' || *i == '+')
+                i = str.insert(i, '\\') + 1;
+            else if (*i == '*')
+                /* Insert a '.' before the '*' so that it will match any characters. */
+                i = str.insert(i, '.') + 1;
+        }
+    }
+    
     std::set<string> output;
-    std::basic_regex<character> regex(regexStr);
+    std::basic_regex<character> regex(str);
 
+    /* Go through all files in all archives and add any matching filenames to the set. */
     for (BigArchive& archive : archives) {
         for (const BigEntry& entry : archive) {
-            if (regex_match(entry.filename, regex)) {
+            if (regex_match(entry.filename, regex))
+                /* Because the container is a set we don't have to worry about duplicates. */
                 output.emplace(entry.filename);
-            }
         }
     }
 
