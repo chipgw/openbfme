@@ -1,7 +1,7 @@
 set(CMAKE_BUILD_TYPE_INIT "Debug")
 
 project(openbfme)
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 
 # Put all binaries into build/bin folder.
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for libraries")
