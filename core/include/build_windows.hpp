@@ -5,7 +5,7 @@
 
 #define OPENBFME_PLATFORM_WINDOWS
 
-#if defined(_MSC_VER) && _MSC_VER >= 1800
+#if defined(_MSC_VER) && _MSC_VER >= 1900
 /* ----------- *
  * Begin MSVC. *
  * ----------- */
@@ -19,12 +19,6 @@
 #define FILESYSTEM_HEADER <filesystem>
 /* TODO - This namespace is temporary, as this functionality isn't final yet. */
 #define FILESYSTEM_NAMESPACE std::tr2::sys
-
-#if _MSC_VER == 1800
-/* These name differences are fixed in VS 2015. */
-#define canonical complete
-#define generic_string string
-#endif
 
 /* --------- *
  * End MSVC. *
@@ -48,5 +42,5 @@
 
 #else
 /* TODO - Possibly support some other compilers. */
-#error Only Visual Studio 2013, Visual Studio 2015, and MinGW >= 4.8 are supported on Windows!
+#error Only Visual Studio 2015 and MinGW >= 4.8 are supported on Windows!
 #endif

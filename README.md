@@ -13,7 +13,7 @@ On Linux:
 * Compiler with C++11 support.
 
 On Windows:
-* [Visual Studio] 2013 or 2015.
+* [Visual Studio] 2015.
 * OR [MinGW] 4.8 or greater & [Boost] filesystem.
 
 Building
