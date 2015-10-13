@@ -21,13 +21,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     list(APPEND CMAKE_CXX_FLAGS "-fvisibility=hidden")
 endif()
 
-find_package(GLM REQUIRED)
-include_directories(${GLM_INCLUDE_DIR})
-
 # Enable any C++11 compiler flags if possible/nessecary.
 set(CMAKE_CXX_STANDARD 11)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
+
+find_package(GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIR})
 
 # Where the add_project_lib() and add_project_exe() macros are defined.
 include(OpenBFMEMacros)
