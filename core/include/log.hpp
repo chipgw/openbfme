@@ -14,12 +14,14 @@ enum OutputLevel {
     Debug
 };
 
+/* Used only by Application class. */
 void initLog(const string& filename, bool verbose, bool silent);
-
 void shutdownLog();
 
+/* Write a string to the console and log file with the current timestamp and specified level. */
 EXPORT void print(const string& output, OutputLevel level);
 
+/* Handy functions for printing at specific levels and with printf syntax. (Here to end of file) */
 inline void debug(const string &output) {
     print(output, OutputLevel::Debug);
 }

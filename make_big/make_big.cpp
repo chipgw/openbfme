@@ -27,9 +27,8 @@ int main(int argc, const char* argv[]) {
     for (size_t i = 0; i < args.size(); ++i) {
         auto archive = BigFilesystem::mount(args[i], true);
 
-        if (archive == nullptr)
-            /* There will already be an error message about the error, so we just continue to the next file. */
-            continue;
+        /* There will already be an error message about the error, so we just continue to the next file. */
+        if (archive == nullptr) continue;
 
         /* If an output was specified, use it. Otherwise just add ".big" to the input path. */
         archive->writeBig((i < output->results.size()) ? (output->results[i]) : (args[i] + ".big"));
