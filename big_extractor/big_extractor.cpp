@@ -41,7 +41,7 @@ int main(int argc, const char* argv[]){
     }
 
 
-    for(std::string &arg : args){
+    for(std::string& arg : args){
         BigArchive* archive = BigFilesystem::mount(arg, true);
 
         if(archive != nullptr){

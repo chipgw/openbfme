@@ -16,8 +16,8 @@ public:
     const uint32_t start, end;
 
     /* The archive that contains this file. */
-    BigArchive &archive;
-    BigEntry(BigArchive &arch, uint32_t start, uint32_t end, string file) : archive(arch), start(start), end(end), filename(file) { }
+    BigArchive& archive;
+    BigEntry(BigArchive& arch, uint32_t start, uint32_t end, string file) : archive(arch), start(start), end(end), filename(file) { }
 
     /* Get a line from a text file, does not include newline character. */
     EXPORT string getLine(bool checkComments) const;
@@ -39,6 +39,6 @@ public:
     inline void invalidateLineNumber() const { line = -1; }
 };
 
-inline bool operator <(const BigEntry& e1,const BigEntry& e2) { return e1.filename < e2.filename;}
+inline bool operator <(const BigEntry& e1, const BigEntry& e2) { return e1.filename < e2.filename; }
 
 }

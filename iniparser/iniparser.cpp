@@ -9,7 +9,7 @@
 
 namespace OpenBFME {
 
-void IniParser::parse(const BigEntry &file, IniObject &object) {
+void IniParser::parse(const BigEntry& file, IniObject& object) {
     while (!file.eof()) {
         string word = file.getWord();
 
@@ -44,7 +44,7 @@ void IniParser::parse(const BigEntry &file, IniObject &object) {
     }
 }
 
-bool IniParser::parseMacro(const BigEntry &file, IniObject &object) {
+bool IniParser::parseMacro(const BigEntry& file, IniObject& object) {
     string word = file.getWord();
 
     if (word == "include") {
@@ -114,7 +114,7 @@ bool IniParser::parseMacro(const BigEntry &file, IniObject &object) {
     return false;
 }
 
-bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std::string& name) {
+bool IniParser::parseVariable(const BigEntry& file, IniVariable& var, const std::string& name) {
     /* This should be "=" most of the time, but IDK if it always is. Ignore it for now... */
     file.getWord();
 
@@ -145,12 +145,12 @@ bool IniParser::parseVariable(const BigEntry &file, IniVariable& var, const std:
     return false;
 }
 
-string IniParser::getVariableWord(const BigEntry &file) {
+string IniParser::getVariableWord(const BigEntry& file) {
     string word = file.getWord();
     return (macros.count(word) > 0) ? macros[word] : word;
 }
 
-bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::string &name) {
+bool IniParser::parseBool(const BigEntry& file, IniVariable& var, const std::string& name) {
     string value = getVariableWord(file);
 
     /* TODO - are these the only acceptable values? Is it really case sensitive? */
@@ -166,7 +166,7 @@ bool IniParser::parseBool(const BigEntry &file, IniVariable &var, const std::str
     return true;
 }
 
-bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::string& name, integer mult) {
+bool IniParser::parseInteger(const BigEntry& file, IniVariable& var, const std::string& name, integer mult) {
     string value = getVariableWord(file);
 
     /* Because a negative sign is it's own word. */
@@ -186,7 +186,7 @@ bool IniParser::parseInteger(const BigEntry &file, IniVariable &var, const std::
     return true;
 }
 
-bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult) {
+bool IniParser::parseDecimal(const BigEntry& file, IniVariable& var, const std::string& name, decimal mult) {
     string value = getVariableWord(file);
 
     /* Because a negative sign is it's own word. */
@@ -206,7 +206,7 @@ bool IniParser::parseDecimal(const BigEntry &file, IniVariable &var, const std::
     return true;
 }
 
-bool IniParser::parseVector(const BigEntry &file, IniVariable &var, const std::string& name, decimal mult) {
+bool IniParser::parseVector(const BigEntry& file, IniVariable& var, const std::string& name, decimal mult) {
     /* The characters to search for when looking for the next component. */
     cstring componentChars = "XRYGZBA";
 

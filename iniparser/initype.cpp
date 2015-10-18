@@ -53,7 +53,7 @@ bool IniType::loadFromIni(const string& filename) {
     return false;
 }
 
-bool IniType::loadFromIni(const IniObject &object) {
+bool IniType::loadFromIni(const IniObject& object) {
     for(auto& var : object.variables){
         if(var.first == "BoolVariable")
             variableTypes[var.second.s] = IniVariable::Bool;

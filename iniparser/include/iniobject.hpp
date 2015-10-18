@@ -8,13 +8,13 @@
 namespace OpenBFME {
 
 struct IniObject {
-    const IniType &type;
+    const IniType& type;
     std::vector<string> args;
 
     std::multimap<string, IniObject> subObjects;
     std::multimap<string, IniVariable> variables;
 
-    IniObject(const IniType &baseType) : type(baseType) { }
+    IniObject(const IniType& baseType) : type(baseType) { }
 };
 
 }

@@ -38,7 +38,7 @@ private:
     const TimePoint startTime;
 
 public:
-    EXPORT Application(int argc, const char *argv[]);
+    EXPORT Application(int argc, const char* argv[]);
     EXPORT ~Application();
 
     EXPORT void parseArguments();

@@ -39,38 +39,38 @@ private:
     bool openEntry(const BigEntry& entry);
 
 public:
-    BigArchive(const string &filename);
+    BigArchive(const string& filename);
     ~BigArchive();
 
     /* Find out what type of Backend to use and fills entries. Returns false on error. */
     bool readHeader();
 
     /* Search for and open an entry, nullptr if not found. */
-    const BigEntry* openFile(const string &filename);
+    const BigEntry* openFile(const string& filename);
     
     /* Get a single character from a text file. */
-    EXPORT character getChar(const BigEntry &entry);
+    EXPORT character getChar(const BigEntry& entry);
     /* Put a single character back into a text file. */
-    EXPORT void ungetChar(const BigEntry &entry, character c);
+    EXPORT void ungetChar(const BigEntry& entry, character c);
 
     /* Seek to a position inside the entry. */
-    EXPORT bool seek(const BigEntry &entry, uint32_t pos);
+    EXPORT bool seek(const BigEntry& entry, uint32_t pos);
     /* Return the current position inside the entry. */
-    EXPORT uint32_t tell(const BigEntry &entry);
+    EXPORT uint32_t tell(const BigEntry& entry);
     /* Returns true if the current position is not within the file bounds. */
-    EXPORT bool eof(const BigEntry &entry);
+    EXPORT bool eof(const BigEntry& entry);
 
     /* Extract a file to the specified directory. */
-    EXPORT bool extract(const BigEntry &entry, const string &directory, bool fullPath, bool ignore, bool overwrite);
+    EXPORT bool extract(const BigEntry& entry, const string& directory, bool fullPath, bool ignore, bool overwrite);
     /* Extract all entries into given directory. */
-    EXPORT bool extractAll(const string &directory, bool ignore, bool overwrite);
+    EXPORT bool extractAll(const string& directory, bool ignore, bool overwrite);
     /* Make a .big file out of a set of entries. */
     EXPORT static bool writeBig(const EntryList& entries, const string& filename);
     /* Make a .big file out of a folder. */
     EXPORT bool writeBig(const string& filename);
 
-    inline const string &getArchiveFilename() { return archiveFilename; }
-    inline const Backend &getBackend() { return backend; }
+    inline const string& getArchiveFilename() { return archiveFilename; }
+    inline const Backend& getBackend() { return backend; }
 
     /* Only used inside the library, not exported. */
     EntryList::const_iterator begin();

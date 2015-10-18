@@ -22,7 +22,7 @@ void writeUInt32(FILE* file, uint32_t value) {
     fwrite(val, 1, 4, file);
 }
 
-BigArchive::BigArchive(const string &filename) : archiveFilename(fs::path(filename).generic_string()), file(nullptr) { }
+BigArchive::BigArchive(const string& filename) : archiveFilename(fs::path(filename).generic_string()), file(nullptr) { }
 
 BigArchive::~BigArchive() {
     close();
@@ -145,7 +145,7 @@ bool BigArchive::openEntry(const BigEntry& entry) {
     return false;
 }
 
-const BigEntry* BigArchive::openFile(const string &filename) {
+const BigEntry* BigArchive::openFile(const string& filename) {
     /* Find an entry with the filename. */
     auto entry = std::find_if(begin(), end(), [&](const BigEntry& it){ return it.filename == filename; });
 
@@ -157,7 +157,7 @@ const BigEntry* BigArchive::openFile(const string &filename) {
     return nullptr;
 }
 
-character BigArchive::getChar(const BigEntry &entry) {
+character BigArchive::getChar(const BigEntry& entry) {
     /* The archive needs to be open, and we need to be inside the correct file. */
     if (!open() || eof(entry))
         return 0;
@@ -171,7 +171,7 @@ character BigArchive::getChar(const BigEntry &entry) {
     return ch;
 }
 
-void BigArchive::ungetChar(const BigEntry &entry, character c) {
+void BigArchive::ungetChar(const BigEntry& entry, character c) {
     /* Can't ungetChar at the start of the file. */
     if (tell(entry) > 0) {
         ungetc(c, file);
@@ -182,7 +182,7 @@ void BigArchive::ungetChar(const BigEntry &entry, character c) {
     }
 }
 
-bool BigArchive::seek(const BigEntry &entry, uint32_t pos) {
+bool BigArchive::seek(const BigEntry& entry, uint32_t pos) {
     /* If the entry isn't the current one try opening it. */
     if (&entry != currentEntry && !openEntry(entry))
         return false;
@@ -200,7 +200,7 @@ bool BigArchive::seek(const BigEntry &entry, uint32_t pos) {
     return false;
 }
 
-uint32_t BigArchive::tell(const BigEntry &entry) {
+uint32_t BigArchive::tell(const BigEntry& entry) {
     /* This only works if the file is already current. */
     if (&entry != currentEntry)
         return 0;
@@ -215,7 +215,7 @@ uint32_t BigArchive::tell(const BigEntry &entry) {
     return pos - entry.start;
 }
 
-bool BigArchive::eof(const BigEntry &entry) {
+bool BigArchive::eof(const BigEntry& entry) {
     /* If entry isn't current or the archive file itself is at eof return true automatically. */
     if (&entry != currentEntry || feof(file))
         return true;
@@ -228,7 +228,7 @@ bool BigArchive::eof(const BigEntry &entry) {
     return cpos < entry.start || cpos >= entry.end;
 }
 
-bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fullPath, bool ignore, bool overwrite) {
+bool BigArchive::extract(const BigEntry& entry, const string& directory, bool fullPath, bool ignore, bool overwrite) {
     if (!openEntry(entry)) {
         Log::error("Error opening entry \"%s\"!", entry.filename);
         return false;
@@ -281,7 +281,7 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
         return false;
     }
     uint32_t length = entry.end - entry.start;
-    uint8_t *buffer = new uint8_t[length];
+    uint8_t* buffer = new uint8_t[length];
 
     fread(buffer, 1, length, file);
     fwrite(buffer, 1, length, out);
@@ -294,10 +294,10 @@ bool BigArchive::extract(const BigEntry& entry, const string &directory, bool fu
     return true;
 }
 
-bool BigArchive::extractAll(const string &directory, bool ignore, bool overwrite) {
+bool BigArchive::extractAll(const string& directory, bool ignore, bool overwrite) {
     fs::create_directories(fs::path(directory));
 
-    for (auto &entry : entries)
+    for (auto& entry : entries)
         if (!extract(entry, directory, true, ignore, overwrite))
             return false;
 
@@ -311,7 +311,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     uint32_t headerLength = uint32_t(entries.size() * 8) + 20;
 
     /* Add the length of the filenames to headerLength. */
-    for (auto &entry : entries)
+    for (auto& entry : entries)
         headerLength += uint32_t(entry.filename.size()) + 1;
 
     Log::info("Calculated header length: %#08x", headerLength);
@@ -336,7 +336,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     uint32_t lastEnd = headerLength + 1;
 
     /* Write all the file information. */
-    for (auto &entry : entries) {
+    for (auto& entry : entries) {
         uint32_t fileLength = entry.end - entry.start;
         writeUInt32(file, lastEnd);
         writeUInt32(file, fileLength);
@@ -363,7 +363,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     fputc('\0', file);
 
     /* Write all the files. */
-    for (auto &entry : entries) {
+    for (auto& entry : entries) {
         Log::info("Writing file \"%s\".", entry.filename);
         entry.seek(0);
 

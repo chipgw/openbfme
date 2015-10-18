@@ -3,10 +3,10 @@
 
 namespace OpenBFME {
 
-StringArgument::StringArgument(const std::initializer_list<string> &n, const string &d, bool expectValue) :
+StringArgument::StringArgument(const std::initializer_list<string>& n, const string& d, bool expectValue) :
 description(d), valid(false), names(n), expectsValue(expectValue) { /* STUB */ }
 
-void StringArgument::parse(const string &usedName){
+void StringArgument::parse(const string& usedName){
     /* All we care about for string arguments is that it isn't empty. */
     valid = result.size() != 0;
 }
@@ -25,11 +25,11 @@ void StringArgument::printHelp() {
     puts(format("  %-24s\t%s", nameStr, description).c_str());
 }
 
-bool StringArgument::containsName(const string &name) const {
+bool StringArgument::containsName(const string& name) const {
     return names.count(name) > 0;
 }
 
-void BoolArgument::parse(const string &usedName) {
+void BoolArgument::parse(const string& usedName) {
     /* No argument passed = true. */
     if (result.size() == 0 || stringCaseInsensitiveEquals(result, "yes") || result == "1") {
         boolResult = true;

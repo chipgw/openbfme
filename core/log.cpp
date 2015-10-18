@@ -21,7 +21,7 @@ struct Output {
 std::vector<Output> logOutputs;
 }
 
-void initLog(const string &filename, bool verbose, bool silent) {
+void initLog(const string& filename, bool verbose, bool silent) {
     OutputLevel maxLevel = silent ? Error : verbose ? Debug : Info;
 
     logOutputs.push_back(Output(maxLevel, stdout));

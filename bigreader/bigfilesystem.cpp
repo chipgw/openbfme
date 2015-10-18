@@ -14,13 +14,13 @@ namespace {
 std::list<BigArchive> archives;
 }
 
-BigArchive *mount(const string& filename, bool append) {
+BigArchive* mount(const string& filename, bool append) {
     Log::info("Attempting to mount \"%s\" in %s mode", filename, append ? "append" : "prepend");
 
     if (append) {
         archives.emplace_front(filename);
 
-        BigArchive &newArchive = archives.front();
+        BigArchive& newArchive = archives.front();
 
         if (newArchive.readHeader())
             return &newArchive;
@@ -29,7 +29,7 @@ BigArchive *mount(const string& filename, bool append) {
     } else {
         archives.emplace_back(filename);
 
-        BigArchive &newArchive = archives.back();
+        BigArchive& newArchive = archives.back();
 
         if (newArchive.readHeader())
             return &newArchive;
