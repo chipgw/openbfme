@@ -6,12 +6,9 @@ namespace OpenBFME {
 
 string BigEntry::getLine(bool checkComments) const {
     string line;
-    character c = getChar();
 
-    while (c != 0 && c != '\n') {
+    for (character c = getChar(); c != 0 && c != '\n' && !eof(); c = getChar())
         line += c;
-        c = getChar();
-    }
 
     /* We don't want the carriage return that might have been before the newline. */
     if (line.back() == '\r')
@@ -35,9 +32,7 @@ string BigEntry::getWord() const {
     bool isSym = false;
 
     string data;
-    while (!eof()) {
-        character c = getChar();
-
+    for (character c = getChar(); !eof(); c = getChar()) {
         if (data.empty()) {
             if(c == '\n')
                 /* return a newline character if it's the first thing we run into. */

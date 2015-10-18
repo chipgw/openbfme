@@ -31,7 +31,7 @@ BigArchive::~BigArchive() {
 bool BigArchive::readHeader() {
     if (fs::is_directory(fs::path(archiveFilename))) {
         backend = Folder;
-        
+
         /* Make sure the archiveFilename ends with a '/' */
         if (archiveFilename.back() != '/')
             archiveFilename += '/';
@@ -219,13 +219,14 @@ bool BigArchive::eof(const BigEntry& entry) {
     /* If entry isn't current or the archive file itself is at eof return true automatically. */
     if (&entry != currentEntry || feof(file))
         return true;
+
     /* If we have a folder backend the above checks are all we need. */
-    else if (backend == Folder)
+    if (backend == Folder)
         return false;
 
     /* Otherwise check that the current position is inside the file bounds. */
     uint32_t cpos = ftell(file);
-    return cpos < entry.start || cpos >= entry.end;
+    return cpos < entry.start || cpos > entry.end;
 }
 
 bool BigArchive::extract(const BigEntry& entry, const string& directory, bool fullPath, bool ignore, bool overwrite) {
@@ -364,13 +365,11 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
 
     /* Write all the files. */
     for (auto& entry : entries) {
-        Log::info("Writing file \"%s\".", entry.filename);
+        Log::info("Writing file \"%s\" at address %#08x", entry.filename, ftell(file));
         entry.seek(0);
 
-        for (character c; !entry.eof();) {
-            c = entry.getChar();
+        for (character c = entry.getChar(); !entry.eof(); c = entry.getChar())
             fwrite(&c, sizeof(character), 1, file);
-        }
     }
 
     fclose(file);
