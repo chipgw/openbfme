@@ -4,7 +4,7 @@
 namespace OpenBFME {
 
 StringArgument::StringArgument(const std::initializer_list<string>& n, const string& d, bool expectValue) :
-description(d), valid(false), names(n), expectsValue(expectValue) { /* STUB */ }
+    description(d), valid(false), names(n), expectsValue(expectValue) { /* STUB */ }
 
 void StringArgument::parse(const string& usedName){
     /* All we care about for string arguments is that it isn't empty. */

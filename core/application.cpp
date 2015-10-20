@@ -15,9 +15,11 @@ Application* app = nullptr;
 
 Application::Application(int argc, const char* argv[]) : fullArguments(argv + 1, argv + argc),
     startTime(std::chrono::duration_cast<TimePoint>(Clock::now().time_since_epoch())) {
+    /* If app isn't nullptr an instance of this class has been created, which is bad. */
     if (app == nullptr) {
         app = this;
 
+        /* Get the full path of the application from the first argument passed. */
         executablePath = fs::canonical(fs::path(argv[0])).string();
     } else {
         /* TODO - This may be cause for aborting. Just remember not to create an instance of this class anywhere but in main. */
@@ -99,6 +101,8 @@ void Application::parseArguments(){
     #define VERBOSE_DEFAULT false
 #endif
 
+    /* We wait to init the log until now not only so that --verbose and --silent arguments,
+     * but also so that when the help message(s) are printed the log file isn't even touched. */
     Log::initLog((logDir / logName).string(), verbose->valid ? verbose->boolResult : VERBOSE_DEFAULT, silent->valid ? silent->boolResult : false);
 
     Log::info("Starting \"%s\"", executablePath);

@@ -3,7 +3,7 @@
 #include "inivariable.hpp"
 #include <map>
 
-namespace OpenBFME{
+namespace OpenBFME {
 
 class IniType {
 public:

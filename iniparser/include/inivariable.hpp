@@ -2,7 +2,7 @@
 
 #include "types.hpp"
 
-namespace OpenBFME{
+namespace OpenBFME {
 
 struct IniVariable {
     enum VariableType {
