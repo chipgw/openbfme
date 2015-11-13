@@ -376,7 +376,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     uint32_t fileSize = ftell(file);
 
     /* Go back to the right part of the file and write the file size.
-     * For some reason this is big-endian when everything else is little endian... */
+     * For some reason this is little-endian when everything else is big-endian... */
     fseek(file, 4, SEEK_SET);
     fwrite(&fileSize, 1, 4, file);
 
