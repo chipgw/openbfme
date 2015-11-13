@@ -327,6 +327,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
     /* Either that or "BIG4". I'm not sure which... */
     fwrite("BIGF", 1, 4, file);
 
+    /* This is where the file size is stored. It gets filled later. */
     writeUInt32(file, 0);
 
     /* General info about the file. */
@@ -371,6 +372,13 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
         for (character c = entry.getChar(); !entry.eof(); c = entry.getChar())
             fwrite(&c, sizeof(character), 1, file);
     }
+
+    uint32_t fileSize = ftell(file);
+
+    /* Go back to the right part of the file and write the file size.
+     * For some reason this is big-endian when everything else is little endian... */
+    fseek(file, 4, SEEK_SET);
+    fwrite(&fileSize, 1, 4, file);
 
     fclose(file);
 
