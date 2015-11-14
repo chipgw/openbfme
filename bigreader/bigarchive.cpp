@@ -63,6 +63,10 @@ bool BigArchive::readHeader() {
     if (!open())
         return false;
 
+    fseek(file, 0, SEEK_END);
+    uint32_t actualSize = ftell(file);
+    rewind(file);
+
     /* The first 4 bytes shoule be either "BIG4" or "BIGF", quit if they aren't. */
     character id[4] = {0};
     fread(id, 1, 4, file);
@@ -73,7 +77,12 @@ bool BigArchive::readHeader() {
         return false;
     }
 
-    fseek(file, 8, SEEK_SET);
+    uint32_t storedSize;
+    fread(&storedSize, 1, 4, file);
+
+    /* Check to see if the file's actual size isthe same as the value stored in the header. */
+    if (storedSize != actualSize)
+        Log::warning("Size of file \"%s\" differs from the size stored in the header. File may be corrupt.", archiveFilename);
 
     uint32_t fileCount = readUInt32(file);
     uint32_t headerEnd = readUInt32(file);
