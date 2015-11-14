@@ -34,9 +34,9 @@ include(OpenBFMEMacros)
 
 # Set up the commands to put the test files in the bin directory.
 # All test exe targets depend on this target, so it's only run when one of them is enabled.
-add_custom_target(test_files SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test/test.big)
-add_custom_command(TARGET test_files COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/test/test.big
-                                                                      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/test.big)
+file(GLOB_RECURSE TEST_BIG_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/big/*")
+add_custom_target(test_files SOURCES ${TEST_BIG_FILES})
+add_custom_command(TARGET test_files COMMAND make_big -s -o "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/test.big" "${CMAKE_CURRENT_SOURCE_DIR}/test/big/")
 add_custom_command(TARGET test_files COMMAND big_extractor -o -d -s test.big WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR})
 
 option(BUILD_ALL "Enables building all binaries" OFF)
