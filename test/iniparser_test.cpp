@@ -12,7 +12,7 @@ void dumpObject(const IniObject& object, string indentation = "") {
     if (object.args.size() > 0) {
         Log::info("%sArguments:", indentation);
         for (const string& arg : object.args)
-            Log::info("%s  Argument \"%s\":", indentation, arg);
+            Log::info("%s  \"%s\"", indentation, arg);
     }
 
     if (object.variables.size() > 0){
@@ -33,7 +33,7 @@ void dumpObject(const IniObject& object, string indentation = "") {
                 break;
             case IniVariable::Line:
             case IniVariable::String:
-                value = var.second.s;
+                value = '"' + var.second.s + '"';
                 break;
             case IniVariable::Color:
             case IniVariable::Vector:
@@ -41,7 +41,7 @@ void dumpObject(const IniObject& object, string indentation = "") {
                 break;
             }
 
-            Log::info("%s  Variable: \"%s\" Value: \"%s\"", indentation, var.first, value);
+            Log::info("%s  Variable: \"%s\" Value: %s", indentation, var.first, value);
         }
     }
 
