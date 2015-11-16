@@ -13,9 +13,8 @@ GameWorld::GameWorld(const IniObject& root): iniRoot(root) {
 void GameWorld::tick(decimal delta) {
     Log::debug("World ticked. Delta: %f", delta);
 
-    for (auto object : objects) {
+    for (auto object : objects)
         object->tick(delta);
-    }
 }
 
 std::weak_ptr<GameObject> GameWorld::createObject(const string& templateName, const string& objectName) {

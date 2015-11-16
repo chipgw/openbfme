@@ -16,20 +16,18 @@ void IniParser::parse(const BigEntry& file, IniObject& object) {
         if (word == "\n")
             continue;
 
+        if (object.type.breaks && stringCaseInsensitiveEquals(word, object.type.breakWord))
+            break;
+
         if (word == "#") {
             parseMacro(file, object);
-        } else if (object.type.breaks && stringCaseInsensitiveEquals(word, object.type.breakWord)) {
-            break;
         } else if (object.type.subTypes.count(word)) {
             auto obj = object.subObjects.emplace(word, object.type.subTypes.at(word));
 
             /* SubObject args are any words after the SubObject name. */
             /* TODO - Perhaps symbols such as an '=' should be ignored? */
-
-            for (string arg; arg != "\n"; arg = file.getWord()) {
-                if (!arg.empty())
-                    obj->second.args.push_back(arg);
-            }
+            for (string arg; arg != "\n"; arg = file.getWord())
+                if (!arg.empty()) obj->second.args.push_back(arg);
 
             Log::debug("Created object of type: \"%s\"", word);
 

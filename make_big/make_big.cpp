@@ -16,12 +16,13 @@ int main(int argc, const char* argv[]) {
 
     auto args = app.getRemainingArgs();
 
-    if (args.size() < 1) {
+    if (args.size() == 0) {
         Log::error("Not enough arguments supplied!");
         exit(EXIT_FAILURE);
     }
 
-    if (output->valid && args.size() < output->results.size())
+    /* If any output args are passed, warn if there aren't the same amount of folder args. */
+    if (output->valid && args.size() != output->results.size())
         Log::warning("Wrong number of output arguments passed. Expected: %d, got %d.", args.size(), output->results.size());
 
     for (size_t i = 0; i < args.size(); ++i) {

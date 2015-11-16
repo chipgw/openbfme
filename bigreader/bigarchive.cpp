@@ -398,9 +398,9 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
 
 bool BigArchive::writeBig(const string& filename) {
     /* We only do this on a folder backend, because why would you do it on a .big? */
-    if (backend == Folder) {
+    if (backend == Folder)
         return writeBig(entries, filename);
-    }
+
     return false;
 }
 
