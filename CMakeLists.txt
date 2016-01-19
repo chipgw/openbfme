@@ -32,6 +32,9 @@ include_directories(${GLM_INCLUDE_DIR})
 # Where the add_project_lib() and add_project_exe() macros are defined.
 include(OpenBFMEMacros)
 
+# It's nice to have README.md and LICENSE show up in Qt Creator and such...
+add_custom_target(ide_files SOURCES README.md LICENSE)
+
 # Set up the commands to put the test files in the bin directory.
 # All test exe targets depend on this target, so it's only run when one of them is enabled.
 file(GLOB_RECURSE TEST_BIG_FILES "${CMAKE_CURRENT_SOURCE_DIR}/test/big/*")
