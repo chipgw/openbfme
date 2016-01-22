@@ -11,7 +11,7 @@ string BigEntry::getLine(bool checkComments) const {
         line += c;
 
     /* We don't want the carriage return that might have been before the newline. */
-    if (line.back() == '\r')
+    if (line.size() > 0 && line.back() == '\r')
         line.pop_back();
 
     if (checkComments) {
