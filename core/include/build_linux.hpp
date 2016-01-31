@@ -8,6 +8,10 @@
 
 #define EXPORT __attribute__((__visibility__("default")))
 
-/* TODO - Once the std filesystem is out use that. */
+#ifdef OPENBFME_USE_GCC_FILESYSTEM
+#define FILESYSTEM_HEADER <experimental/filesystem>
+#define FILESYSTEM_NAMESPACE std::experimental::filesystem
+#else
 #define FILESYSTEM_HEADER <boost/filesystem.hpp>
 #define FILESYSTEM_NAMESPACE boost::filesystem
+#endif

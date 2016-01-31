@@ -13,9 +13,20 @@ set(FS_LIBRARY)
 
 # GCC and Clang reqiure Boost for the filesystem library until they get std implementations. */
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    find_package(Boost 1.57 COMPONENTS system filesystem REQUIRED)
-    include_directories(${Boost_INCLUDE_DIR})
-    set(FS_LIBRARY ${Boost_LIBRARIES})
+    if(CMAKE_COMPILER_IS_GNUCXX AND NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.3")
+        option(WITH_GCC_EXPERIMENTAL_FILESYSTEM "Use experimental std::filesystem library included in GCC 5.3+" Off)
+
+        if(WITH_GCC_EXPERIMENTAL_FILESYSTEM)
+            set(FS_LIBRARY -lstdc++fs)
+            add_definitions(-DOPENBFME_USE_GCC_FILESYSTEM)
+        endif(WITH_GCC_EXPERIMENTAL_FILESYSTEM)
+    endif()
+
+    if("${FS_LIBRARY}" STREQUAL "")
+        find_package(Boost 1.57 COMPONENTS system filesystem REQUIRED)
+        include_directories(${Boost_INCLUDE_DIR})
+        set(FS_LIBRARY ${Boost_LIBRARIES})
+    endif()
 
     # GCC and Clang also need a flag to only export functions marked as EXPORT.
     list(APPEND CMAKE_CXX_FLAGS "-fvisibility=hidden")
