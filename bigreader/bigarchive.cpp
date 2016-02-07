@@ -60,8 +60,7 @@ bool BigArchive::readHeader() {
 
     backend = BigFile;
 
-    if (!open())
-        return false;
+    if (!open()) return false;
 
     fseek(file, 0, SEEK_END);
     uint32_t actualSize = ftell(file);
@@ -267,10 +266,7 @@ bool BigArchive::extract(const BigEntry& entry, const string& directory, bool fu
                 if (c == '\n') continue;
 
                 /* Only take one letter input. */
-                if (std::getchar() != '\n') {
-                    c = 0;
-                    while(std::getchar() != '\n') continue;
-                }
+                while(std::getchar() != '\n') c = 0;
             }
 
             if (c == 'n') {
@@ -290,9 +286,11 @@ bool BigArchive::extract(const BigEntry& entry, const string& directory, bool fu
         Log::error("Unable to create file \"%s\"!", path.generic_string());
         return false;
     }
+
     uint32_t length = entry.end - entry.start;
     uint8_t* buffer = new uint8_t[length];
 
+    /* Read the entire file to memory and spit it back out. */
     fread(buffer, 1, length, file);
     fwrite(buffer, 1, length, out);
 
@@ -398,10 +396,7 @@ bool BigArchive::writeBig(const EntryList& entries, const string& filename) {
 
 bool BigArchive::writeBig(const string& filename) {
     /* We only do this on a folder backend, because why would you do it on a .big? */
-    if (backend == Folder)
-        return writeBig(entries, filename);
-
-    return false;
+    return (backend == Folder) && writeBig(entries, filename);
 }
 
 BigArchive::EntryList::const_iterator BigArchive::begin() {

@@ -9,7 +9,7 @@ namespace fs = FILESYSTEM_NAMESPACE;
 
 using namespace OpenBFME;
 
-int main(int argc, const char* argv[]){
+int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
     auto overwrite  = app.registerBoolArgument({"overwrite","o"},       "Overwrite files if they exsist.");
@@ -21,43 +21,43 @@ int main(int argc, const char* argv[]){
 
     auto args = app.getRemainingArgs();
 
-    if(args.size() < 1){
+    if (args.size() < 1) {
         Log::error("Not enough arguments supplied!");
         exit(EXIT_FAILURE);
     }
 
     fs::path basePath;
 
-    if(outPath->valid){
+    if (outPath->valid) {
         basePath = outPath->result;
 
-        try{
+        try {
             if(!fs::exists(basePath))
                 fs::create_directories(basePath);
-        }catch(...){
+        } catch(...) {
             Log::error("Could not set output path to \"%s\"", basePath.generic_string());
             exit(EXIT_FAILURE);
         }
     }
 
 
-    for(std::string& arg : args){
+    for (std::string& arg : args) {
         BigArchive* archive = BigFilesystem::mount(arg, true);
 
-        if(archive != nullptr){
-            if(archive->getBackend() != BigArchive::Folder){
+        if (archive != nullptr) {
+            if (archive->getBackend() != BigArchive::Folder) {
                 fs::path path = basePath.empty() ? fs::canonical(fs::path(arg)).parent_path() : basePath;
 
-                if(useSubdirs->valid && useSubdirs->boolResult){
+                if (useSubdirs->valid && useSubdirs->boolResult)
                     path /= fs::path(arg).stem();
-                }
+
                 path /= "/";
 
                 Log::debug("Extraction path for \"%s\": \"%s\"", arg, path.generic_string());
 
                 archive->extractAll(path.generic_string(), ignore->valid && ignore->boolResult, overwrite->valid && overwrite->boolResult);
-            }else{
-                Log::warning("Cannot extract from a folder. Why would you want to anyway?");
+            } else {
+                Log::warning("Cannot extract from a folder. (Why would you want to anyway?)");
             }
 
             BigFilesystem::unmount(archive);
