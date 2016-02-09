@@ -27,7 +27,7 @@ Application::Application(int argc, const char* argv[]) : fullArguments(argv + 1,
     }
 }
 
-Application::~Application(){
+Application::~Application() {
     /* Close log file and reset the static pointer when Application instance is destroyed. */
     if (app == this) {
         Log::info("Shutting down.");
@@ -38,7 +38,8 @@ Application::~Application(){
     }
 }
 
-void Application::parseArguments(){
+void Application::parseArguments() {
+    /* Default arguments that are available in all programs. */
     auto verbose =  registerBoolArgument({"verbose","v"},   "Write all messages to the log.");
     auto silent =   registerBoolArgument({"silent","s"},    "Only write \"ERROR\" level messages to the log.");
     auto help =     registerBoolArgument({"help","h"},      "Show this help message and quit.");
@@ -54,21 +55,25 @@ void Application::parseArguments(){
 
             string name = arg.substr(start, equals - start);
 
-            auto iter = std::find_if(parsedArguments.begin(), parsedArguments.end(), [&](std::shared_ptr<StringArgument> def){
+            auto iter = std::find_if(parsedArguments.begin(), parsedArguments.end(), [&](std::shared_ptr<StringArgument> def) {
                 return def->containsName(name);
             });
             if (iter != parsedArguments.end()) {
                 auto& def = *iter;
+                /* If an '=' was found in the argument, use everything after it as the arg value. */
                 if (equals != string::npos)
                     def->result = arg.substr(equals + 1);
+                /* If there is no '=' but the arg expects a value, try using the next passed argument. */
                 else if (def->expectsValue && (i+1) != fullArguments.end() && (i+1)->front() != '-')
                     def->result = *++i;
+                /* If there was no value passed to the arg, clear any value that may have already been setbefore parsing. */
                 else
                     def->result.clear();
 
                 def->parse(name);
             }
         } else {
+            /* If the argument wasn't preceded by a '-' and wasn't used by the previous arg, it goes in this list. */
             remainingArguments.push_back(arg);
         }
     }
@@ -78,9 +83,8 @@ void Application::parseArguments(){
          * TODO - make a way to customize this message. */
         puts(format("Usage: %s [OPTIONS]\n\nOptions:", executablePath.substr(executablePath.find_last_of("/\\") + 1)).c_str());
 
-        for (auto argdef : parsedArguments) {
-            argdef->printHelp();
-        }
+        for (auto arg : parsedArguments)
+            arg->printHelp();
 
         /* TODO - Make a normal way to do this. */
         exit(EXIT_SUCCESS);
@@ -114,7 +118,7 @@ void Application::parseArguments(){
     }
 }
 
-Application* Application::getApplication(){
+Application* Application::getApplication() {
     return app;
 }
 

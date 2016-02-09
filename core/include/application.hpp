@@ -41,6 +41,7 @@ public:
     EXPORT Application(int argc, const char* argv[]);
     EXPORT ~Application();
 
+    /* Call this after registering arguments to actually parse them. */
     EXPORT void parseArguments();
 
     const ArgumentList& getRemainingArgs() { return remainingArguments; }

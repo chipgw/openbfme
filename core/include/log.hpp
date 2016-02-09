@@ -29,7 +29,7 @@ template<typename First, typename ...Args> inline void debug(const string& fmt, 
     print(format(fmt, {first, args...}), OutputLevel::Debug);
 }
 
-inline void info(const string& output){
+inline void info(const string& output) {
     print(output, OutputLevel::Info);
 }
 template<typename First, typename ...Args> inline void info(const string& fmt, First first, Args... args) {
