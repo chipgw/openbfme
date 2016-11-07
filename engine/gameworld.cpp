@@ -17,15 +17,35 @@ void GameWorld::tick(decimal delta) {
         object->tick(delta);
 }
 
-std::weak_ptr<GameObject> GameWorld::createObject(const string& templateName, const string& objectName) {
-    /* Find an Object tempolate with a matching name. */
+GamePlayer* GameWorld::createPlayer(const string &playerTemplateName) {
+    /* Find an PlayerTemplate with a matching name. */
+    auto playerTemplate = std::find_if(iniRoot.subObjects.cbegin(), iniRoot.subObjects.cend(), [&](const std::pair<string, IniObject> def) {
+        return def.first == "PlayerTemplate" && !def.second.args.empty() && def.second.args[0] == playerTemplateName;
+    });
+
+    /* If a template was found, create the Object. */
+    if (playerTemplate != iniRoot.subObjects.cend()) {
+        players.emplace_back(*this, playerTemplate->second);
+
+        return &players.back();
+    }
+
+    return nullptr;
+}
+
+std::weak_ptr<GameObject> GameWorld::createObject(const string& templateName, GamePlayer& player, const string& objectName) {
+    /* Is the player valid? */
+    if (this != &player.world)
+        return std::weak_ptr<GameObject>();
+
+    /* Find an Object template with a matching name. */
     auto objTemplate = std::find_if(iniRoot.subObjects.cbegin(), iniRoot.subObjects.cend(), [&](const std::pair<string, IniObject> def) {
         return def.first == "Object" && !def.second.args.empty() && def.second.args[0] == templateName;
     });
 
     /* If a template was found, create the Object. */
     if (objTemplate != iniRoot.subObjects.cend()) {
-        objects.emplace_back(new GameObject(*this, objTemplate->second, objectName));
+        objects.emplace_back(new GameObject(player, objTemplate->second, objectName));
 
         Log::debug("Object created with template \"%s\".", templateName);
 

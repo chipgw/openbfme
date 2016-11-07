@@ -20,6 +20,15 @@ int main(int argc, const char* argv[]) {
 
     IniParser ini;
 
+    auto plrTemplateFile = BigFilesystem::openFile("data/ini/playertemplate.ini");
+
+    if (plrTemplateFile == nullptr) {
+        Log::error("Unable to open playertemplate.ini!");
+        return 1;
+    }
+
+    ini.parse(*plrTemplateFile, root);
+
     auto files = BigFilesystem::findFiles("data/ini/objects/*.ini");
 
     for (const string& file : files) {
@@ -30,12 +39,18 @@ int main(int argc, const char* argv[]) {
     }
 
     GameWorld world(root);
+    GamePlayer* player = world.createPlayer("FactionTest");
+
+    if (player == nullptr) {
+        Log::error("Unable to create player!");
+        return 1;
+    }
 
     for (integer i = 0; i < 20; ++i) {
         world.tick(0.1f);
 
         if (i % 2 == 0)
-            world.createObject("Foo");
+            world.createObject("Foo", *player);
     }
 
     return 0;

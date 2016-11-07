@@ -1,10 +1,11 @@
 #include "gameobject.hpp"
+#include "gameplayer.hpp"
 #include "log.hpp"
 
 namespace OpenBFME {
 
-GameObject::GameObject(GameWorld& owner, const IniObject& objTemplate, const string& objName) 
-    : world(owner), objectTemplate(objTemplate), name(objName) {
+GameObject::GameObject(GamePlayer& owner, const IniObject& objTemplate, const string& objName)
+    : world(owner.world), player(owner), objectTemplate(objTemplate), name(objName) {
     /* TODO - init stuff. */
 }
 
