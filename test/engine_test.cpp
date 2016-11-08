@@ -29,10 +29,10 @@ int main(int argc, const char* argv[]) {
 
     ini.parse(*plrTemplateFile, root);
 
-    auto files = BigFilesystem::findFiles("data/ini/objects/*.ini");
+    auto files = BigFilesystem::findFiles("data/ini/object/*.ini");
 
     for (const string& file : files) {
-        Log::debug("Loading .ini found in data/ini/objects/: \"%s\"", file);
+        Log::debug("Loading .ini found in data/ini/object/: \"%s\"", file);
 
         if (const BigEntry* entry = BigFilesystem::openFile(file))
             ini.parse(*entry, root);
@@ -49,7 +49,7 @@ int main(int argc, const char* argv[]) {
     for (integer i = 0; i < 20; ++i) {
         world.tick(0.1f);
 
-        if (i % 2 == 0)
+        if (i % 4 == 0)
             world.createObject("Foo", *player);
     }
 
