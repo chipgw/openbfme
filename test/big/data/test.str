@@ -1,0 +1,9 @@
+// A test language string file.
+
+OBJECT:TestFortress
+"Test Fortress"
+END
+
+OBJECT:FortressDescription
+"A fortress is a building. It does stuff."
+END

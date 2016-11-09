@@ -4,6 +4,7 @@
 #include "iniobject.hpp"
 #include "iniparser.hpp"
 #include "bigfilesystem.hpp"
+#include "langstrings.hpp"
 
 using namespace OpenBFME;
 
@@ -65,6 +66,17 @@ void runTest(IniParser& ini, IniType& rootType) {
     }
 }
 
+void testStrings() {
+    Log::info("Loading string file \"data/test.str\"...");
+
+    LangStrings::loadStringFile("data/test.str");
+
+    Log::info("OBJECT:TestFortress value: %s", LangStrings::getString("OBJECT:TestFortress"));
+    Log::info("OBJECT:FortressDescription value: %s", LangStrings::getString("OBJECT:FortressDescription"));
+
+    Log::info("Done loading strings.");
+}
+
 int main(int argc, const char* argv[]) {
     Application app(argc, argv);
 
@@ -81,6 +93,8 @@ int main(int argc, const char* argv[]) {
     Log::info("Testing from .big archive.");
     runTest(ini, rootType);
 
+    testStrings();
+
     BigFilesystem::unmount("test.big");
 
     /* Parse from a folder. */
@@ -88,6 +102,8 @@ int main(int argc, const char* argv[]) {
 
     Log::info("Testing from folder.");
     runTest(ini, rootType);
+
+    testStrings();
 
     BigFilesystem::unmount("test");
 
