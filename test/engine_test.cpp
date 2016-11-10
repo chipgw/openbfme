@@ -4,6 +4,7 @@
 #include "initype.hpp"
 #include "iniparser.hpp"
 #include "bigfilesystem.hpp"
+#include "langstrings.hpp"
 #include "log.hpp"
 
 using namespace OpenBFME;
@@ -14,6 +15,8 @@ int main(int argc, const char* argv[]) {
     app.parseArguments();
 
     BigFilesystem::mount("test.big", true);
+
+    LangStrings::loadStringFile("data/test.str");
 
     IniType rootType("engine_test_root.ini");
     IniObject root(rootType);

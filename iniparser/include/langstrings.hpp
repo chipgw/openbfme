@@ -10,7 +10,7 @@ namespace LangStrings {
 EXPORT bool loadStringFile(const string& filename);
 
 /* Get a localized string from the specified key, returns the key when the string wasn't found. */
-EXPORT const string getString(const string& key);
+EXPORT const string getString(string key);
 
 }
 

@@ -18,6 +18,10 @@ public:
     /* The name of the object, for script references. Can be empty. */
     const string name;
 
+    /* Localized strings to show the user. */
+    string displayName;
+    string description;
+
     vec3 location;
     float angle;
     float scale;

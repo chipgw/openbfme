@@ -3,6 +3,7 @@
 #include "bigentry.hpp"
 #include "log.hpp"
 #include <map>
+#include <algorithm>
 
 namespace OpenBFME {
 
@@ -11,6 +12,7 @@ namespace LangStrings {
 namespace {
 
 /* TODO - Perhaps this should be split up by type... */
+/* TODO - Should these be a wide/unicode string of some sort? */
 std::map<string, string> strings;
 
 }
@@ -28,13 +30,19 @@ bool loadStringFile(const string& filename) {
         if (key == "")
             continue;
 
+        key.erase(std::remove_if(key.begin(), key.end(), isspace), key.end());
+
         string str;
 
-        /* Find a word that isn't a newline and assume it's the string. */
-        while (str.size() == 0 || str == "\n")
+        /* Find a word that isn't blank or a newline (just one char) and assume it's the string. */
+        while (str.size() < 2)
             str = file->getWord();
 
-        Log::debug("Loaded localizion string, key: %s, value: %s", key, str);
+        /* Trim the quotes. */
+        str.erase(str.begin());
+        str.erase(str.end()-1);
+
+        Log::debug("Loaded localization string, key: %s, value: \"%s\"", key, str);
 
         strings[key] = str;
 
@@ -46,7 +54,11 @@ bool loadStringFile(const string& filename) {
     return true;
 }
 
-const string getString(const string& key) {
+/* TODO - Find a good way of not returning copies left and right... */
+const string getString(string key) {
+    /* Key strings have no whitespace, but they're loaded as lines so there may be some trailing... */
+    key.erase(std::remove_if(key.begin(), key.end(), isspace), key.end());
+
     if (strings.count(key) != 0)
         return strings.at(key);
 
