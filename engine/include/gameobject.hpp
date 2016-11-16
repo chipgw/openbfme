@@ -26,6 +26,11 @@ public:
     float angle;
     float scale;
 
+    /* How far can we see? */
+    float visionRange;
+    /* How far do we clear the fog of war? */
+    float shroudClearRange;
+
     /* Not to be called anywhere other than in GameWorld.createObject() */
     GameObject(GamePlayer& owner, const IniObject& objTemplate, const string& objName = "");
 
