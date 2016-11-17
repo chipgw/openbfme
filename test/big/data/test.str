@@ -7,3 +7,7 @@ END
 OBJECT:FortressDescription
 "A fortress is a building. It does stuff."
 END
+
+INI:FactionTest
+"Test Faction"
+END

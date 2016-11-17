@@ -10,19 +10,17 @@ GameObject::GameObject(GamePlayer& owner, const IniObject& objTemplate, const st
     : world(owner.world), player(owner), objectTemplate(objTemplate), name(objName) {
     /* TODO - What happens if it doesn't exist? Just having an empty string probably isn't the best way to handle it... */
     /* Get the localized string with the specified key. */
-    Log::debug("Object display name: \"%s\"", displayName = LangStrings::getString(objectTemplate.getStringVariable("DisplayName")));
+    displayName = LangStrings::getString(objectTemplate.getStringVariable("DisplayName"));
 
     /* TODO - What happens if it doesn't exist? Just having an empty string probably isn't the best way to handle it... */
     /* Get the localized string with the specified key. */
-    Log::debug("Object description: \"%s\"", description = LangStrings::getString(objectTemplate.getStringVariable("Description")));
+    description = LangStrings::getString(objectTemplate.getStringVariable("Description"));
 
-    /* TODO - What happens if it doesn't exist? Getting a decimal from a BadVar is undefined... */
-    Log::debug("Object vision range: \"%f\"", visionRange = objectTemplate.getDecimalVariable("VisionRange"));
+    /* Default vision & clear range is none. */
+    visionRange = objectTemplate.getDecimalVariable("VisionRange", 0.0f);
+    shroudClearRange = objectTemplate.getDecimalVariable("ShroudClearingRange", 0.0f);
 
-    /* TODO - What happens if it doesn't exist? Getting a decimal from a BadVar is undefined... */
-    Log::debug("Object shroud clear range: \"%f\"", shroudClearRange = objectTemplate.getDecimalVariable("ShroudClearingRange"));
-
-    /* TODO - init stuff. */
+    Log::debug("Object display name: \"%s\" description: \"%s\" vision range: %f shroud clear range: %f", displayName, description, visionRange, shroudClearRange);
 }
 
 void GameObject::tick(decimal delta) {

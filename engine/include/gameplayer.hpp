@@ -17,6 +17,12 @@ public:
 
     /* How much money/resources the player has. */
     integer playerMoney;
+
+    /* The localized display name for the faction. */
+    string factionDisplayName;
+
+    /* Is this an evil faction? */
+    bool isEvil;
 };
 
 }
