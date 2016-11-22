@@ -20,7 +20,19 @@ GameObject::GameObject(GamePlayer& owner, const IniObject& objTemplate, const st
     visionRange = objectTemplate.getDecimalVariable("VisionRange", 0.0f);
     shroudClearRange = objectTemplate.getDecimalVariable("ShroudClearingRange", 0.0f);
 
-    Log::debug("Object display name: \"%s\" description: \"%s\" vision range: %f shroud clear range: %f", displayName, description, visionRange, shroudClearRange);
+    auto body = objectTemplate.subObjects.find("Body");
+
+    maxHealth = 0;
+
+    if (body != objectTemplate.subObjects.end()) {
+        maxHealth = body->second.getDecimalVariable("MaxHealth");
+    }
+
+    /* Start out atmaximum health. */
+    health = maxHealth;
+
+    Log::debug("Object display name: \"%s\" description: \"%s\" vision range: %f shroud clear range: %f, health: %f",
+               displayName, description, visionRange, shroudClearRange, health);
 }
 
 void GameObject::tick(decimal delta) {
