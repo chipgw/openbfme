@@ -16,7 +16,7 @@ void IniParser::parse(const BigEntry& file, IniObject& object) {
         if (word == "\n")
             continue;
 
-        if (object.type.breaks && stringCaseInsensitiveEquals(word, object.type.breakWord))
+        if (object.type.breaks && String::caseInsensitiveEquals(word, object.type.breakWord))
             break;
 
         if (word == "#") {

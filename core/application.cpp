@@ -81,7 +81,7 @@ void Application::parseArguments() {
     if (help->valid && help->boolResult) {
         /* Help messages are console only, with no timestamp.
          * TODO - make a way to customize this message. */
-        puts(format("Usage: %s [OPTIONS]\n\nOptions:", executablePath.substr(executablePath.find_last_of("/\\") + 1)).c_str());
+        puts(String::format("Usage: %s [OPTIONS]\n\nOptions:", executablePath.substr(executablePath.find_last_of("/\\") + 1)).c_str());
 
         for (auto arg : parsedArguments)
             arg->printHelp();

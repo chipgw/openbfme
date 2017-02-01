@@ -86,11 +86,11 @@ void print(const string& str, OutputLevel level) {
         /* Make the timestamp string. */
         auto current = app->getRunningTime<microseconds>();
 
-        string timestamp = format("[%02i:%02i.%06i] %s: ",
-                                  duration_cast<minutes>(current).count(),
-                                  duration_cast<seconds>(current).count() % 60,
-                                  current.count() % 1000000,
-                                  type);
+        string timestamp = String::format("[%02i:%02i.%06i] %s: ",
+                                          duration_cast<minutes>(current).count(),
+                                          duration_cast<seconds>(current).count() % 60,
+                                          current.count() % 1000000,
+                                          type);
 
         /* Write the string to every relevant output. */
         for (Output& output : logOutputs) {

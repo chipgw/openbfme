@@ -10,22 +10,22 @@ using namespace OpenBFME;
 #endif
 
 /* Compares string produced by our format() function to output of snprintf(). */
-int runFormatTest(const string& formatString, const Printable& arg, const integer& number) {
+int runFormatTest(const string& formatString, const String::Printable& arg, const integer& number) {
     string result = format(formatString, arg);
     string correct = result;
     integer correctNum = 0;
 
     switch (arg.type) {
-    case Printable::Character:
+    case String::Printable::Character:
         correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.ch);
         break;
-    case Printable::Decimal:
+    case String::Printable::Decimal:
         correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.dec);
         break;
-    case Printable::Integer:
+    case String::Printable::Integer:
         correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.num);
         break;
-    case Printable::String:
+    case String::Printable::String:
         correctNum = snprintf(&correct[0], correct.size() + 1, formatString.c_str(), arg.str);
         break;
     }
@@ -97,7 +97,7 @@ int main(int argc, const char* argv[]) {
 
     integer failed = 0;
 
-    const static std::vector<std::pair<string, Printable>> formatTests {
+    const static std::vector<std::pair<string, String::Printable>> formatTests {
         {"%s",    "Hello"}, {"%.s",   "Hello"}, {"%.2s",  "Hello"}, {"%d",    1234},
         {"%i",    1234},    {"%i",   -1234},    {"%8i",   1234},    {"%8i",  -1234},
         {"%08i",  1234},    {"%08i", -1234},    {"%+i",   1234},    {"%+i",  -1234},

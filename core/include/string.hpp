@@ -5,6 +5,8 @@
 
 namespace OpenBFME {
 
+namespace String {
+
 struct Printable {
     enum Type {
         Integer, Decimal, Character, String
@@ -24,7 +26,7 @@ struct Printable {
     inline Printable(cstring s) : type(String), str(s) { }
 };
 
-EXPORT bool stringCaseInsensitiveEquals(const string& a, const string& b);
+EXPORT bool caseInsensitiveEquals(const string& a, const string& b);
 
 EXPORT string format(const string& fmt, std::initializer_list<Printable> args);
 
@@ -35,6 +37,8 @@ EXPORT string format(const string& fmt, std::initializer_list<Printable> args);
  */
 template<typename First, typename... Args> inline string format(const string& fmt, First first, Args... args) {
     return format(fmt, { first, args... });
+}
+
 }
 
 }

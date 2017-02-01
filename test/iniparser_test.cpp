@@ -38,7 +38,7 @@ void dumpObject(const IniObject& object, string indentation = "") {
                 break;
             case IniVariable::Color:
             case IniVariable::Vector:
-                value = format("%f, %f, %f, %f", var.second.v.x, var.second.v.y, var.second.v.z, var.second.v.w);
+                value = String::format("%f, %f, %f, %f", var.second.v.x, var.second.v.y, var.second.v.z, var.second.v.w);
                 break;
             }
 
