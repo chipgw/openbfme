@@ -71,7 +71,7 @@ bool BigArchive::readHeader() {
     fread(id, 1, 4, file);
 
     if (id[0] != 'B' || id[1] != 'I' || id[2] != 'G' || (id[3] != '4' && id[3] != 'F')) {
-        Log::error("File \"%s\" is not a valid big file!");
+        Log::error("File \"%s\" is not a valid big file!", archiveFilename);
         close();
         return false;
     }
